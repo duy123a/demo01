@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="wwwroot\dist\.vite\**" />
+		<Content Remove="wwwroot\dist\.vite\**" />
+		<EmbeddedResource Remove="wwwroot\dist\.vite\**" />
+		<None Remove="wwwroot\dist\.vite\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\css\main.css" />
+		<Content Include="Assets\js\main.js" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.10" />
+    <PackageReference Include="Vite.AspNetCore" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Demo01.Infrastructure\Demo01.Infrastructure.csproj" />
+    <ProjectReference Include="..\Demo01.Shared\Demo01.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\dist\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<!-- Auto building vite when running as release mode -->
+	<Target Name="ViteBuild" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' ">
+		<Exec Command="npm run build" />
+	</Target>
+
+	<!-- Auto building vite when publishing -->
+	<Target Name="ViteBuildOnPublish" BeforeTargets="PrepareForPublish" Condition=" '$(Configuration)' == 'Release' ">
+		<Exec Command="npm run build" />
+	</Target>
+
+	<!-- Copy manifestion file when publishing -->
+	<Target Name="CopyViteManifest" AfterTargets="ViteBuildOnPublish">
+		<Copy SourceFiles="wwwroot/dist/.vite/manifest.json" DestinationFolder="wwwroot/dist/" SkipUnchangedFiles="true" />
+	</Target>
+
+</Project>

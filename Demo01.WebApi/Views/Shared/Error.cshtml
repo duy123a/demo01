@@ -1,0 +1,23 @@
+﻿@using Demo01.WebApi.ViewModels
+@inject IStringLocalizer<SharedResources> Localizer
+@using Demo01.Shared.Resources
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@using Microsoft.Extensions.Localization
+
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    ViewData["Page"] = "error";
+}
+
+<div class="container mt-3">
+    <h2>Error @Model.StatusCode</h2>
+    <p>@Html.Raw(Model.Message)</p>
+
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+            @Localizer["Back_To_Home"]
+        </a>
+    </div>
+</div>
