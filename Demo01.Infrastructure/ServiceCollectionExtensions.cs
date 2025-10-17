@@ -1,5 +1,7 @@
 ﻿using Demo01.Infrastructure.Configurations;
 using Demo01.Infrastructure.Data.Context;
+using Demo01.Infrastructure.Data.Repositories;
+using Demo01.Infrastructure.Data.Repositories.Interfaces;
 using Demo01.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -52,8 +54,16 @@ namespace Demo01.Infrastructure
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
+            services.AddRepositories();
+
             services.AddAuthorization();
 
+            return services;
+        }
+
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             return services;
         }
 
