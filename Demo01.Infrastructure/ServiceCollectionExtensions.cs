@@ -64,6 +64,11 @@ namespace Demo01.Infrastructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddScoped<IForecastRepository, ForecastRepository>();
+            services.AddScoped<IForecastWeekRepository, ForecastWeekRepository>();
+            services.AddScoped<IForecastItemRepository, ForecastItemRepository>();
+            services.AddScoped<IModelRepository, ModelRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             return services;
         }
 
