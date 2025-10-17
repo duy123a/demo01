@@ -43,6 +43,41 @@ window.showLogoutModal = function () {
     modal.show();
 }
 
+window.debounce = (func, delay) => {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+    };
+};
+
+// Toast utility functions
+window.showToast = function (type, message) {
+    const toastId = type + 'Toast';
+    const messageId = type + 'ToastMessage';
+
+    const toastElement = document.getElementById(toastId);
+    const messageElement = document.getElementById(messageId);
+
+    if (toastElement && messageElement) {
+        messageElement.textContent = message;
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    }
+};
+
+window.showSuccessToast = function (message) {
+    window.showToast('success', message);
+};
+
+window.showWarningToast = function (message) {
+    window.showToast('warning', message);
+};
+
+window.showErrorToast = function (message) {
+    window.showToast('error', message);
+};
+
 document.addEventListener('DOMContentLoaded', function () {
     // Handle logout confirmation
     const logoutBtn = document.getElementById('confirmLogoutBtn');

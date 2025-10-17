@@ -141,6 +141,27 @@
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Login_Success" xml:space="preserve">
+  <value>Login successful</value>
+</data>
+<data name="Login_Locked_Out" xml:space="preserve">
+  <value>Your account is locked out</value>
+</data>
+<data name="Login_Not_Allowed" xml:space="preserve">
+  <value>You need to confirm your email before logging in.</value>
+</data>
+<data name="Login_2FA_Required" xml:space="preserve">
+  <value>Two-factor authentication required</value>
+</data>
+<data name="Login_Failed" xml:space="preserve">
+  <value>The email address or password you entered is incorrect.</value>
+</data>
+<data name="Dont_Have_Account" xml:space="preserve">
+  <value>Don't have an account?</value>
+</data>
+<data name="Register_Here" xml:space="preserve">
+  <value>Register here</value>
+</data>
   <data name="Logout_Confirmation" xml:space="preserve">
     <value>Logout confirmation</value>
   </data>
@@ -164,5 +185,47 @@
   </data>
   <data name="Required" xml:space="preserve">
     <value>Please enter {0}.</value>
+  </data>
+  <data name="AccessDenied_Title" xml:space="preserve">
+    <value>Access Denied</value>
+  </data>
+  <data name="AccessDenied_Heading" xml:space="preserve">
+    <value>Access Denied</value>
+  </data>
+  <data name="AccessDenied_Message" xml:space="preserve">
+    <value>You do not have permission to access this page.</value>
+  </data>
+  <data name="AccessDenied_UrlLabel" xml:space="preserve">
+    <value>Attempted URL:</value>
+  </data>
+  <data name="Button_Change_Password" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="Button_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Button_Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Button_Privacy" xml:space="preserve">
+    <value>Privacy policy</value>
+  </data>
+  <data name="Dashboards" xml:space="preserve">
+    <value>Dashboards</value>
+  </data>
+  <data name="Privacy_Title" xml:space="preserve">
+    <value>Privacy policy</value>
+  </data>
+  <data name="Privacy_Message" xml:space="preserve">
+    <value>Use this page to detail your site's privacy policy.</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>There are no new notifications.</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Show more</value>
   </data>
 </root>

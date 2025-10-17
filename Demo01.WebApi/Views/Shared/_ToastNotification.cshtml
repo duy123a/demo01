@@ -1,0 +1,41 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> Localizer
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    <!-- Success Toast -->
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-demo-primary text-white">
+            <i class="bi bi-check-circle me-2"></i>
+            <strong class="me-auto">@Localizer["Success"]</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="successToastMessage">
+            <!-- Success message will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Warning Toast -->
+    <div id="warningToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-warning text-dark">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong class="me-auto">@Localizer["Warning"]</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="warningToastMessage">
+            <!-- Warning message will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong class="me-auto">@Localizer["Error"]</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="errorToastMessage">
+            <!-- Error message will be inserted here -->
+        </div>
+    </div>
+</div>

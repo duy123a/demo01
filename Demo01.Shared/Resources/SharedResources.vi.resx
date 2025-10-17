@@ -141,6 +141,27 @@
   <data name="Login" xml:space="preserve">
     <value>Đăng nhập</value>
   </data>
+  <data name="Login_Success" xml:space="preserve">
+  <value>Đăng nhập thành công</value>
+</data>
+<data name="Login_Locked_Out" xml:space="preserve">
+  <value>Tài khoản của bạn đã bị khóa</value>
+</data>
+<data name="Login_Not_Allowed" xml:space="preserve">
+  <value>Bạn cần xác nhận email trước khi đăng nhập</value>
+</data>
+<data name="Login_2FA_Required" xml:space="preserve">
+  <value>Yêu cầu xác thực hai yếu tố</value>
+</data>
+<data name="Login_Failed" xml:space="preserve">
+  <value>Địa chỉ email hoặc mật khẩu không chính xác</value>
+</data>
+<data name="Dont_Have_Account" xml:space="preserve">
+  <value>Chưa có tài khoản?</value>
+</data>
+<data name="Register_Here" xml:space="preserve">
+  <value>Đăng ký tại đây</value>
+</data>
   <data name="Logout_Confirmation" xml:space="preserve">
     <value>Xác nhận đăng xuất</value>
   </data>
@@ -164,5 +185,47 @@
   </data>
   <data name="Required" xml:space="preserve">
     <value>Vui lòng nhập {0}.</value>
+  </data>
+  <data name="AccessDenied_Title" xml:space="preserve">
+    <value>Từ chối truy cập</value>
+  </data>
+  <data name="AccessDenied_Heading" xml:space="preserve">
+    <value>Không được phép truy cập</value>
+  </data>
+  <data name="AccessDenied_Message" xml:space="preserve">
+    <value>Bạn không có quyền truy cập trang này.</value>
+  </data>
+  <data name="AccessDenied_UrlLabel" xml:space="preserve">
+    <value>Đường dẫn đã truy cập:</value>
+  </data>
+  <data name="Button_Change_Password" xml:space="preserve">
+    <value>Đổi mật khẩu</value>
+  </data>
+  <data name="Button_Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Button_Home" xml:space="preserve">
+    <value>Trang chủ</value>
+  </data>
+  <data name="Button_Privacy" xml:space="preserve">
+    <value>Chính sách bảo mật</value>
+  </data>
+  <data name="Dashboards" xml:space="preserve">
+    <value>Bảng điều khiển</value>
+  </data>
+  <data name="Privacy_Title" xml:space="preserve">
+    <value>Chính sách bảo mật</value>
+  </data>
+  <data name="Privacy_Message" xml:space="preserve">
+    <value>Sử dụng trang này để hiển thị chính sách bảo mật trang của bạn.</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Thông báo</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Chưa có thông báo mới.</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Hiển thị thêm</value>
   </data>
 </root>

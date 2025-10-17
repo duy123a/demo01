@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo01.WebApi.Controllers
 {
+    [Authorize(Roles = "Admin,User")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

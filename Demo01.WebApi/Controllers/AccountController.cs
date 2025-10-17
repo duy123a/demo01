@@ -2,12 +2,15 @@
 using Demo01.Infrastructure.Entities;
 using Demo01.Infrastructure.Enums;
 using Demo01.Shared.Resources;
+using Demo01.Shared.Services;
 using Demo01.Shared.Services.Interfaces;
 using Demo01.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -122,6 +125,41 @@ namespace Demo01.WebApi.Controllers
             await _signInManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        [HttpGet("/Account/Avatar/{name}")]
+        public async Task<IActionResult> Avatar(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return Redirect("/images/default-avatar.svg");
+            }
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == name);
+            if (user == null || string.IsNullOrEmpty(user.ProfileImg))
+            {
+                return Redirect("/images/default-avatar.svg");
+            }
+
+            var fileName = user.ProfileImg;
+
+            var stream = await _blobStorage.OpenReadAsync(BlobStorageService.UserProfileContainer, fileName);
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(fileName, out string? contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return File(stream, contentType);
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
         }
     }
 }

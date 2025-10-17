@@ -20,6 +20,9 @@
     /* Gradients */
     --demo-gradient-primary: linear-gradient(135deg, #2BA7A4 0%, #30cfc0 100%);
     --demo-gradient-secondary: linear-gradient(135deg, #F15B5B 0%, #f57c7c 100%);
+    /* Sidebar & Neutral Extensions */
+    --demo-text-muted: #969696;
+    --demo-hover-sidebar-bg: rgba(0, 0, 0, 0.04);
 }
 
 html {
@@ -60,6 +63,33 @@ html {
     transition: none !important;
 }
 
+.main-container {
+    display: flex;
+}
+
+    .main-container:only-child,
+    .main-container > :only-child {
+        flex: 1 1 100%;
+    }
+
+    .main-container > :first-child:nth-last-child(2) {
+        flex: 0 0 240px;
+    }
+
+        .main-container > :first-child:nth-last-child(2) ~ * {
+            flex: 0 0 calc(100% - 240px);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+    .main-container > :first-child {
+        min-height: 100vh;
+    }
+
+.bg-demo-primary {
+    background-color: var(--demo-primary) !important;
+}
+
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -74,7 +104,7 @@ html {
 }
 
 .login-bg-overlay {
-    background-color: var(--demo-dark);
+    background-color: var(--demo-light-gray);
     mix-blend-mode: multiply;
     position: absolute;
     inset: 0;
@@ -101,6 +131,26 @@ html {
     color: var(--demo-dark);
     margin-bottom: 2px;
 }
+
+.sidebar-link {
+    color: var(--demo-text-muted);
+    border-radius: 4px;
+    padding: 10px 15px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+    .sidebar-link:hover {
+        background-color: var(--demo-hover-sidebar-bg);
+        color: var(--demo-indigo);
+    }
+
+    .sidebar-link.active {
+        background-color: var(--demo-hover-sidebar-bg);
+        color: var(--demo-indigo);
+        font-weight: normal;
+    }
 
 .btn.btn-demo-submit {
     width: 100%;
@@ -138,3 +188,15 @@ html {
         background-color: var(--demo-primary-hover);
         color: var(--demo-white);
     }
+
+.text-demo-primary {
+    color: var(--demo-primary);
+}
+
+.text-demo-secondary {
+    color: var(--demo-secondary);
+}
+
+.text-demo-indigo {
+    color: var(--demo-indigo);
+}

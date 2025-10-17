@@ -1,0 +1,15 @@
+﻿@inject IStringLocalizer<SharedResources> Localizer
+@using Microsoft.Extensions.Localization
+@using Demo01.Shared.Resources
+
+@{
+    ViewData["Title"] = Localizer["AccessDenied_Title"];
+    var returnUrl = ViewData["ReturnUrl"]?.ToString();
+}
+
+<div class="container text-center mt-5">
+    <h1 class="text-danger mb-4">@Localizer["AccessDenied_Heading"]</h1>
+    <p class="lead">@Localizer["AccessDenied_Message"]</p>
+
+    <a href="/" class="btn btn-asaka-submit mt-4">@Localizer["Back_To_Home"]</a>
+</div>
