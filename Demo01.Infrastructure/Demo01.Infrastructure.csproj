@@ -28,9 +28,4 @@
 		</Content>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Data\Repositories\" />
-	  <Folder Include="Data\Seed\" />
-	</ItemGroup>
-
 </Project>
