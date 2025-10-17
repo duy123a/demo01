@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Demo01.Shared\Demo01.Shared.csproj" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
@@ -26,6 +27,10 @@
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\Seed\" />
 	</ItemGroup>
 
 </Project>

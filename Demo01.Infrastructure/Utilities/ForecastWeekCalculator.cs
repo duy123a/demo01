@@ -2,11 +2,17 @@
 {
     public static class ForecastWeekCalculator
     {
-        /// <summary>
-        /// Tính StartDate và EndDate của một tuần theo quy tắc:
-        /// StartDate = Thứ 2 của (week - 5)
-        /// EndDate = Thứ 2 của (week + 1)
-        /// </summary>
+        // public helper if other parts need it
+        public static DateTimeOffset GetMondayOfIsoWeek(int year, int week)
+        {
+            DateTime jan4 = new DateTime(year, 1, 4);
+            int daysOffset = DayOfWeek.Monday - jan4.DayOfWeek;
+            DateTime firstMonday = jan4.AddDays(daysOffset);
+            DateTime monday = firstMonday.AddDays((week - 1) * 7);
+            return new DateTimeOffset(monday, TimeSpan.Zero);
+        }
+
+        // your special logic (StartDate = Monday of week-5, EndDate = Monday of week+1)
         public static (DateTimeOffset StartDate, DateTimeOffset EndDate) CalculateWeekRange(int year, int week)
         {
             int startWeek = week - 5;
@@ -17,30 +23,18 @@
             if (startWeek < 1)
             {
                 startYear = year - 1;
-                startWeek = 52 + startWeek; // ví dụ week=3 → startWeek=50 (năm trước)
+                // assume 52 weeks in previous year for simplicity (if you use ISO weeks, you can compute week count per year)
+                startWeek = 52 + startWeek;
             }
-
             if (endWeek > 52)
             {
                 endYear = year + 1;
                 endWeek = endWeek - 52;
             }
 
-            var startDate = GetMondayOfIsoWeek(startYear, startWeek);
-            var endDate = GetMondayOfIsoWeek(endYear, endWeek);
-
-            return (startDate, endDate);
-        }
-
-        private static DateTimeOffset GetMondayOfIsoWeek(int year, int week)
-        {
-            DateTime jan4 = new DateTime(year, 1, 4);
-            int daysOffset = DayOfWeek.Monday - jan4.DayOfWeek;
-
-            DateTime firstMonday = jan4.AddDays(daysOffset);
-            DateTime monday = firstMonday.AddDays((week - 1) * 7);
-
-            return new DateTimeOffset(monday, TimeSpan.Zero);
+            var start = GetMondayOfIsoWeek(startYear, startWeek);
+            var end = GetMondayOfIsoWeek(endYear, endWeek);
+            return (start, end);
         }
     }
 }
