@@ -4,6 +4,7 @@ namespace Demo01.Infrastructure.Data.Repositories.Interfaces
 {
     public interface IRepositoryBase<T> where T : class
     {
+        IQueryable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(object id);
         Task AddAsync(T entity);
