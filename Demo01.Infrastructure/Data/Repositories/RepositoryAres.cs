@@ -15,6 +15,11 @@ namespace Demo01.Infrastructure.Data.Repositories
             await wrapper.DeleteAsync(id);
         }
 
+        public IQueryable<TEntity> GetAll()
+        {
+            return wrapper.GetAll();
+        }
+
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await wrapper.GetAllAsync();
