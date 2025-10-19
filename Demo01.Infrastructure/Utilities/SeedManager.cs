@@ -1,6 +1,8 @@
-﻿using Demo01.Infrastructure.Entities;
+﻿using Demo01.Infrastructure.Data.Context;
+using Demo01.Infrastructure.Entities;
 using Demo01.Infrastructure.Enums;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo01.Infrastructure.Utilities
 {
@@ -52,6 +54,40 @@ namespace Demo01.Infrastructure.Utilities
                 {
                     await userManager.AddToRoleAsync(adminUser, AppRole.Admin.ToString());
                 }
+            }
+        }
+
+        public static async Task SeedDemoAsync(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // Apply migration nếu cần
+            await db.Database.MigrateAsync();
+
+            // Kiểm tra nếu đã có forecast thì bỏ qua seed
+            if (await db.Forecasts.AnyAsync())
+                return;
+
+            var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Seed", "demo.xlsx");
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine($"❌ File not found: {filePath}");
+                return;
+            }
+
+            Console.WriteLine("📦 Seeding data from Excel...");
+
+            var importer = new ExcelForecastImporter(db);
+            var result = await importer.ImportFromFileAsync(filePath);
+
+            if (result.Success)
+            {
+                Console.WriteLine($"✅ Import completed: {result.InsertedItems} items inserted from {result.ProcessedSheets.Count} sheets.");
+            }
+            else
+            {
+                Console.WriteLine($"❌ Import failed: {result.Error}");
             }
         }
     }

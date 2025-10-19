@@ -64,6 +64,7 @@ using (var scope = app.Services.CreateScope())
 {
     await SeedManager.SeedRolesAsync(scope.ServiceProvider);
     await SeedManager.SeedAdminAccountAsync(scope.ServiceProvider, adminEmail, adminPassword);
+    await SeedManager.SeedDemoAsync(scope.ServiceProvider);
 }
 
 app.UseRequestLocalization();

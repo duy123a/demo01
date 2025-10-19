@@ -33,4 +33,10 @@
 	  <Folder Include="Data\Seed\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="Data\Seed\demo.xlsx">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>

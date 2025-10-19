@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Demo01.Infrastructure.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Demo01.Infrastructure.Entities
@@ -13,7 +14,7 @@ namespace Demo01.Infrastructure.Entities
         public string SapOrderNumber { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string Status { get; set; } = string.Empty;
+        public OrderStatus Status { get; set; } = OrderStatus.None;
 
         // Navigation
         public ICollection<ForecastItem> ForecastItems { get; set; } = new List<ForecastItem>();

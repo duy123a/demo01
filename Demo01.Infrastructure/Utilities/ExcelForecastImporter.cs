@@ -136,7 +136,7 @@ namespace Demo01.Infrastructure.Utilities
                             SerieNumber = serie,
                             VariantId = variant.VariantId,
                             Status = ForecastItemStatus.None,
-                            ShippingWeek = $"W{week:D2}",
+                            ShippingWeek = string.Empty,
                             CreatedAt = DateTimeOffset.UtcNow,
                             UpdatedAt = DateTimeOffset.UtcNow
                         };
@@ -276,7 +276,7 @@ namespace Demo01.Infrastructure.Utilities
             {
                 OrderId = Guid.NewGuid(),
                 SapOrderNumber = sapOrder,
-                Status = "Imported",
+                Status = OrderStatus.None,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };
