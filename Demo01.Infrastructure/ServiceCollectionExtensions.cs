@@ -2,6 +2,8 @@
 using Demo01.Infrastructure.Data.Context;
 using Demo01.Infrastructure.Data.Repositories;
 using Demo01.Infrastructure.Data.Repositories.Interfaces;
+using Demo01.Infrastructure.Data.UnitOfWork;
+using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
 using Demo01.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -68,7 +70,9 @@ namespace Demo01.Infrastructure
             services.AddScoped<IForecastWeekRepository, ForecastWeekRepository>();
             services.AddScoped<IForecastItemRepository, ForecastItemRepository>();
             services.AddScoped<IModelRepository, ModelRepository>();
+            services.AddScoped<IModelVariantRepository, ModelVariantRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IPlanningUnitOfWork, PlanningUnitOfWork>();
             return services;
         }
 

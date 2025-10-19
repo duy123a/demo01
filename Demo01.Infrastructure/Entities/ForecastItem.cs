@@ -33,6 +33,6 @@ namespace Demo01.Infrastructure.Entities
         public Order Order { get; set; } = default!;
 
         [ForeignKey(nameof(VariantId))]
-        public ModelVariant Variant { get; set; } = default!;
+        public ModelVariant ModelVariant { get; set; } = default!;
     }
 }
