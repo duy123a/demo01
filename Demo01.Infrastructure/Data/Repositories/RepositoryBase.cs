@@ -7,6 +7,11 @@ namespace Demo01.Infrastructure.Data.Repositories
 {
     public class RepositoryBase<T>(AppDbContext context) : IRepositoryBase<T> where T : class
     {
+        public virtual IQueryable<T> GetAll()
+        {
+            return context.Set<T>();
+        }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await context.Set<T>().ToListAsync();
