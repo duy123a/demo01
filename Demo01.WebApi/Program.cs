@@ -58,7 +58,7 @@ if (app.Environment.IsDevelopment())
     app.UseMigrationsEndPoint();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 using (var scope = app.Services.CreateScope())
 {

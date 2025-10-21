@@ -12,7 +12,8 @@ namespace Demo01.WebApi.Controllers
     {
         public IActionResult Index()
         {
-            var text = "http://localhost:5000/DataTemp";
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var text = $"{baseUrl}/DataTemp";
 
             using var qrGenerator = new QRCodeGenerator();
             using var qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
@@ -23,6 +24,5 @@ namespace Demo01.WebApi.Controllers
             ViewBag.QrBase64 = $"data:image/png;base64,{base64}";
             return View();
         }
-
     }
 }

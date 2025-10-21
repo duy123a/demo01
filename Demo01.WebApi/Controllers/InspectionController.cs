@@ -45,6 +45,7 @@ namespace Demo01.WebApi.Controllers
             try
             {
                 var directory = Path.GetDirectoryName(_jsonFilePath);
+                if (string.IsNullOrEmpty(directory)) return StatusCode(500, new { message = "Lỗi khi cập nhật file" });
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
