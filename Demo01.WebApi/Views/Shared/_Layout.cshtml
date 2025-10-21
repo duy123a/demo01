@@ -14,6 +14,7 @@
     <title>@ViewData["Title"] - ASAKA01.Web.Admin</title>
     <script type="importmap"></script>
     <link rel="stylesheet" vite-href="~/js/main.js" />
+    
 </head>
 <body class="w-100" data-page="@ViewData["Page"]">
     <div class="main-container">
@@ -62,6 +63,12 @@
                             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                             Forecast Planning
                         </a>
+
+
+                        <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate"
+                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                            Qr Generate
+                        </a>
                     </nav>
                 </div>
 
@@ -99,7 +106,12 @@
                             }
                         </div>
                         <div class="container-fluid d-flex justify-content-end me-2">
+                            <div class="me-2">
+                                <button id="btnQrScan" class="btn btn-outline-primary">
+                                    <i class="bi bi-qr-code-scan"></i> Qr Scan
+                                </button>
 
+                            </div>
                             <!-- Language Switch -->
                             <div class="me-2">
                                 <form method="post" asp-controller="Culture" asp-action="SetLanguage" class="form-check form-switch" onsubmit="showLoading()">
@@ -186,5 +198,18 @@
     @await RenderSectionAsync("Scripts", required: false)
     @await Html.PartialAsync("_LoadingOverlay")
     @await Html.PartialAsync("_ToastNotification")
+    <!-- QR Scan Modal -->
+    <div class="modal fade" id="qrScanModal" tabindex="-1" aria-labelledby="qrScanLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-3">
+          <h5 id="qrScanLabel" class="mb-2">Quét mã QR</h5>
+          <div id="qr-reader" style="width: 300px; margin: auto;"></div>
+          <p id="qr-result" class="mt-2 fw-bold text-primary"></p>
+          <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script type="module" vite-src="~/js/main.js"></script>
 </body>
 </html>

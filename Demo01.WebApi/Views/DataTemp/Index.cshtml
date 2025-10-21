@@ -1,0 +1,291 @@
+﻿@{
+    ViewData["Title"] = "Panel Assemble Inspection Report";
+}
+
+<div class="container mt-4">
+ <h4 class="report-title">
+        PANEL ASSEMBLE INSPECTION REPORT <br />
+        BÁO CÁO KIỂM HÀNG CỦA QC GHÉP VẢI
+    </h4>
+    <table id="inspectionTable" class="inspection-table">
+        <thead>
+            <tr>
+                <th colspan="6" class="info-header">Thông tin hàng kiểm</th>
+                <th colspan="12" class="error-header">Lỗi may</th>
+            </tr>
+            <tr class="info-subheader">
+                <th>STT</th>
+                <th>Tên dù</th>
+                <th>Tên người ghép vải</th>
+                <th>Top/Bottom</th>
+                <th>Tên QC</th>
+                <th>Tổng SL lỗi</th>
+                <th>Đứt chỉ, bung chỉ, sụp mí</th>
+                <th>Đường may nhăn</th>
+                <th>Không lại mũi</th>
+                <th>Lại mũi nhặt ngắn</th>
+                <th>Lại mũi không trùng</th>
+                <th>May sai cự ly</th>
+                <th>May lệ mí</th>
+                <th>Sai số mũi chỉ/1cm</th>
+                <th>Không trùng lỗ</th>
+                <th>Lỗi vải</th>
+                <th>Vải dơ</th>
+                <th>Lỗi khác</th>
+            </tr>
+        </thead>
+        <tbody id="inspectionBody"></tbody>
+    </table>
+   
+</div>
+
+<!-- ✅ Script giữ nguyên -->
+@section Scripts {
+<script>
+    let inspectionData = [];
+    const defectKeys = [
+        "dut_chi", "duong_may_nhan", "khong_lai_mui",
+        "lai_mui_nhat_ngan", "lai_mui_khong_trung",
+        "may_sai_cu_ly", "may_le_mi", "sai_so_mui",
+        "khong_trung_lo", "loi_vai", "vai_do", "loi_khac"
+    ];
+
+    fetch('/api/inspection/')
+        .then(res => res.json())
+        .then(data => {
+            inspectionData = data;
+            renderTable();
+        })
+        .catch(err => console.error("Lỗi khi tải JSON:", err));
+
+    function renderTable() {
+        const body = document.getElementById("inspectionBody");
+        body.innerHTML = "";
+        inspectionData.forEach((row, index) => {
+            const defectCells = defectKeys.map(key => {
+                const val = row[key] || "o";
+                const cls = val === "x" ? "cell-x" : "cell-o";
+                return `<td class="toggle-cell ${cls}" data-key="${key}" data-index="${index}">${val}</td>`;
+            }).join("");
+
+            body.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${row.ten_du}</td>
+                    <td>${row.ten_ghep_vai}</td>
+                    <td>${row.top_bottom}</td>
+                    <td>${row.ten_qc}</td>
+                    <td class="total">${row.tong_loi || 0}</td>
+                    ${defectCells}
+                </tr>`;
+        });
+        attachToggleEvents();
+    }
+
+    function attachToggleEvents() {
+        document.querySelectorAll(".toggle-cell").forEach(cell => {
+            cell.addEventListener("click", () => {
+                const index = cell.dataset.index;
+                const key = cell.dataset.key;
+                const current = cell.textContent.trim().toLowerCase();
+                const newVal = current === "x" ? "o" : "x";
+
+                cell.textContent = newVal;
+                cell.classList.toggle("cell-x", newVal === "x");
+                cell.classList.toggle("cell-o", newVal === "o");
+
+                inspectionData[index][key] = newVal;
+                const total = defectKeys.filter(k => inspectionData[index][k] === "x").length;
+                inspectionData[index].tong_loi = total;
+                cell.closest("tr").querySelector(".total").textContent = total;
+
+                saveChanges();
+            });
+        });
+    }
+
+    function saveChanges() {
+        fetch('/api/inspection/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inspectionData)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Cập nhật thất bại");
+            console.log("✅ File JSON đã được cập nhật");
+        })
+        .catch(err => console.error("❌ Lỗi khi cập nhật file JSON:", err));
+    }
+</script>
+}
+<style>
+    .container {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .inspection-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        font-size: 14px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .inspection-table th,
+    .inspection-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        vertical-align: middle;
+    }
+
+    /* 🔵 Header chính */
+    .info-header {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .error-header {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    /* 🔵 Header con của “Thông tin hàng kiểm” */
+    .info-subheader th:nth-child(1),
+    .info-subheader th:nth-child(2),
+    .info-subheader th:nth-child(3),
+    .info-subheader th:nth-child(4),
+    .info-subheader th:nth-child(5),
+    .info-subheader th:nth-child(6) {
+        background-color: #007bff;
+        color: white;
+        font-weight: 600;
+    }
+
+    /* 🟢 Header con của “Lỗi may” */
+    .info-subheader th:nth-child(n+7) {
+        background-color: #28a745;
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Dòng dữ liệu */
+    .inspection-table tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .inspection-table tbody tr:hover {
+        background-color: #e9f5ff;
+    }
+
+    /* Toggle Cell */
+    .toggle-cell {
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s ease;
+    }
+
+    .cell-x {
+        color: red;
+        font-size: 16px;
+    }
+
+    .cell-o {
+        color: #1e90ff;
+        font-size: 16px;
+    }
+
+    /* Tổng lỗi */
+    .total {
+        font-weight: bold;
+        color: #dc3545;
+    }
+
+    /* Tiêu đề cuối bảng */
+    .report-title {
+        text-align: center;
+        color: #ff6600;
+        margin-top: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1.6;
+    }
+
+    /* Sticky first 6 columns for "Thông tin hàng kiểm" */
+.inspection-table th,
+.inspection-table td {
+    position: relative;
+    z-index: 1;
+}
+
+.inspection-table th:nth-child(1),
+.inspection-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 60px;
+}
+
+.inspection-table th:nth-child(2),
+.inspection-table td:nth-child(2) {
+    position: sticky;
+    left: 60px;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 80px;
+}
+
+.inspection-table th:nth-child(3),
+.inspection-table td:nth-child(3) {
+    position: sticky;
+    left: 140px;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 120px;
+}
+
+.inspection-table th:nth-child(4),
+.inspection-table td:nth-child(4) {
+    position: sticky;
+    left: 260px;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 80px;
+}
+
+.inspection-table th:nth-child(5),
+.inspection-table td:nth-child(5) {
+    position: sticky;
+    left: 340px;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 100px;
+}
+
+.inspection-table th:nth-child(6),
+.inspection-table td:nth-child(6) {
+    position: sticky;
+    left: 440px;
+    background: #007bff;
+    color: #fff;
+    z-index: 2;
+    min-width: 80px;
+}
+
+/* Enable horizontal scroll if needed */
+.container {
+    overflow-x: auto;
+}
+</style>

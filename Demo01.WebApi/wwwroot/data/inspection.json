@@ -1,0 +1,40 @@
+﻿[
+  {
+    "ten_du": "Paraglider",
+    "ten_ghep_vai": "Nguyễn Văn Hòa",
+    "top_bottom": "Top",
+    "ten_qc": "Nguyễn Thị B",
+    "tong_loi": 0,
+    "dut_chi": "o",
+    "duong_may_nhan": "o",
+    "khong_lai_mui": "o",
+    "lai_mui_nhat_ngan": "o",
+    "lai_mui_khong_trung": "o",
+    "may_sai_cu_ly": "o",
+    "may_le_mi": "o",
+    "sai_so_mui": "o",
+    "khong_trung_lo": "o",
+    "loi_vai": "o",
+    "vai_do": "o",
+    "loi_khac": "o"
+  },
+  {
+    "ten_du": "Paraglider",
+    "ten_ghep_vai": "Nguyễn Văn Hòa",
+    "top_bottom": "Bottom",
+    "ten_qc": "Nguyễn Thị B",
+    "tong_loi": 0,
+    "dut_chi": "o",
+    "duong_may_nhan": "o",
+    "khong_lai_mui": "o",
+    "lai_mui_nhat_ngan": "o",
+    "lai_mui_khong_trung": "o",
+    "may_sai_cu_ly": "o",
+    "may_le_mi": "o",
+    "sai_so_mui": "o",
+    "khong_trung_lo": "o",
+    "loi_vai": "o",
+    "vai_do": "o",
+    "loi_khac": "o"
+  }
+]

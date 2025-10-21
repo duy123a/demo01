@@ -4,6 +4,7 @@ import '../css/main.css';
 
 import * as bootstrap from 'bootstrap';
 import $ from 'jquery';
+window.bootstrap = bootstrap;
 
 window.togglePasswordVisibility = function (inputId, btn) {
     const input = document.getElementById(inputId);
@@ -86,4 +87,60 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/Account/Logout';
         });
     }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    let html5QrCode;
+    const qrModal = new bootstrap.Modal(document.getElementById('qrScanModal'));
+    const qrReader = document.getElementById("qr-reader");
+    const qrResult = document.getElementById("qr-result");
+
+    document.getElementById("btnQrScan")?.addEventListener("click",async function () {
+        qrResult.textContent = "";
+        qrReader.innerHTML = "";
+        var error = false;
+
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        await html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText) => {
+                console.log("QR content:", decodedText);
+
+                // Cập nhật giao diện
+                qrResult.textContent = "✅ Quét thành công: " + decodedText;
+
+                // Dừng quét để tránh quét lặp lại
+                html5QrCode.stop().then(() => {
+                    // Kiểm tra xem nội dung có phải là URL không
+                    if (/^(https?:\/\/[^\s]+)/i.test(decodedText)) {
+                        // Là URL → chuyển hướng
+                        window.location.href = decodedText;
+                    } else {
+                        // Không phải URL → hiển thị nội dung
+                        showSuccessToast("Kết quả QR: " + decodedText);
+                    }
+                }).catch(err => {
+                    console.error("❌ Không thể dừng quét:", err);
+                });
+            },
+            (errorMessage) => {
+                // scanning... (bỏ qua lỗi tạm thời)
+            }
+           
+        ).catch(err => {
+            error = true;
+            showErrorToast("❌ Không thể bật camera");
+            
+        });
+        if (!error){
+            qrModal.show();
+        }
+    });
+
+    document.getElementById('qrScanModal').addEventListener('hidden.bs.modal', async () => {
+        if (html5QrCode) await html5QrCode.stop();
+    });
 });
