@@ -10,9 +10,10 @@ namespace Demo01.Infrastructure.Data.UnitOfWork.Interfaces
         IModelRepository Models { get; }
         IModelVariantRepository ModelVariants { get; }
         IOrderRepository Orders { get; }
-        IDeparementRepository Deparements { get; }
+        IDepartmentRepository Departments { get; }
         IProcessRepository Processes { get; }
         IHolidayRepository Holidays { get; }
         IForecastPlanningRepository ForecastPlannings { get; }
+        IForecastPlanningProcessRepository ForecastPlanningProcesses { get; }
     }
 }

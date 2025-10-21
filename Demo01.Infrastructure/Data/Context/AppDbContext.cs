@@ -22,6 +22,7 @@ namespace Demo01.Infrastructure.Data.Context
         public DbSet<Process> Processes => Set<Process>();
         public DbSet<ForecastPlanning> ForecastPlannings => Set<ForecastPlanning>();
         public DbSet<Holiday> Holidays => Set<Holiday>();
+        public DbSet<ForecastPlanningProcess> ForecastPlanningProcesses => Set<ForecastPlanningProcess>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

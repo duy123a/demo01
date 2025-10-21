@@ -132,35 +132,7 @@ namespace Demo01.Infrastructure.Migrations
                             Id = 1,
                             Capacity = 0,
                             LfRate = 0m,
-                            Name = "Bộ phận cắt"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Capacity = 0,
-                            LfRate = 0m,
-                            Name = "Bộ phận đai"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Capacity = 0,
-                            LfRate = 0m,
-                            Name = "Bộ phận dù"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Capacity = 0,
-                            LfRate = 0m,
-                            Name = "Bộ phận đóng gói"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Capacity = 0,
-                            LfRate = 0m,
-                            Name = "Bộ phận QC"
+                            Name = "Parachute Department"
                         });
                 });
 
@@ -265,6 +237,42 @@ namespace Demo01.Infrastructure.Migrations
                     b.HasIndex("ForecastWeekId");
 
                     b.ToTable("ForecastPlannings");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningProcess", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ActualLf")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("ForecastPlanningId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ProcessId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TargetLf")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal>("WorkingHour")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ForecastPlanningId");
+
+                    b.HasIndex("ProcessId");
+
+                    b.ToTable("ForecastPlanningProcesses");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>
@@ -624,6 +632,25 @@ namespace Demo01.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("ForecastWeek");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningProcess", b =>
+                {
+                    b.HasOne("Demo01.Infrastructure.Entities.ForecastPlanning", "ForecastPlanning")
+                        .WithMany()
+                        .HasForeignKey("ForecastPlanningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Demo01.Infrastructure.Entities.Process", "Process")
+                        .WithMany()
+                        .HasForeignKey("ProcessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ForecastPlanning");
+
+                    b.Navigation("Process");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>

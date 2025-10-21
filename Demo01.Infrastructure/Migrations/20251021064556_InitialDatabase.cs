@@ -215,17 +215,40 @@ namespace Demo01.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ForecastPlanningProcesses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForecastPlanningId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProcessId = table.Column<int>(type: "int", nullable: false),
+                    WorkingHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ActualLf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TargetLf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForecastPlanningProcesses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForecastPlanningProcesses_ForecastPlannings_ForecastPlanningId",
+                        column: x => x.ForecastPlanningId,
+                        principalTable: "ForecastPlannings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ForecastPlanningProcesses_Processes_ProcessId",
+                        column: x => x.ProcessId,
+                        principalTable: "Processes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Departments",
                 columns: new[] { "Id", "Capacity", "LfRate", "Name" },
-                values: new object[,]
-                {
-                    { 1, 0, 0m, "Bộ phận cắt" },
-                    { 2, 0, 0m, "Bộ phận đai" },
-                    { 3, 0, 0m, "Bộ phận dù" },
-                    { 4, 0, 0m, "Bộ phận đóng gói" },
-                    { 5, 0, 0m, "Bộ phận QC" }
-                });
+                values: new object[] { 1, 0, 0m, "Parachute Department" });
 
             migrationBuilder.InsertData(
                 table: "Processes",
@@ -251,6 +274,16 @@ namespace Demo01.Infrastructure.Migrations
                 name: "IX_ForecastItems_VariantId",
                 table: "ForecastItems",
                 column: "VariantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlanningProcesses_ForecastPlanningId",
+                table: "ForecastPlanningProcesses",
+                column: "ForecastPlanningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlanningProcesses_ProcessId",
+                table: "ForecastPlanningProcesses",
+                column: "ProcessId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForecastPlannings_ForecastItemId",
@@ -280,10 +313,13 @@ namespace Demo01.Infrastructure.Migrations
                 name: "Departments");
 
             migrationBuilder.DropTable(
-                name: "ForecastPlannings");
+                name: "ForecastPlanningProcesses");
 
             migrationBuilder.DropTable(
                 name: "Holidays");
+
+            migrationBuilder.DropTable(
+                name: "ForecastPlannings");
 
             migrationBuilder.DropTable(
                 name: "Processes");

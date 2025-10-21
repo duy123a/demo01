@@ -2,5 +2,5 @@
 
 namespace Demo01.Infrastructure.Data.Repositories.Interfaces
 {
-    public interface IDeparementRepository : IRepositoryBase<Department> { }
+    public interface IDepartmentRepository : IRepositoryBase<Department> { }
 }

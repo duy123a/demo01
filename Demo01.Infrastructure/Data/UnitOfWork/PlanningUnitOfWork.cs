@@ -13,10 +13,11 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
         public IModelRepository Models { get; }
         public IModelVariantRepository ModelVariants { get; }
         public IOrderRepository Orders { get; }
-        public IDeparementRepository Deparements { get; }
+        public IDepartmentRepository Departments { get; }
         public IProcessRepository Processes { get; }
         public IHolidayRepository Holidays { get; }
         public IForecastPlanningRepository ForecastPlannings { get; }
+        public IForecastPlanningProcessRepository ForecastPlanningProcesses { get; }
 
         public PlanningUnitOfWork(
             AppDbContext context,
@@ -26,10 +27,11 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
             IModelRepository models,
             IModelVariantRepository modelVariants,
             IOrderRepository orders,
-            IDeparementRepository deparements,
+            IDepartmentRepository departments,
             IProcessRepository processes,
             IHolidayRepository holidays,
-            IForecastPlanningRepository forecastPlannings)
+            IForecastPlanningRepository forecastPlannings,
+            IForecastPlanningProcessRepository forecastPlanningProcesses)
             : base(context)
         {
             _context = context;
@@ -39,10 +41,11 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
             Models = models;
             ModelVariants = modelVariants;
             Orders = orders;
-            Deparements = deparements;
+            Departments = departments;
             Processes = processes;
             Holidays = holidays;
             ForecastPlannings = forecastPlannings;
+            ForecastPlanningProcesses = forecastPlanningProcesses;
         }
     }
 }

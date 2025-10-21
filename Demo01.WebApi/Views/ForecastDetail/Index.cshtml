@@ -1,0 +1,93 @@
+﻿@model Demo01.WebApi.ViewModels.ForecastDetailViewModel
+@{
+    ViewData["Title"] = "Forecast Viewer";
+}
+
+<div class="container mt-3">
+    <h2>Forecast Planning</h2>
+
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Forecast</label>
+                <select name="forecastId" class="form-select" onchange="this.form.submit()">
+                    @foreach (var f in Model.Forecasts)
+                    {
+                        <option value="@f.ForecastId" selected="@(f.ForecastId == Model.SelectedForecastId)">
+                            @f.DisplayName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            @if (Model.Weeks.Any())
+            {
+                <div class="col-md-4">
+                    <label class="form-label">Week</label>
+                    <select name="weekId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var w in Model.Weeks)
+                        {
+                            <option value="@w.ForecastWeekId" selected="@(w.ForecastWeekId == Model.SelectedWeekId)">
+                                @w.DisplayName
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </form>
+
+    @* Nút Start Planning *@
+    @if (Model.SelectedForecastId != null)
+    {
+        <form asp-controller="ForecastPlanning" asp-action="Index" method="get" class="mt-3">
+            <input type="hidden" name="forecastId" value="@Model.SelectedForecastId" />
+            <input type="hidden" name="weekId" value="@Model.SelectedWeekId" />
+            <button type="submit" class="btn btn-demo-submit">
+                Go to Planning
+            </button>
+        </form>
+    }
+
+    @if (Model.SelectedWeekId != Guid.Empty)
+    {
+        <div class="alert alert-secondary mt-3">
+            <strong>Total LF:</strong> @Model.SelectedWeekTotalLf.ToString("N0")
+        </div>
+    }
+
+    @if (Model.Items.Any())
+    {
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th>No</th>
+                    <th>Serie Number</th>
+                    <th>Model</th>
+                    <th>Size</th>
+                    <th>Colour</th>
+                    <th>SAP Order</th>
+                    <th>LF</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.No</td>
+                        <td>@item.SerieNumber</td>
+                        <td>@item.ModelName</td>
+                        <td>@item.Size</td>
+                        <td>@item.Colour</td>
+                        <td>@item.SapOrder</td>
+                        <td>@item.Lf</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">No forecast items found.</div>
+    }
+</div>

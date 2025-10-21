@@ -54,14 +54,13 @@
 
                     <!-- Navigation list -->
                     <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
+                        <a href="/ForecastDetail" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail"
+                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                            Forecast Detail
+                        </a>
                         <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning"
                             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                             Forecast Planning
-                        </a>
-
-                        <a href="/ForecastPlanningResult" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanningResult"
-                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            Forecast Planning Result
                         </a>
                     </nav>
                 </div>
