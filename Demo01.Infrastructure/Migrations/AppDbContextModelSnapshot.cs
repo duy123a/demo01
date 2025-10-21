@@ -104,6 +104,66 @@ namespace Demo01.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("LfRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Bộ phận cắt"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Bộ phận đai"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Bộ phận dù"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Bộ phận đóng gói"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Bộ phận QC"
+                        });
+                });
+
             modelBuilder.Entity("Demo01.Infrastructure.Entities.Forecast", b =>
                 {
                     b.Property<Guid>("ForecastId")
@@ -177,6 +237,36 @@ namespace Demo01.Infrastructure.Migrations
                     b.ToTable("ForecastItems");
                 });
 
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanning", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("ForecastItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ForecastWeekId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("PlanningDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ForecastItemId");
+
+                    b.HasIndex("ForecastWeekId");
+
+                    b.ToTable("ForecastPlannings");
+                });
+
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>
                 {
                     b.Property<Guid>("ForecastWeekId")
@@ -192,8 +282,17 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<Guid>("ForecastId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("HasSaturday")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("LfRate")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal>("TotalLf")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -206,6 +305,29 @@ namespace Demo01.Infrastructure.Migrations
                     b.HasIndex("ForecastId");
 
                     b.ToTable("ForecastWeeks");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.Holiday", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Holidays");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.Model", b =>
@@ -248,8 +370,8 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<decimal>("LF")
-                        .HasColumnType("decimal(5,2)");
+                    b.Property<decimal>("Lf")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("ModelId")
                         .HasColumnType("uniqueidentifier");
@@ -293,6 +415,40 @@ namespace Demo01.Infrastructure.Migrations
                     b.HasKey("OrderId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.Process", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Processes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Bottom"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Top"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Final"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -431,7 +587,7 @@ namespace Demo01.Infrastructure.Migrations
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastItem", b =>
                 {
                     b.HasOne("Demo01.Infrastructure.Entities.ForecastWeek", "ForecastWeek")
-                        .WithMany("Items")
+                        .WithMany("ForecastItems")
                         .HasForeignKey("ForecastWeekId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -439,10 +595,10 @@ namespace Demo01.Infrastructure.Migrations
                     b.HasOne("Demo01.Infrastructure.Entities.Order", "Order")
                         .WithMany("ForecastItems")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Demo01.Infrastructure.Entities.ModelVariant", "Variant")
+                    b.HasOne("Demo01.Infrastructure.Entities.ModelVariant", "ModelVariant")
                         .WithMany("ForecastItems")
                         .HasForeignKey("VariantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -450,15 +606,30 @@ namespace Demo01.Infrastructure.Migrations
 
                     b.Navigation("ForecastWeek");
 
-                    b.Navigation("Order");
+                    b.Navigation("ModelVariant");
 
-                    b.Navigation("Variant");
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanning", b =>
+                {
+                    b.HasOne("Demo01.Infrastructure.Entities.ForecastItem", null)
+                        .WithMany("ForecastPlannings")
+                        .HasForeignKey("ForecastItemId");
+
+                    b.HasOne("Demo01.Infrastructure.Entities.ForecastWeek", "ForecastWeek")
+                        .WithMany("ForecastPlannings")
+                        .HasForeignKey("ForecastWeekId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ForecastWeek");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>
                 {
                     b.HasOne("Demo01.Infrastructure.Entities.Forecast", "Forecast")
-                        .WithMany("Weeks")
+                        .WithMany("ForecastWeeks")
                         .HasForeignKey("ForecastId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -530,12 +701,19 @@ namespace Demo01.Infrastructure.Migrations
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.Forecast", b =>
                 {
-                    b.Navigation("Weeks");
+                    b.Navigation("ForecastWeeks");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastItem", b =>
+                {
+                    b.Navigation("ForecastPlannings");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("ForecastItems");
+
+                    b.Navigation("ForecastPlannings");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.Model", b =>

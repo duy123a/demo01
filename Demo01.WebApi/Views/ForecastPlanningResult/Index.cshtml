@@ -1,0 +1,72 @@
+﻿@model Demo01.WebApi.ViewModels.ForecastPlanningResultViewModel
+@{
+    ViewData["Title"] = "Forecast Planning Result";
+}
+
+<div class="container mt-3">
+    <h2>Forecast Planning Result</h2>
+
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Forecast</label>
+                <select name="forecastId" class="form-select" onchange="this.form.submit()">
+                    @foreach (var f in Model.Forecasts)
+                    {
+                        <option value="@f.ForecastId" selected="@(f.ForecastId == Model.SelectedForecastId)">
+                            @f.DisplayName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            @if (Model.Weeks.Any())
+            {
+                <div class="col-md-4">
+                    <label class="form-label">Week</label>
+                    <select name="weekId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var w in Model.Weeks)
+                        {
+                            <option value="@w.ForecastWeekId" selected="@(w.ForecastWeekId == Model.SelectedWeekId)">
+                                @w.DisplayName
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </form>
+
+    @if (Model.DepartmentRows.Any())
+    {
+        <div class="table-responsive mt-3">
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Department</th>
+                        @foreach (var date in Model.DatesInWeek)
+                        {
+                            <th>@date.ToString("dd/MM")</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dept in Model.DepartmentRows)
+                    {
+                        <tr>
+                            <td class="fw-bold text-start">@dept.DepartmentName</td>
+                            @foreach (var date in Model.DatesInWeek)
+                            {
+                                <td>@(dept.DailyLf.TryGetValue(date, out var lf) ? lf.ToString("0.##") : "-")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">No planning data found.</div>
+    }
+</div>

@@ -65,19 +65,15 @@ html {
 
 .main-container {
     display: flex;
+    flex-wrap: nowrap;
 }
-
-    .main-container:only-child,
-    .main-container > :only-child {
-        flex: 1 1 100%;
-    }
 
     .main-container > :first-child:nth-last-child(2) {
         flex: 0 0 240px;
     }
 
         .main-container > :first-child:nth-last-child(2) ~ * {
-            flex: 0 0 calc(100% - 240px);
+            flex: 1 1 auto;
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -85,6 +81,42 @@ html {
     .main-container > :first-child {
         min-height: 100vh;
     }
+
+/* --- MOBILE LAYOUT --- */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+        .main-container > :first-child {
+            min-height: auto; /* bỏ 100vh khi mobile */
+        }
+
+            .main-container > :first-child:nth-last-child(2),
+            .main-container > :first-child:nth-last-child(2) ~ * {
+                flex: 1 1 100%;
+            }
+
+    /* Ẩn logo desktop */
+    .sidebar-logo-desktop {
+        display: none !important;
+    }
+
+    /* Hiện logo mobile */
+    .sidebar-logo-mobile {
+        display: block !important;
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 1050;
+    }
+
+    /* Avatar dropdown không full width */
+    .sidebar .dropdown .nav-link {
+        width: auto !important;
+        display: inline-flex !important;
+    }
+}
 
 .bg-demo-primary {
     background-color: var(--demo-primary) !important;

@@ -63,16 +63,12 @@ namespace Demo01.Infrastructure.Utilities
                     // safer: just start at row 2
                     if (firstRow == 1) startRow = 2;
 
+                    decimal totalLfForWeek = 0;
+
                     for (int r = startRow; r <= lastRow; r++)
                     {
                         if (ct.IsCancellationRequested) break;
                         var row = worksheet.Row(r);
-
-                        // Columns are 1-based:
-                        // col 2 (B) = SerieNumber
-                        // col 3 (C) = "Model Size Colour"
-                        // col 4 (D) = SapOrder
-                        // col 7 (G) = LF
 
                         var serie = row.Cell(2).GetString().Trim();
                         var modelCell = row.Cell(3).GetString().Trim();
@@ -85,39 +81,30 @@ namespace Demo01.Infrastructure.Utilities
                             continue;
                         }
 
-                        // normalize serie
-                        serie = serie ?? string.Empty;
-
                         // parse LF
                         decimal lf = 0;
                         if (!string.IsNullOrWhiteSpace(lfCell))
                         {
                             if (!decimal.TryParse(lfCell.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out lf))
                             {
-                                // try numeric cell
                                 var cell = row.Cell(7);
                                 if (cell.DataType == XLDataType.Number)
                                     lf = (decimal)cell.GetDouble();
                             }
                         }
 
-                        // parse model string: take first 3 tokens, drop extras (e.g. Solo)
+                        totalLfForWeek += lf; // 👉 cộng dồn LF
+
                         var (modelName, size, colour) = ParseModelSizeColour(modelCell);
-
-                        // CREATE/GET model
                         var model = await GetOrCreateModelAsync(modelName, ct);
-
-                        // CREATE/GET variant
                         var variant = await GetOrCreateVariantAsync(model, size, colour, lf, ct);
 
-                        // CREATE/GET Order by sapOrder (if empty, we create a placeholder order)
-                        Order order = null!;
+                        Order order;
                         if (!string.IsNullOrWhiteSpace(sapOrder))
                             order = await GetOrCreateOrderAsync(sapOrder, ct);
                         else
-                            order = await GetOrCreateOrderAsync($"NO-SAP-{Guid.NewGuid()}", ct); // fallback
+                            order = await GetOrCreateOrderAsync($"NO-SAP-{Guid.NewGuid()}", ct);
 
-                        // CREATE ForecastItem if not exists (serie unique)
                         var existingItem = await _db.ForecastItems
                             .AsNoTracking()
                             .FirstOrDefaultAsync(fi => fi.SerieNumber == serie, cancellationToken: ct);
@@ -125,7 +112,7 @@ namespace Demo01.Infrastructure.Utilities
                         if (existingItem != null)
                         {
                             result.DuplicateSeries++;
-                            continue; // skip duplicate
+                            continue;
                         }
 
                         var newItem = new ForecastItem
@@ -144,6 +131,10 @@ namespace Demo01.Infrastructure.Utilities
                         _db.ForecastItems.Add(newItem);
                         result.InsertedItems++;
                     } // end rows
+
+                    // Update LF sum for ForecastWeek
+                    fw.TotalLf = totalLfForWeek;
+                    _db.ForecastWeeks.Update(fw);
 
                     // commit after sheet
                     await _db.SaveChangesAsync(ct);
@@ -204,7 +195,7 @@ namespace Demo01.Infrastructure.Utilities
 
             if (existing != null) return existing;
 
-            var (start, end) = ForecastWeekCalculator.CalculateWeekRange(year, week);
+            var (start, end) = ForecastWeekCalculator.GetIsoWeekRange(year, week);
 
             var fw = new ForecastWeek
             {
@@ -256,7 +247,7 @@ namespace Demo01.Infrastructure.Utilities
                 ModelId = model.ModelId,
                 Size = size,
                 Colour = colour,
-                LF = lf,
+                Lf = lf,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };

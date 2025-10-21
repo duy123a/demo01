@@ -19,9 +19,16 @@
     <div class="main-container">
         @if (isAuthenticated)
         {
-            <aside class="d-flex flex-column justify-content-between bg-white border-end">
+            <aside class="sidebar d-flex flex-column justify-content-between bg-white border-end">
                 <!-- Top -->
-                <div>
+                <div class="sidebar-top position-relative">
+                    <!-- Logo (chỉ hiển thị trên mobile) -->
+                    <div class="sidebar-logo-mobile d-md-none position-absolute top-0 end-0 p-2">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="/images/logo.png" alt="Logo" class="img-fluid" style="width: 128px; height: auto;">
+                        </a>
+                    </div>
+
                     <!-- Avatar dropdown -->
                     <div class="p-3">
                         <div class="dropdown">
@@ -47,16 +54,20 @@
 
                     <!-- Navigation list -->
                     <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
-                        <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+                        <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning"
                             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            @Localizer["Button_Home"]
+                            Forecast Planning
                         </a>
-                        <a href="/Home/Privacy" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "sidebar-link active" : "sidebar-link")">@Localizer["Button_Privacy"]</a>
+
+                        <a href="/ForecastPlanningResult" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanningResult"
+                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                            Forecast Planning Result
+                        </a>
                     </nav>
                 </div>
 
-                <!-- Bottom: Logo -->
-                <div class="p-3 fixed-bottom" style="width: 240px;">
+                <!-- Bottom logo (chỉ hiện desktop) -->
+                <div class="sidebar-logo-desktop p-3 d-none d-md-block">
                     <a asp-controller="Home" asp-action="Index">
                         <img src="/images/logo.png" alt="Logo" class="img-fluid">
                     </a>
@@ -72,11 +83,19 @@
                             <i class="bi bi-layout-sidebar me-1 text-demo-indigo"></i>
                             <a href="/" class="text-demo-indigo text-decoration-none">@Localizer["Dashboards"]</a>
 
-                            @if (ViewContext.RouteData.Values["action"]?.ToString() == "Privacy")
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning")
                             {
                                 <span class="mx-1 text-muted">/</span>
                                 <span class="text-demo-primary">
-                                    @Localizer["Button_Privacy"]
+                                    Forecast Planning
+                                </span>
+                            }
+
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanningResult")
+                            {
+                                <span class="mx-1 text-muted">/</span>
+                                <span class="text-demo-primary">
+                                    Forecast Planning Result
                                 </span>
                             }
                         </div>

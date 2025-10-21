@@ -6,18 +6,18 @@ using System.Globalization;
 
 namespace Demo01.WebApi.Controllers
 {
-    public class ForecastController : Controller
+    public class ForecastPlanningController : Controller
     {
         private readonly IPlanningUnitOfWork _uow;
 
-        public ForecastController(IPlanningUnitOfWork uow)
+        public ForecastPlanningController(IPlanningUnitOfWork uow)
         {
             _uow = uow;
         }
 
         public async Task<IActionResult> Index(Guid? forecastId = null, Guid? weekId = null)
         {
-            var vm = new ForecastSelectionViewModel();
+            var vm = new ForecastPlanningViewModel();
 
             // --- Forecast dropdown ---
             vm.Forecasts = await _uow.Forecasts
@@ -54,6 +54,10 @@ namespace Demo01.WebApi.Controllers
                     weekId = vm.Weeks.First().ForecastWeekId;
 
                 vm.SelectedWeekId = weekId;
+                vm.SelectedWeekTotalLf = await _uow.ForecastWeeks
+                    .Where(w => w.ForecastWeekId == weekId)
+                    .Select(w => w.TotalLf)
+                    .FirstOrDefaultAsync();
             }
 
             // --- ForecastItem list ---
@@ -75,11 +79,16 @@ namespace Demo01.WebApi.Controllers
                     Size = i.ModelVariant.Size,
                     Colour = i.ModelVariant.Colour,
                     SapOrder = i.Order.SapOrderNumber,
-                    LF = i.ModelVariant.LF
+                    Lf = i.ModelVariant.Lf
                 }).ToList();
             }
 
             return View(vm);
+        }
+
+        public IActionResult PlanForecast(Guid forecastId)
+        {
+            return RedirectToAction(nameof(Index), new { forecastId });
         }
     }
 }

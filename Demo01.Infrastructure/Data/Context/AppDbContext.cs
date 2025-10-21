@@ -1,4 +1,5 @@
-﻿using Demo01.Infrastructure.Entities;
+﻿using Demo01.Infrastructure.Data.Seed;
+using Demo01.Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,34 +18,48 @@ namespace Demo01.Infrastructure.Data.Context
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<Model> Models => Set<Model>();
         public DbSet<ModelVariant> ModelVariants => Set<ModelVariant>();
+        public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Process> Processes => Set<Process>();
+        public DbSet<ForecastPlanning> ForecastPlannings => Set<ForecastPlanning>();
+        public DbSet<Holiday> Holidays => Set<Holiday>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            // Forecast → ForecastWeeks
             builder.Entity<Forecast>()
-                .HasMany(f => f.Weeks)
+                .HasMany(f => f.ForecastWeeks)
                 .WithOne(w => w.Forecast)
-                .HasForeignKey(w => w.ForecastId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // ForecastWeek → ForecastItems
             builder.Entity<ForecastWeek>()
-                .HasMany(w => w.Items)
+                .HasMany(w => w.ForecastItems)
                 .WithOne(i => i.ForecastWeek)
-                .HasForeignKey(i => i.ForecastWeekId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Order → ForecastItems
             builder.Entity<Order>()
                 .HasMany(o => o.ForecastItems)
                 .WithOne(i => i.Order)
-                .HasForeignKey(i => i.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // Model → Variants
             builder.Entity<Model>()
                 .HasMany(m => m.Variants)
                 .WithOne(v => v.Model)
-                .HasForeignKey(v => v.ModelId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // ForecastWeek → ForecastPlannings
+            builder.Entity<ForecastPlanning>()
+                .HasOne(p => p.ForecastWeek)
+                .WithMany(w => w.ForecastPlannings)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Seeds
+            builder.ApplyConfiguration(new DepartmentSeed());
+            builder.ApplyConfiguration(new ProcessSeed());
         }
     }
 }

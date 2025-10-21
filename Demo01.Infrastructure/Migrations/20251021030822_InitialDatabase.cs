@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace Demo01.Infrastructure.Migrations
 {
@@ -10,6 +13,21 @@ namespace Demo01.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    LfRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Forecasts",
                 columns: table => new
@@ -24,6 +42,21 @@ namespace Demo01.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Forecasts", x => x.ForecastId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Holidays",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Holidays", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,12 +90,28 @@ namespace Demo01.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Processes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Processes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForecastWeeks",
                 columns: table => new
                 {
                     ForecastWeekId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ForecastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WeekNumber = table.Column<int>(type: "int", nullable: false),
+                    TotalLf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LfRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    HasSaturday = table.Column<bool>(type: "bit", nullable: false),
                     StartDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     EndDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -87,7 +136,7 @@ namespace Demo01.Infrastructure.Migrations
                     ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Size = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Colour = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    LF = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
+                    Lf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
@@ -136,7 +185,56 @@ namespace Demo01.Infrastructure.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForecastPlannings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanningDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ForecastWeekId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForecastItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForecastPlannings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForecastPlannings_ForecastItems_ForecastItemId",
+                        column: x => x.ForecastItemId,
+                        principalTable: "ForecastItems",
+                        principalColumn: "ForecastItemId");
+                    table.ForeignKey(
+                        name: "FK_ForecastPlannings_ForecastWeeks_ForecastWeekId",
+                        column: x => x.ForecastWeekId,
+                        principalTable: "ForecastWeeks",
+                        principalColumn: "ForecastWeekId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "Capacity", "LfRate", "Name" },
+                values: new object[,]
+                {
+                    { 1, 0, 0m, "Bộ phận cắt" },
+                    { 2, 0, 0m, "Bộ phận đai" },
+                    { 3, 0, 0m, "Bộ phận dù" },
+                    { 4, 0, 0m, "Bộ phận đóng gói" },
+                    { 5, 0, 0m, "Bộ phận QC" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Processes",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Bottom" },
+                    { 2, "Top" },
+                    { 3, "Final" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -155,6 +253,16 @@ namespace Demo01.Infrastructure.Migrations
                 column: "VariantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlannings_ForecastItemId",
+                table: "ForecastPlannings",
+                column: "ForecastItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlannings_ForecastWeekId",
+                table: "ForecastPlannings",
+                column: "ForecastWeekId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ForecastWeeks_ForecastId",
                 table: "ForecastWeeks",
                 column: "ForecastId");
@@ -168,6 +276,18 @@ namespace Demo01.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "ForecastPlannings");
+
+            migrationBuilder.DropTable(
+                name: "Holidays");
+
+            migrationBuilder.DropTable(
+                name: "Processes");
+
             migrationBuilder.DropTable(
                 name: "ForecastItems");
 

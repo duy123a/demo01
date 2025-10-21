@@ -1,9 +1,10 @@
 ﻿namespace Demo01.WebApi.ViewModels
 {
-    public class ForecastSelectionViewModel
+    public class ForecastPlanningViewModel
     {
         public Guid? SelectedForecastId { get; set; }
         public Guid? SelectedWeekId { get; set; }
+        public decimal SelectedWeekTotalLf { get; set; }
 
         public List<ForecastDropdownItem> Forecasts { get; set; } = new();
         public List<ForecastWeekDropdownItem> Weeks { get; set; } = new();
@@ -31,6 +32,7 @@
         public string Size { get; set; } = string.Empty;
         public string Colour { get; set; } = string.Empty;
         public string SapOrder { get; set; } = string.Empty;
-        public decimal LF { get; set; }
+        public decimal Lf { get; set; }
+        public DateTimeOffset? EstimatedStartDate { get; set; }
     }
 }

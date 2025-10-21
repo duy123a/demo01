@@ -13,6 +13,12 @@ namespace Demo01.Infrastructure.Entities
 
         public int WeekNumber { get; set; }
 
+        public decimal TotalLf { get; set; }
+
+        public decimal LfRate { get; set; }
+
+        public bool HasSaturday { get; set; }
+
         [Required]
         public DateTimeOffset StartDate { get; set; }
 
@@ -23,6 +29,8 @@ namespace Demo01.Infrastructure.Entities
         [ForeignKey(nameof(ForecastId))]
         public Forecast Forecast { get; set; } = default!;
 
-        public ICollection<ForecastItem> Items { get; set; } = new List<ForecastItem>();
+        public ICollection<ForecastItem> ForecastItems { get; set; } = new List<ForecastItem>();
+
+        public ICollection<ForecastPlanning> ForecastPlannings { get; set; } = new List<ForecastPlanning>();
     }
 }

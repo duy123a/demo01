@@ -34,5 +34,7 @@ namespace Demo01.Infrastructure.Entities
 
         [ForeignKey(nameof(VariantId))]
         public ModelVariant ModelVariant { get; set; } = default!;
+
+        public ICollection<ForecastPlanning> ForecastPlannings { get; set; } = new List<ForecastPlanning>();
     }
 }

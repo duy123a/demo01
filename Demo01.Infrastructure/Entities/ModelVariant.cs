@@ -17,8 +17,7 @@ namespace Demo01.Infrastructure.Entities
         [MaxLength(30)]
         public string Colour { get; set; } = string.Empty;
 
-        [Column(TypeName = "decimal(5,2)")]
-        public decimal LF { get; set; }
+        public decimal Lf { get; set; }
 
         // Navigation
         [ForeignKey(nameof(ModelId))]

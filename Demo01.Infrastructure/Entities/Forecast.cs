@@ -18,6 +18,6 @@ namespace Demo01.Infrastructure.Entities
         public ForecastStatus Status { get; set; } = ForecastStatus.None;
 
         // Navigation
-        public ICollection<ForecastWeek> Weeks { get; set; } = new List<ForecastWeek>();
+        public ICollection<ForecastWeek> ForecastWeeks { get; set; } = new List<ForecastWeek>();
     }
 }

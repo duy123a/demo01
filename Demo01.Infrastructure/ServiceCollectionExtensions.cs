@@ -72,6 +72,10 @@ namespace Demo01.Infrastructure
             services.AddScoped<IModelRepository, ModelRepository>();
             services.AddScoped<IModelVariantRepository, ModelVariantRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IDeparementRepository, DeparementRepository>();
+            services.AddScoped<IProcessRepository, ProcessRepository>();
+            services.AddScoped<IHolidayRepository, HolidayRepository>();
+            services.AddScoped<IForecastPlanningRepository, ForecastPlanningRepository>();
             services.AddScoped<IPlanningUnitOfWork, PlanningUnitOfWork>();
             return services;
         }

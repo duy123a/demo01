@@ -1,9 +1,9 @@
-﻿@model Demo01.WebApi.ViewModels.ForecastSelectionViewModel
+﻿@model Demo01.WebApi.ViewModels.ForecastPlanningViewModel
 @{
     ViewData["Title"] = "Forecast Viewer";
 }
 
-<div class="container">
+<div class="container mt-3">
     <h2>Forecast Planning</h2>
 
     <form asp-action="Index" method="get" class="mb-3">
@@ -37,6 +37,24 @@
         </div>
     </form>
 
+    @* Nút Generate Planning *@
+    @if (Model.SelectedForecastId != null)
+    {
+        <form asp-action="PlanForecast" method="post" class="mt-3">
+            <input type="hidden" name="forecastId" value="@Model.SelectedForecastId" />
+            <button type="submit" class="btn btn-demo-submit">
+                Generate Planning
+            </button>
+        </form>
+    }
+
+    @if (Model.SelectedWeekId != Guid.Empty)
+    {
+        <div class="alert alert-secondary mt-3">
+            <strong>Total LF:</strong> @Model.SelectedWeekTotalLf.ToString("N0")
+        </div>
+    }
+
     @if (Model.Items.Any())
     {
         <table class="table table-bordered table-striped mt-3">
@@ -61,7 +79,7 @@
                         <td>@item.Size</td>
                         <td>@item.Colour</td>
                         <td>@item.SapOrder</td>
-                        <td>@item.LF</td>
+                        <td>@item.Lf</td>
                     </tr>
                 }
             </tbody>
