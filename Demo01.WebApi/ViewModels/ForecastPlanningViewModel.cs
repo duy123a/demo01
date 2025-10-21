@@ -22,7 +22,7 @@ namespace Demo01.WebApi.ViewModels
         // Readonly fields
         public decimal TargetLf { get; set; }
         public bool HasSaturday { get; set; }
-        public decimal TotalHour { get; set; }
+        public Dictionary<int, decimal> TotalHours { get; set; } = new();
         public List<DateTimeOffset> DatesInWeek { get; set; } = new();
         public List<DateOnly> HolidayList { get; set; } = new();
     }

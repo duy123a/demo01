@@ -83,7 +83,7 @@ html {
     }
 
 /* --- MOBILE LAYOUT --- */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .main-container {
         flex-direction: column;
     }

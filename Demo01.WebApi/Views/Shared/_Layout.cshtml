@@ -53,23 +53,29 @@
                         </div>
                     </div>
 
-                    <!-- Navigation list -->
-                    <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
-                        <a href="/ForecastDetail" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail"
-                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                    <!-- Sidebar navigation -->
+                    <button class="btn btn-outline-secondary d-xl-none m-2" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#sidebarNav"
+                            aria-expanded="false" aria-controls="sidebarNav">
+                        <i class="bi bi-list"></i> Menu
+                    </button>
+
+                    <div class="collapse d-xl-block" id="sidebarNav">
+                        <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
+                            <a href="/ForecastDetail" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail"
+                                                                  && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                             Forecast Detail
-                        </a>
-                        <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning"
-                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            Forecast Planning
-                        </a>
-
-
-                        <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate"
-                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            Qr Generate
-                        </a>
-                    </nav>
+                            </a>
+                            <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning"
+                                                                    && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Forecast Planning
+                            </a>
+                            <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate"
+                                                              && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Qr Generate
+                            </a>
+                        </nav>
+                    </div>
                 </div>
 
                 <!-- Bottom logo (chỉ hiện desktop) -->
@@ -89,19 +95,19 @@
                             <i class="bi bi-layout-sidebar me-1 text-demo-indigo"></i>
                             <a href="/" class="text-demo-indigo text-decoration-none">@Localizer["Dashboards"]</a>
 
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail")
+                            {
+                                <span class="mx-1 text-muted">/</span>
+                                <span class="text-demo-primary">
+                                    Forecast Detail
+                                </span>
+                            }
+
                             @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning")
                             {
                                 <span class="mx-1 text-muted">/</span>
                                 <span class="text-demo-primary">
                                     Forecast Planning
-                                </span>
-                            }
-
-                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanningResult")
-                            {
-                                <span class="mx-1 text-muted">/</span>
-                                <span class="text-demo-primary">
-                                    Forecast Planning Result
                                 </span>
                             }
                         </div>

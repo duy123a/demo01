@@ -159,8 +159,8 @@ namespace Demo01.WebApi.Controllers
                             decimal defaultHour = day.DayOfWeek switch
                             {
                                 DayOfWeek.Monday => 11,
-                                DayOfWeek.Tuesday => 8,
-                                DayOfWeek.Wednesday => 9,
+                                DayOfWeek.Tuesday => 9,
+                                DayOfWeek.Wednesday => 11,
                                 DayOfWeek.Thursday => 9,
                                 DayOfWeek.Friday => 11,
                                 DayOfWeek.Saturday => 8,
@@ -185,7 +185,7 @@ namespace Demo01.WebApi.Controllers
 
                 await _uow.SaveChangesAsync(); // lưu các record mới tạo
 
-                vm.TotalHour = await CalculateTotalHourAsync(vm.SelectedWeekId!.Value);
+                vm.TotalHours = await CalculateTotalHourAsync(vm.SelectedWeekId!.Value);
                 vm.PlanningProcesses = existingProcesses;
 
                 await DistributeTargetLfAsync(vm.SelectedWeekId!.Value);
@@ -293,8 +293,8 @@ namespace Demo01.WebApi.Controllers
                 return;
 
             // Tính tổng giờ (đã bỏ thứ 7 & holiday)
-            var totalHour = await CalculateTotalHourAsync(weekId);
-            if (totalHour == 0)
+            var totalHoursByProcess = await CalculateTotalHourAsync(weekId);
+            if (!totalHoursByProcess.Any())
                 return;
 
             // Lấy toàn bộ process thuộc tuần
@@ -341,6 +341,9 @@ namespace Demo01.WebApi.Controllers
                 // Tính target dựa trên working hour
                 foreach (var proc in dayProcesses)
                 {
+                    if (!totalHoursByProcess.TryGetValue(proc.ProcessId, out var totalHour) || totalHour == 0)
+                        continue;
+
                     var target = (week.TotalLf / totalHour) * proc.WorkingHour;
                     proc.TargetLf = Math.Round(target, 2);
                 }
@@ -356,32 +359,29 @@ namespace Demo01.WebApi.Controllers
             await _uow.SaveChangesAsync();
         }
 
-        private async Task<decimal> CalculateTotalHourAsync(Guid weekId)
+        private async Task<Dictionary<int, decimal>> CalculateTotalHourAsync(Guid weekId)
         {
             var week = await _uow.ForecastWeeks
-                .Where(w => w.ForecastWeekId == weekId)
-                .FirstOrDefaultAsync();
+                .GetAll()
+                .FirstOrDefaultAsync(w => w.ForecastWeekId == weekId);
 
             if (week == null)
-                return 0;
+                return new Dictionary<int, decimal>();
 
-            // Query cơ bản trong database
-            var query = _uow.ForecastPlanningProcesses
+            // Lấy toàn bộ ForecastPlanningProcess của tuần này
+            var list = await _uow.ForecastPlanningProcesses
                 .GetAll()
-                .Where(p => p.ForecastPlanning.ForecastWeek.ForecastWeekId == weekId);
+                .Include(p => p.ForecastPlanning)
+                .Where(p => p.ForecastPlanning.ForecastWeek.ForecastWeekId == weekId)
+                .ToListAsync();
 
-            // Lấy danh sách ngày nghỉ lễ trong tuần đó
+            // Lấy danh sách ngày nghỉ
             var holidays = await _uow.Holidays
                 .GetAll()
                 .Select(h => h.Date)
                 .ToListAsync();
 
-            // Chuyển sang memory để lọc theo logic .NET
-            var list = await query
-                .Include(p => p.ForecastPlanning)
-                .ToListAsync();
-
-            // Nếu không có thứ 7 thì bỏ qua
+            // Bỏ thứ 7 nếu không làm
             if (!week.HasSaturday)
             {
                 list = list
@@ -389,13 +389,20 @@ namespace Demo01.WebApi.Controllers
                     .ToList();
             }
 
-            // Bỏ qua các ngày nghỉ lễ
+            // Bỏ ngày nghỉ
             list = list
                 .Where(p => !holidays.Contains(p.ForecastPlanning.PlanningDate))
                 .ToList();
 
-            // Tính tổng giờ còn lại
-            return list.Sum(p => p.WorkingHour);
+            // Nhóm theo ProcessId
+            var totalHoursByProcess = list
+                .GroupBy(p => p.ProcessId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(x => x.WorkingHour)
+                );
+
+            return totalHoursByProcess;
         }
     }
 
