@@ -91,56 +91,90 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener("DOMContentLoaded", () => {
     let html5QrCode;
-    const qrModal = new bootstrap.Modal(document.getElementById('qrScanModal'));
+    const qrModalEl = document.getElementById('qrScanModal');
+    if (!qrModalEl) return;
+    const qrModal = new bootstrap.Modal(qrModalEl);
     const qrReader = document.getElementById("qr-reader");
     const qrResult = document.getElementById("qr-result");
+    if (!qrReader || !qrResult) return;
 
-    document.getElementById("btnQrScan")?.addEventListener("click", function () {
-        qrResult.textContent = "";
-        qrReader.innerHTML = "";
-        var error = false;
+    // 🧹 Hàm dừng & giải phóng camera triệt để (fix cho iOS Safari)
+    async function stopAndReleaseCamera() {
+        try {
+            if (html5QrCode) {
+                await html5QrCode.stop();
+            }
+            const videoElem = qrReader.querySelector("video");
+            if (videoElem && videoElem.srcObject) {
+                videoElem.srcObject.getTracks().forEach(track => track.stop());
+                videoElem.srcObject = null;
+            }
+        } catch (err) {
+            console.warn("Không thể dừng camera:", err);
+        } finally {
+            qrReader.innerHTML = "";
+        }
+    }
 
+    // 📱 Kiểm tra môi trường trước khi start
+    async function checkCameraPermission() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error("Thiết bị không hỗ trợ truy cập camera");
+        }
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const hasCamera = devices.some(device => device.kind === "videoinput");
+        if (!hasCamera) throw new Error("Không tìm thấy camera");
+    }
+
+    // 📷 Hàm khởi động quét
+    async function startScanner() {
+        await stopAndReleaseCamera();
         html5QrCode = new Html5Qrcode("qr-reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        try {
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                async (decodedText) => {
+                    console.log("QR content:", decodedText);
+                    qrResult.textContent = "✅ " + decodedText;
 
-        html5QrCode.start(
-            { facingMode: "environment" },
-            config,
-            (decodedText) => {
-                console.log("QR content:", decodedText);
+                    await stopAndReleaseCamera();
+                    qrModal.hide();
 
-                // Cập nhật giao diện
-                qrResult.textContent = "✅ Quét thành công: " + decodedText;
-
-                // Dừng quét để tránh quét lặp lại
-                html5QrCode.stop().then(() => {
-                    // Kiểm tra xem nội dung có phải là URL không
                     if (/^(https?:\/\/[^\s]+)/i.test(decodedText)) {
-                        // Là URL → chuyển hướng
                         window.location.href = decodedText;
                     } else {
-                        // Không phải URL → hiển thị nội dung
                         showSuccessToast("Kết quả QR: " + decodedText);
                     }
-                }).catch(err => {
-                    console.error("❌ Không thể dừng quét:", err);
-                });
-            },
-            (errorMessage) => {
-                // scanning... (bỏ qua lỗi tạm thời)
-            }
-           
-        ).catch(err => {
-            error = true;
-            showErrorToast("❌ Không thể bật camera");
-            
-        });
-        if (!error){
+                },
+                () => {} // Bỏ qua lỗi tạm thời
+            );
+        } catch (err) {
+            console.error("❌ Không thể bật camera:", err);
+            showErrorToast("Không thể bật camera: " + err.message);
+        }
+    }
+
+    // 🟢 Click button mở modal
+    document.getElementById("btnQrScan")?.addEventListener("click", async () => {
+        qrResult.textContent = "";
+        try {
+            await checkCameraPermission();
             qrModal.show();
+        } catch (err) {
+            showErrorToast("⚠️ " + err.message);
         }
     });
 
-    document.getElementById('qrScanModal').addEventListener('hidden.bs.modal', async () => {
-        if (html5QrCode) await html5QrCode.stop();
+    // 🚀 Khi modal hiển thị xong → bắt đầu quét
+    qrModalEl.addEventListener("shown.bs.modal", async () => {
+        await startScanner();
+    });
+
+    // 🔻 Khi modal đóng → dừng camera hoàn toàn
+    qrModalEl.addEventListener("hidden.bs.modal", async () => {
+        await stopAndReleaseCamera();
+        html5QrCode = null;
     });
 });

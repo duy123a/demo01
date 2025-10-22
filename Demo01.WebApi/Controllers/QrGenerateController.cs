@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QRCoder;
 
 namespace Demo01.WebApi.Controllers
 {
+    [Authorize]
     public class QrGenerateController : Controller
     {
         public IActionResult Index()
