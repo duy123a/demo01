@@ -58,6 +58,11 @@ namespace Demo01.Infrastructure.Data.Context
                 .WithMany(w => w.ForecastPlannings)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Unique index on ForecastPlanningProcess
+            builder.Entity<ForecastPlanningProcess>()
+                .HasIndex(p => new { p.ForecastPlanningId, p.ProcessId })
+                .IsUnique();
+
             // Seeds
             builder.ApplyConfiguration(new DepartmentSeed());
             builder.ApplyConfiguration(new ProcessSeed());

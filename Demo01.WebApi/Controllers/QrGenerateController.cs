@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QRCoder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Demo01.WebApi.Controllers
 {

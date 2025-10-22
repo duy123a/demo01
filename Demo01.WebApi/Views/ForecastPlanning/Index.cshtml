@@ -77,6 +77,15 @@
 
     @if (Model.SelectedWeek != null)
     {
+        <div class="my-3 d-flex justify-content-end gap-2">
+            <button type="button" id="btnSaveDraft" class="btn btn-demo-submit btn-sm">
+                Save Draft
+            </button>
+            <button type="button" id="btnSaveActualLf" class="btn btn-demo-submit btn-sm">
+                Submit
+            </button>
+        </div>
+
         <table class="table table-bordered table-sm align-middle text-center mt-3">
             <thead class="table-light">
                 <tr>
@@ -103,11 +112,11 @@
                         @foreach (var day in Model.DatesInWeek)
                         {
                             var dateOnly = DateOnly.FromDateTime(day.DateTime);
-                            var record = Model.PlanningProcesses
-                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanning.PlanningDate == dateOnly);
-
                             var isHoliday = Model.HolidayList.Contains(DateOnly.FromDateTime(day.DateTime));
                             var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
+
+                            var record = Model.PlanningProcesses
+                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanning.PlanningDate == dateOnly);
 
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
@@ -126,10 +135,13 @@
                         <td class="fw-bold text-start">@process.Name</td>
                         @foreach (var day in Model.DatesInWeek)
                         {
+                            var dateOnly = DateOnly.FromDateTime(day.DateTime);
                             var isHoliday = Model.HolidayList.Contains(DateOnly.FromDateTime(day.DateTime));
-                            var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
+                            //var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
+                            var disabled = "disabled";
 
-                            var record = Model.PlanningProcesses.FirstOrDefault(p => p.ProcessId == process.Id);
+                            var record = Model.PlanningProcesses
+                                    .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanning.PlanningDate == dateOnly);
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
                                        name="@($"actualLf_{process.Id}_{day:yyyyMMdd}")"
@@ -218,6 +230,45 @@
             const url = new URL(window.location.href);
             //url.searchParams.set('hasSaturday', chk.checked ? 'true' : 'false');
             window.location.href = url.toString();
+        });
+
+        // Update actual lf on button click
+        const btnSave = document.getElementById('btnSaveActualLf');
+        btnSave.addEventListener('click', async () => {
+            const inputs = document.querySelectorAll('input[name^="actualLf_"]');
+            const payload = [];
+
+            inputs.forEach(input => {
+                const [_, processId, dateStr] = input.name.split('_');
+                const value = parseFloat(input.value) || 0;
+                payload.push({
+                    processId: processId,
+                    date: dateStr,
+                    actualLf: value,
+                    forecastId: '@Model.SelectedForecastId',
+                    forecastWeekId: '@Model.SelectedWeekId',
+                    departmentId: '@Model.SelectedDepartmentId'
+                });
+            });
+
+            showLoading();
+
+            const res = await fetch('/ForecastPlanning/SaveActualLf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            hideLoading();
+
+            if (res.ok) {
+                showSuccessToast('✅ Saved successfully!');
+                const url = new URL(window.location.href);
+                window.location.href = url.toString();
+
+            } else {
+                showErrorToast('❌ Failed to save data');
+            }
         });
     });
 </script>

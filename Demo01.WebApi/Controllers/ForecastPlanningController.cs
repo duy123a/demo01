@@ -1,12 +1,14 @@
 ﻿using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
 using Demo01.Infrastructure.Entities;
 using Demo01.WebApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace Demo01.WebApi.Controllers
 {
+    [Authorize]
     public class ForecastPlanningController : Controller
     {
         private readonly IPlanningUnitOfWork _uow;
@@ -61,7 +63,6 @@ namespace Demo01.WebApi.Controllers
             // --- Department dropdown ---
             vm.Departments = await _uow.Departments
                 .GetAll()
-                .OrderBy(d => d.Name)
                 .Select(d => new DepartmentDropdownItem
                 {
                     DepartmentId = d.Id,
@@ -281,6 +282,67 @@ namespace Demo01.WebApi.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveActualLf([FromBody] List<UpdateActualLfDto> items)
+        {
+            foreach (var dto in items)
+            {
+                if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                    continue;
+
+                var planningDate = DateOnly.FromDateTime(parsedDate);
+
+                // Tìm ForecastPlanning
+                var planning = await _uow.ForecastPlannings
+                    .GetAll()
+                    .FirstOrDefaultAsync(p =>
+                        p.ForecastWeekId == dto.ForecastWeekId &&
+                        p.PlanningDate == planningDate);
+
+                if (planning == null)
+                {
+                    planning = new ForecastPlanning
+                    {
+                        Id = Guid.NewGuid(),
+                        ForecastWeekId = dto.ForecastWeekId,
+                        PlanningDate = planningDate,
+                        CreatedAt = DateTimeOffset.Now
+                    };
+                    await _uow.ForecastPlannings.AddAsync(planning);
+                    await _uow.SaveChangesAsync();
+                }
+
+                // Tìm process
+                var record = await _uow.ForecastPlanningProcesses
+                    .GetAll()
+                    .FirstOrDefaultAsync(p =>
+                        p.ForecastPlanningId == planning.Id &&
+                        p.ProcessId == dto.ProcessId);
+
+                if (record != null)
+                {
+                    record.ActualLf = dto.ActualLf;
+                    record.UpdatedAt = DateTimeOffset.Now;
+                }
+                else
+                {
+                    var newProc = new ForecastPlanningProcess
+                    {
+                        Id = Guid.NewGuid(),
+                        ForecastPlanningId = planning.Id,
+                        ProcessId = dto.ProcessId,
+                        WorkingHour = 0,
+                        ActualLf = dto.ActualLf,
+                        TargetLf = 0
+                    };
+                    await _uow.ForecastPlanningProcesses.AddAsync(newProc);
+                }
+            }
+
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+
         private async Task DistributeTargetLfAsync(Guid weekId)
         {
             // Lấy thông tin tuần và process
@@ -420,5 +482,15 @@ namespace Demo01.WebApi.Controllers
     {
         public Guid ForecastWeekId { get; set; }
         public bool HasSaturday { get; set; }
+    }
+
+    public class UpdateActualLfDto
+    {
+        public Guid ForecastId { get; set; }
+        public Guid ForecastWeekId { get; set; }
+        public int DepartmentId { get; set; }
+        public int ProcessId { get; set; }
+        public string Date { get; set; } = string.Empty; // yyyyMMdd
+        public decimal ActualLf { get; set; }
     }
 }

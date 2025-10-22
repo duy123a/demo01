@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const qrReader = document.getElementById("qr-reader");
     const qrResult = document.getElementById("qr-result");
 
-    document.getElementById("btnQrScan")?.addEventListener("click",async function () {
+    document.getElementById("btnQrScan")?.addEventListener("click", function () {
         qrResult.textContent = "";
         qrReader.innerHTML = "";
         var error = false;
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
         html5QrCode = new Html5Qrcode("qr-reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-        await html5QrCode.start(
+        html5QrCode.start(
             { facingMode: "environment" },
             config,
             (decodedText) => {

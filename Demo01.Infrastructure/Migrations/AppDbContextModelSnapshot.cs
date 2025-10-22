@@ -133,6 +133,27 @@ namespace Demo01.Infrastructure.Migrations
                             Capacity = 0,
                             LfRate = 0m,
                             Name = "Parachute Department"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Cutting Department"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Strap Department"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Capacity = 0,
+                            LfRate = 0m,
+                            Name = "Packaging Department"
                         });
                 });
 
@@ -268,9 +289,10 @@ namespace Demo01.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ForecastPlanningId");
-
                     b.HasIndex("ProcessId");
+
+                    b.HasIndex("ForecastPlanningId", "ProcessId")
+                        .IsUnique();
 
                     b.ToTable("ForecastPlanningProcesses");
                 });
@@ -445,17 +467,32 @@ namespace Demo01.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Bottom"
+                            Name = "Fabric Receiving"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Top"
+                            Name = "Fabric Joining"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Final"
+                            Name = "Tail"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Bottom"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Top"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "QC Final"
                         });
                 });
 

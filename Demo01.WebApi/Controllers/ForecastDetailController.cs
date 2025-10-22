@@ -1,11 +1,13 @@
 ﻿using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
 using Demo01.WebApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace Demo01.WebApi.Controllers
 {
+    [Authorize]
     public class ForecastDetailController : Controller
     {
         private readonly IPlanningUnitOfWork _uow;

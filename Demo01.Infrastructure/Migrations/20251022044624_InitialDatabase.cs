@@ -248,16 +248,25 @@ namespace Demo01.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Departments",
                 columns: new[] { "Id", "Capacity", "LfRate", "Name" },
-                values: new object[] { 1, 0, 0m, "Parachute Department" });
+                values: new object[,]
+                {
+                    { 1, 0, 0m, "Parachute Department" },
+                    { 2, 0, 0m, "Cutting Department" },
+                    { 3, 0, 0m, "Strap Department" },
+                    { 4, 0, 0m, "Packaging Department" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Processes",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Bottom" },
-                    { 2, "Top" },
-                    { 3, "Final" }
+                    { 1, "Fabric Receiving" },
+                    { 2, "Fabric Joining" },
+                    { 3, "Tail" },
+                    { 4, "Bottom" },
+                    { 5, "Top" },
+                    { 6, "QC Final" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -276,9 +285,10 @@ namespace Demo01.Infrastructure.Migrations
                 column: "VariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ForecastPlanningProcesses_ForecastPlanningId",
+                name: "IX_ForecastPlanningProcesses_ForecastPlanningId_ProcessId",
                 table: "ForecastPlanningProcesses",
-                column: "ForecastPlanningId");
+                columns: new[] { "ForecastPlanningId", "ProcessId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForecastPlanningProcesses_ProcessId",
