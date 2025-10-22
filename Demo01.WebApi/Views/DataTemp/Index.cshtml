@@ -2,44 +2,88 @@
     ViewData["Title"] = "Panel Assemble Inspection Report";
 }
 
-<div class="container mt-4">
- <h4 class="report-title">
+<div class="container-wrapper">
+    <h4 class="report-title">
         PANEL ASSEMBLE INSPECTION REPORT <br />
         BÁO CÁO KIỂM HÀNG CỦA QC GHÉP VẢI
     </h4>
-    <table id="inspectionTable" class="inspection-table">
-        <thead>
-            <tr>
-                <th colspan="6" class="info-header">Thông tin hàng kiểm</th>
-                <th colspan="12" class="error-header">Lỗi may</th>
-            </tr>
-            <tr class="info-subheader">
-                <th>STT</th>
-                <th>Tên dù</th>
-                <th>Tên người ghép vải</th>
-                <th>Top/Bottom</th>
-                <th>Tên QC</th>
-                <th>Tổng SL lỗi</th>
-                <th>Đứt chỉ, bung chỉ, sụp mí</th>
-                <th>Đường may nhăn</th>
-                <th>Không lại mũi</th>
-                <th>Lại mũi nhặt ngắn</th>
-                <th>Lại mũi không trùng</th>
-                <th>May sai cự ly</th>
-                <th>May lệ mí</th>
-                <th>Sai số mũi chỉ/1cm</th>
-                <th>Không trùng lỗ</th>
-                <th>Lỗi vải</th>
-                <th>Vải dơ</th>
-                <th>Lỗi khác</th>
-            </tr>
-        </thead>
-        <tbody id="inspectionBody"></tbody>
-    </table>
-   
+    <div class="table-container">
+        <table id="inspectionTable" class="inspection-table">
+            <thead>
+                <tr>
+                    <th colspan="6" class="info-header">Thông tin hàng kiểm</th>
+                    <th colspan="12" class="error-header">Lỗi may</th>
+                </tr>
+                <tr class="info-subheader">
+                    <th class="sticky-header-col col-1">STT</th>
+                    <th class="sticky-header-col col-2">Tên dù</th>
+                    <th class="sticky-header-col col-3">Tên người ghép vải</th>
+                    <th class="sticky-header-col col-4">Top/Bottom</th>
+                    <th class="sticky-header-col col-5">Tên QC</th>
+                    <th class="sticky-header-col col-6">Tổng SL lỗi</th>
+                    <th>Đứt chỉ, bung chỉ, sụp mí</th>
+                    <th>Đường may nhăn</th>
+                    <th>Không lại mũi</th>
+                    <th>Lại mũi nhặt ngắn</th>
+                    <th>Lại mũi không trùng</th>
+                    <th>May sai cự ly</th>
+                    <th>May lệ mí</th>
+                    <th>Sai số mũi chỉ/1cm</th>
+                    <th>Không trùng lỗ</th>
+                    <th>Lỗi vải</th>
+                    <th>Vải dơ</th>
+                    <th>Lỗi khác</th>
+                </tr>
+            </thead>
+            <tbody id="inspectionBody"></tbody>
+        </table>
+    </div>
+    
+    <!-- Finish Button -->
+    <div class="finish-button-container">
+        <button type="button" id="finishBtn" class="btn-finish">
+            ✓ Kết thúc
+        </button>
+    </div>
 </div>
 
-<!-- ✅ Script giữ nguyên -->
+<!-- Modal for Defect Request -->
+<div id="defectModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Yêu cầu xử lý lỗi</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="requestType">Yêu cầu: <span class="required">*</span></label>
+                <select id="requestType" class="form-control">
+                    <option value="">-- Chọn yêu cầu --</option>
+                    <option value="edit">Chỉnh sửa sản phẩm</option>
+                    <option value="remake">Cắt vải làm lại</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="reason">Lý do: <span class="required">*</span></label>
+                <textarea id="reason" class="form-control" rows="4" placeholder="Nhập lý do chi tiết..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <button type="button" id="capturePhotoBtn" class="btn-camera">
+                    📷 Chụp ảnh
+                </button>
+                <input type="file" id="photoInput" accept="image/*" capture="environment" style="display: none;">
+                <div id="photoPreview" class="photo-preview"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Hủy</button>
+            <button type="button" class="btn btn-primary" id="submitBtn">Gửi yêu cầu</button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 <script>
     let inspectionData = [];
@@ -50,6 +94,9 @@
         "khong_trung_lo", "loi_vai", "vai_do", "loi_khac"
     ];
 
+    let saveTimeout = null;
+
+    // Load data
     fetch('/api/inspection/')
         .then(res => res.json())
         .then(data => {
@@ -60,232 +107,827 @@
 
     function renderTable() {
         const body = document.getElementById("inspectionBody");
-        body.innerHTML = "";
+        const fragment = document.createDocumentFragment();
+        
         inspectionData.forEach((row, index) => {
-            const defectCells = defectKeys.map(key => {
-                const val = row[key] || "o";
-                const cls = val === "x" ? "cell-x" : "cell-o";
-                return `<td class="toggle-cell ${cls}" data-key="${key}" data-index="${index}">${val}</td>`;
-            }).join("");
-
-            body.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${row.ten_du}</td>
-                    <td>${row.ten_ghep_vai}</td>
-                    <td>${row.top_bottom}</td>
-                    <td>${row.ten_qc}</td>
-                    <td class="total">${row.tong_loi || 0}</td>
-                    ${defectCells}
-                </tr>`;
-        });
-        attachToggleEvents();
-    }
-
-    function attachToggleEvents() {
-        document.querySelectorAll(".toggle-cell").forEach(cell => {
-            cell.addEventListener("click", () => {
-                const index = cell.dataset.index;
-                const key = cell.dataset.key;
-                const current = cell.textContent.trim().toLowerCase();
-                const newVal = current === "x" ? "o" : "x";
-
-                cell.textContent = newVal;
-                cell.classList.toggle("cell-x", newVal === "x");
-                cell.classList.toggle("cell-o", newVal === "o");
-
-                inspectionData[index][key] = newVal;
-                const total = defectKeys.filter(k => inspectionData[index][k] === "x").length;
-                inspectionData[index].tong_loi = total;
-                cell.closest("tr").querySelector(".total").textContent = total;
-
-                saveChanges();
+            const tr = document.createElement('tr');
+            
+            // Create sticky columns with proper styling
+            const sttCell = document.createElement('td');
+            sttCell.className = 'sticky-col col-1';
+            sttCell.style.color = '#000';
+            sttCell.textContent = index + 1;
+            tr.appendChild(sttCell);
+            
+            const duCell = document.createElement('td');
+            duCell.className = 'sticky-col col-2';
+            duCell.style.color = '#000';
+            duCell.textContent = row.ten_du || '';
+            tr.appendChild(duCell);
+            
+            const ghepVaiCell = document.createElement('td');
+            ghepVaiCell.className = 'sticky-col col-3';
+            ghepVaiCell.style.color = '#000';
+            ghepVaiCell.textContent = row.ten_ghep_vai || '';
+            tr.appendChild(ghepVaiCell);
+            
+            const topBottomCell = document.createElement('td');
+            topBottomCell.className = 'sticky-col col-4';
+            topBottomCell.style.color = '#000';
+            topBottomCell.textContent = row.top_bottom || '';
+            tr.appendChild(topBottomCell);
+            
+            const qcCell = document.createElement('td');
+            qcCell.className = 'sticky-col col-5';
+            qcCell.style.color = '#000';
+            qcCell.textContent = row.ten_qc || '';
+            tr.appendChild(qcCell);
+            
+            const totalCell = document.createElement('td');
+            totalCell.className = 'sticky-col col-6 total';
+            totalCell.textContent = row.tong_loi || 0;
+            tr.appendChild(totalCell);
+            
+            // Defect columns - number inputs with plus icon
+            defectKeys.forEach(key => {
+                const val = parseInt(row[key]) || 0;
+                const td = document.createElement('td');
+                td.className = 'defect-cell';
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'input-wrapper';
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'defect-input';
+                input.value = val;
+                input.min = '0';
+                input.step = '1';
+                input.dataset.index = index;
+                input.dataset.key = key;
+                input.inputMode = 'numeric';
+                input.pattern = '[0-9]*';
+                
+                const plusBtn = document.createElement('button');
+                plusBtn.className = 'plus-icon';
+                plusBtn.innerHTML = '+';
+                plusBtn.type = 'button';
+                
+                wrapper.appendChild(input);
+                wrapper.appendChild(plusBtn);
+                td.appendChild(wrapper);
+                tr.appendChild(td);
             });
+            
+            fragment.appendChild(tr);
+        });
+        
+        body.innerHTML = "";
+        body.appendChild(fragment);
+        attachInputEvents();
+        attachModalEvents();
+        attachFinishButton();
+    }
+
+    function attachInputEvents() {
+        const body = document.getElementById("inspectionBody");
+        
+        // Use event delegation for input changes
+        body.addEventListener("input", (e) => {
+            const input = e.target.closest(".defect-input");
+            if (!input) return;
+            
+            handleInputChange(input);
+        });
+
+        // Handle keydown to prevent negative signs and decimals
+        body.addEventListener("keydown", (e) => {
+            const input = e.target.closest(".defect-input");
+            if (!input) return;
+
+            if (['-', '+', '.', ',', 'e', 'E'].includes(e.key)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Handle paste to prevent invalid input
+        body.addEventListener("paste", (e) => {
+            const input = e.target.closest(".defect-input");
+            if (!input) return;
+
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text');
+            const numValue = parseInt(pastedData);
+            
+            if (!isNaN(numValue) && numValue >= 0) {
+                input.value = numValue;
+                handleInputChange(input);
+            }
+        });
+
+        // Handle blur to ensure valid value
+        body.addEventListener("blur", (e) => {
+            const input = e.target.closest(".defect-input");
+            if (!input) return;
+
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 0) {
+                input.value = 0;
+                handleInputChange(input);
+            }
+        }, true);
+
+        // Plus icon click - open modal
+        body.addEventListener("click", (e) => {
+            const plusBtn = e.target.closest(".plus-icon");
+            if (!plusBtn) return;
+            
+            openModal();
         });
     }
 
-    function saveChanges() {
-        fetch('/api/inspection/update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(inspectionData)
-        })
-        .then(res => {
-            if (!res.ok) throw new Error("Cập nhật thất bại");
-            console.log("✅ File JSON đã được cập nhật");
-        })
-        .catch(err => console.error("❌ Lỗi khi cập nhật file JSON:", err));
+    function attachModalEvents() {
+        const modal = document.getElementById('defectModal');
+        const closeBtn = document.querySelector('.close-modal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const captureBtn = document.getElementById('capturePhotoBtn');
+        const photoInput = document.getElementById('photoInput');
+
+        // Close modal
+        closeBtn.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
+
+        // Close when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+
+        // Capture photo
+        captureBtn.onclick = function() {
+            photoInput.click();
+        };
+
+        // Handle photo selection
+        photoInput.onchange = function(e) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            
+            Array.from(e.target.files).forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+                    item.innerHTML = `
+                        <img src="${event.target.result}" alt="Photo ${idx + 1}">
+                        <button class="remove-photo" onclick="this.parentElement.remove()">×</button>
+                    `;
+                    preview.appendChild(item);
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        // Submit
+        submitBtn.onclick = function() {
+            const requestType = document.getElementById('requestType').value;
+            const reason = document.getElementById('reason').value.trim();
+            
+            if (!requestType || !reason) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+            
+            closeModal();
+            showSuccessToast('✓ Đã thông báo tới bộ phận liên quan');
+            
+            // Reset form
+            document.getElementById('requestType').value = '';
+            document.getElementById('reason').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
+        };
     }
+
+    function attachFinishButton() {
+        const finishBtn = document.getElementById('finishBtn');
+        if (finishBtn) {
+            finishBtn.onclick = function() {
+                showSuccessToast('✓ Đã hoàn thành kiểm tra!');
+            };
+        }
+    }
+
+    function openModal() {
+        document.getElementById('defectModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('defectModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function handleInputChange(input) {
+        const index = parseInt(input.dataset.index);
+        const key = input.dataset.key;
+        let value = input.value;
+
+        value = value.replace(/[^0-9]/g, '');
+        let numValue = parseInt(value) || 0;
+        
+        if (numValue < 0) {
+            numValue = 0;
+        }
+
+        input.value = numValue;
+        inspectionData[index][key] = numValue.toString();
+        
+        const total = defectKeys.reduce((sum, k) => {
+            return sum + (parseInt(inspectionData[index][k]) || 0);
+        }, 0);
+        inspectionData[index].tong_loi = total;
+        
+        const totalCell = input.closest("tr").querySelector(".total");
+        totalCell.textContent = total;
+
+        debounceSave();
+    }
+
+    function debounceSave() {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        
+        saveTimeout = setTimeout(() => {
+            fetch('/api/inspection/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(inspectionData)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Cập nhật thất bại");
+                console.log("✅ File JSON đã được cập nhật");
+            })
+            .catch(err => console.error("❌ Lỗi khi cập nhật file JSON:", err));
+        }, 500);
+    }
+
+    (function($) {
+  // Code jQuery ở đây
+  $(document).ready(function() {
+    console.log("jQuery đã sẵn sàng!");
+  });
+})(jQuery);
 </script>
 }
+
 <style>
-    .container {
-        max-width: 100%;
-        padding: 20px;
-    }
+/* ==================== BASE STYLES ==================== */
+* {
+    box-sizing: border-box;
+}
 
-    .inspection-table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: center;
-        font-size: 14px;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-    }
+/* ==================== LAYOUT ==================== */
+.container-wrapper {
+    width: 100%;
+    padding: 10px;
+}
 
-    .inspection-table th,
-    .inspection-table td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        vertical-align: middle;
-    }
+.report-title {
+    text-align: center;
+    color: #ff6600;
+    margin: 10px 0 20px 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.6;
+    font-size: clamp(16px, 4vw, 24px);
+}
 
-    /* 🔵 Header chính */
-    .info-header {
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-        font-size: 16px;
-        text-align: center;
-    }
+.table-container {
+    width: 100%;
+    max-height: 80vh;
+    overflow: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    -webkit-overflow-scrolling: touch;
+}
 
-    .error-header {
-        background-color: #28a745;
-        color: white;
-        font-weight: bold;
-        font-size: 16px;
-        text-align: center;
-    }
+/* ==================== TABLE BASE ==================== */
+.inspection-table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 13px;
+}
 
-    /* 🔵 Header con của “Thông tin hàng kiểm” */
-    .info-subheader th:nth-child(1),
-    .info-subheader th:nth-child(2),
-    .info-subheader th:nth-child(3),
-    .info-subheader th:nth-child(4),
-    .info-subheader th:nth-child(5),
-    .info-subheader th:nth-child(6) {
-        background-color: #007bff;
-        color: white;
-        font-weight: 600;
-    }
-
-    /* 🟢 Header con của “Lỗi may” */
-    .info-subheader th:nth-child(n+7) {
-        background-color: #28a745;
-        color: white;
-        font-weight: 600;
-    }
-
-    /* Dòng dữ liệu */
-    .inspection-table tbody tr:nth-child(odd) {
-        background-color: #f8f9fa;
-    }
-
-    .inspection-table tbody tr:hover {
-        background-color: #e9f5ff;
-    }
-
-    /* Toggle Cell */
-    .toggle-cell {
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s ease;
-    }
-
-    .cell-x {
-        color: red;
-        font-size: 16px;
-    }
-
-    .cell-o {
-        color: #1e90ff;
-        font-size: 16px;
-    }
-
-    /* Tổng lỗi */
-    .total {
-        font-weight: bold;
-        color: #dc3545;
-    }
-
-    /* Tiêu đề cuối bảng */
-    .report-title {
-        text-align: center;
-        color: #ff6600;
-        margin-top: 20px;
-        font-weight: 700;
-        text-transform: uppercase;
-        line-height: 1.6;
-    }
-
-    /* Sticky first 6 columns for "Thông tin hàng kiểm" */
 .inspection-table th,
 .inspection-table td {
-    position: relative;
-    z-index: 1;
+    border: 1px solid #ccc;
+    padding: 10px 8px;
+    vertical-align: middle;
 }
 
-.inspection-table th:nth-child(1),
-.inspection-table td:nth-child(1) {
+/* ==================== HEADER STYLES ==================== */
+.inspection-table thead {
     position: sticky;
-    left: 0;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
+    top: 0;
+    z-index: 100;
+}
+
+.inspection-table thead tr:first-child th {
+    position: sticky;
+    top: 0;
+    z-index: 105;
+}
+
+.info-header,
+.error-header {
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    color: white;
+}
+
+.info-header {
+    background-color: #007bff;
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 115 !important;
+    min-width: 580px !important;
+    max-width: 580px !important;
+    width: 580px !important;
+}
+
+.error-header {
+    background-color: #28a745;
+}
+
+.inspection-table thead tr:nth-child(2) th {
+    position: sticky;
+    top: 44px;
+    z-index: 100;
+    font-weight: 600;
+    color: white;
+}
+
+.info-subheader .sticky-header-col {
+    position: sticky;
+    background-color: #007bff;
+    z-index: 110;
+}
+
+.info-subheader th:nth-child(n+7) {
+    background-color: #28a745;
+    position: sticky;
+    top: 44px;
+}
+
+/* ==================== STICKY COLUMNS ==================== */
+.inspection-table thead th.sticky-header-col {
+    position: sticky !important;
+    z-index: 110 !important;
+    background-color: #007bff !important;
+    color: white !important;
+    box-shadow: 1px 0 0 0 #ccc inset, -1px 0 0 0 #ccc inset;
+}
+
+.inspection-table thead th.sticky-header-col.col-1 { left: 0 !important; min-width: 50px; max-width: 50px; width: 50px; }
+.inspection-table thead th.sticky-header-col.col-2 { left: 50px !important; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table thead th.sticky-header-col.col-3 { left: 150px !important; min-width: 140px; max-width: 140px; width: 140px; }
+.inspection-table thead th.sticky-header-col.col-4 { left: 290px !important; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table thead th.sticky-header-col.col-5 { left: 390px !important; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table thead th.sticky-header-col.col-6 { left: 490px !important; min-width: 90px; max-width: 90px; width: 90px; box-shadow: 1px 0 0 0 #ccc inset, 2px 0 0 0 #666; }
+
+.inspection-table tbody td.sticky-col {
+    position: sticky !important;
+    z-index: 5 !important;
+    background-color: #fff !important;
+    color: #000 !important;
+    font-weight: 400;
+    box-shadow: 1px 0 0 0 #ccc inset, -1px 0 0 0 #ccc inset;
+}
+
+.inspection-table tbody td.sticky-col.col-1 { left: 0; min-width: 50px; max-width: 50px; width: 50px; }
+.inspection-table tbody td.sticky-col.col-2 { left: 50px; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table tbody td.sticky-col.col-3 { left: 150px; min-width: 140px; max-width: 140px; width: 140px; }
+.inspection-table tbody td.sticky-col.col-4 { left: 290px; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table tbody td.sticky-col.col-5 { left: 390px; min-width: 100px; max-width: 100px; width: 100px; }
+.inspection-table tbody td.sticky-col.col-6 { left: 490px; min-width: 90px; max-width: 90px; width: 90px; box-shadow: 1px 0 0 0 #ccc inset, 2px 0 0 0 #666; }
+
+/* ==================== TABLE ROWS ==================== */
+.inspection-table tbody tr:nth-child(odd) { background-color: #f8f9fa; }
+.inspection-table tbody tr:nth-child(odd) .sticky-col { background-color: #f8f9fa !important; }
+.inspection-table tbody tr:nth-child(even) .sticky-col { background-color: #fff !important; }
+.inspection-table tbody tr:hover { background-color: #e9f5ff; }
+.inspection-table tbody tr:hover .sticky-col { background-color: #e9f5ff !important; }
+
+/* ==================== INPUT WITH PLUS ICON ==================== */
+.defect-cell {
+    padding: 2px;
     min-width: 60px;
+    min-height: 40px;
 }
 
-.inspection-table th:nth-child(2),
-.inspection-table td:nth-child(2) {
-    position: sticky;
-    left: 60px;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
-    min-width: 80px;
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1px;
 }
 
-.inspection-table th:nth-child(3),
-.inspection-table td:nth-child(3) {
-    position: sticky;
-    left: 140px;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
-    min-width: 120px;
+.defect-input {
+    flex: 1;
+    min-height: 28px;
+    max-width: 45px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 2px;
+    transition: all 0.2s ease;
+    background-color: #fff;
+    color: #333;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
 }
 
-.inspection-table th:nth-child(4),
-.inspection-table td:nth-child(4) {
-    position: sticky;
-    left: 260px;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
-    min-width: 80px;
+.defect-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    background-color: #f8f9ff;
 }
 
-.inspection-table th:nth-child(5),
-.inspection-table td:nth-child(5) {
-    position: sticky;
-    left: 340px;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
-    min-width: 100px;
+.defect-input:hover {
+    border-color: #adb5bd;
 }
 
-.inspection-table th:nth-child(6),
-.inspection-table td:nth-child(6) {
-    position: sticky;
-    left: 440px;
-    background: #007bff;
-    color: #fff;
-    z-index: 2;
-    min-width: 80px;
+.defect-input::-webkit-outer-spin-button,
+.defect-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-/* Enable horizontal scroll if needed */
-.container {
-    overflow-x: auto;
+.defect-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.plus-icon {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    background: transparent;
+    color: #28a745;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+}
+
+.plus-icon:hover {
+    color: #20c997;
+    transform: scale(1.15);
+}
+
+.plus-icon:active {
+    transform: scale(0.9);
+}
+
+.total {
+    font-weight: bold;
+    color: #dc3545;
+    font-size: 16px;
+}
+
+/* ==================== MODAL ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: slideDown 0.3s;
+}
+
+@@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+}
+
+.close-modal {
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+}
+
+textarea.form-control {
+    resize: vertical;
+    font-family: inherit;
+}
+
+.btn-camera {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-camera:hover {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.photo-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.photo-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #dee2e6;
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-photo {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-photo:hover {
+    background: #c82333;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* ==================== SCROLLBAR ==================== */
+.table-container::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #007bff 0%, #0056b3 100%);
+    border-radius: 5px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #0056b3 0%, #003d82 100%);
+}
+
+.table-container::-webkit-scrollbar-corner {
+    background: #f1f1f1;
+}
+
+/* ==================== MEDIA QUERIES ==================== */
+
+/* Tablet (≤1200px) */
+@@media screen and (max-width: 1200px) {
+    .container-wrapper { padding: 8px; }
+    .inspection-table { font-size: 12px; }
+    .inspection-table th, .inspection-table td { padding: 6px 4px; }
+    .inspection-table thead tr:nth-child(2) th { top: 42px; }
+    .defect-cell { min-width: 70px; min-height: 48px; padding: 4px; }
+    .defect-input { font-size: 18px; min-height: 40px; }
+    .plus-icon { width: 36px; height: 36px; min-width: 36px; font-size: 22px; }
+    .info-header { width: 340px !important; min-width: 340px !important; max-width: 340px !important; }
+    .inspection-table thead th.sticky-header-col.col-1, .inspection-table tbody td.sticky-col.col-1 { left: 0 !important; min-width: 30px; max-width: 30px; width: 30px; }
+    .inspection-table thead th.sticky-header-col.col-2, .inspection-table tbody td.sticky-col.col-2 { left: 30px !important; min-width: 65px; max-width: 65px; width: 65px; }
+    .inspection-table thead th.sticky-header-col.col-3, .inspection-table tbody td.sticky-col.col-3 { left: 95px !important; min-width: 90px; max-width: 90px; width: 90px; }
+    .inspection-table thead th.sticky-header-col.col-4, .inspection-table tbody td.sticky-col.col-4 { left: 185px !important; min-width: 55px; max-width: 55px; width: 55px; }
+    .inspection-table thead th.sticky-header-col.col-5, .inspection-table tbody td.sticky-col.col-5 { left: 240px !important; min-width: 55px; max-width: 55px; width: 55px; }
+    .inspection-table thead th.sticky-header-col.col-6, .inspection-table tbody td.sticky-col.col-6 { left: 295px !important; min-width: 45px; max-width: 45px; width: 45px; }
+}
+
+/* Mobile (≤768px) */
+@@media screen and (max-width: 768px) {
+    .container-wrapper { padding: 5px; }
+    .report-title { font-size: 14px; margin: 5px 0 10px 0; }
+    .table-container { max-height: 70vh; }
+    .inspection-table { font-size: 10px; min-width: 900px; }
+    .inspection-table th, .inspection-table td { padding: 5px 3px; }
+    .inspection-table thead tr:nth-child(2) th { top: 40px; }
+    .defect-cell { min-width: 75px; min-height: 52px; padding: 3px; }
+    .defect-input { font-size: 20px; min-height: 46px; }
+    .plus-icon { width: 40px; height: 40px; min-width: 40px; font-size: 24px; }
+    .total { font-size: 14px; }
+    .info-header, .error-header { font-size: 12px; }
+    .info-subheader th { font-size: 10px; }
+    .info-header { width: 273px !important; min-width: 273px !important; max-width: 273px !important; }
+    .modal-content { margin: 10% auto; width: 95%; }
+    .toast { min-width: 250px; right: 15px; top: 15px; font-size: 14px; }
+    .inspection-table thead th.sticky-header-col.col-1, .inspection-table tbody td.sticky-col.col-1 { left: 0 !important; min-width: 26px; max-width: 26px; width: 26px; }
+    .inspection-table thead th.sticky-header-col.col-2, .inspection-table tbody td.sticky-col.col-2 { left: 26px !important; min-width: 52px; max-width: 52px; width: 52px; }
+    .inspection-table thead th.sticky-header-col.col-3, .inspection-table tbody td.sticky-col.col-3 { left: 78px !important; min-width: 70px; max-width: 70px; width: 70px; }
+    .inspection-table thead th.sticky-header-col.col-4, .inspection-table tbody td.sticky-col.col-4 { left: 148px !important; min-width: 42px; max-width: 42px; width: 42px; }
+    .inspection-table thead th.sticky-header-col.col-5, .inspection-table tbody td.sticky-col.col-5 { left: 190px !important; min-width: 45px; max-width: 45px; width: 45px; }
+    .inspection-table thead th.sticky-header-col.col-6, .inspection-table tbody td.sticky-col.col-6 { left: 235px !important; min-width: 38px; max-width: 38px; width: 38px; }
+}
+
+/* Small Mobile (≤480px) */
+@@media screen and (max-width: 480px) {
+    .table-container { max-height: 65vh; }
+    .inspection-table { font-size: 9px; }
+    .inspection-table th, .inspection-table td { padding: 4px 2px; }
+    .inspection-table thead tr:nth-child(2) th { top: 38px; }
+    .defect-cell { min-width: 70px; min-height: 56px; padding: 2px; }
+    .defect-input { font-size: 20px; min-height: 52px; }
+    .plus-icon { width: 42px; height: 42px; min-width: 42px; font-size: 26px; }
+    .total { font-size: 13px; }
+    .info-header { width: 213px !important; min-width: 213px !important; max-width: 213px !important; }
+    .modal-content { margin: 5% auto; }
+    .inspection-table thead th.sticky-header-col.col-1, .inspection-table tbody td.sticky-col.col-1 { left: 0 !important; min-width: 22px; max-width: 22px; width: 22px; }
+    .inspection-table thead th.sticky-header-col.col-2, .inspection-table tbody td.sticky-col.col-2 { left: 22px !important; min-width: 42px; max-width: 42px; width: 42px; }
+    .inspection-table thead th.sticky-header-col.col-3, .inspection-table tbody td.sticky-col.col-3 { left: 64px !important; min-width: 52px; max-width: 52px; width: 52px; }
+    .inspection-table thead th.sticky-header-col.col-4, .inspection-table tbody td.sticky-col.col-4 { left: 116px !important; min-width: 32px; max-width: 32px; width: 32px; }
+    .inspection-table thead th.sticky-header-col.col-5, .inspection-table tbody td.sticky-col.col-5 { left: 148px !important; min-width: 35px; max-width: 35px; width: 35px; }
+    .inspection-table thead th.sticky-header-col.col-6, .inspection-table tbody td.sticky-col.col-6 { left: 183px !important; min-width: 30px; max-width: 30px; width: 30px; }
+    .inspection-table th, .inspection-table td { white-space: normal !important; word-break: break-word; overflow-wrap: anywhere; }
+}
+
+/* ==================== FINISH BUTTON ==================== */
+.finish-button-container {
+    text-align: center;
+    padding: 20px 10px;
+    margin-top: 10px;
+}
+
+.btn-finish {
+    padding: 12px 40px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-finish:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+}
+
+.btn-finish:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 </style>
