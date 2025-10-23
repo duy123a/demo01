@@ -21,6 +21,7 @@ namespace Demo01.Infrastructure.Data.Context
         public DbSet<Department> Departments => Set<Department>();
         public DbSet<Process> Processes => Set<Process>();
         public DbSet<ForecastPlanning> ForecastPlannings => Set<ForecastPlanning>();
+        public DbSet<ForecastPlanningDate> ForecastPlanningDates => Set<ForecastPlanningDate>();
         public DbSet<Holiday> Holidays => Set<Holiday>();
         public DbSet<ForecastPlanningProcess> ForecastPlanningProcesses => Set<ForecastPlanningProcess>();
 
@@ -52,15 +53,9 @@ namespace Demo01.Infrastructure.Data.Context
                 .WithOne(v => v.Model)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ForecastWeek → ForecastPlannings
-            builder.Entity<ForecastPlanning>()
-                .HasOne(p => p.ForecastWeek)
-                .WithMany(w => w.ForecastPlannings)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Unique index on ForecastPlanningProcess
             builder.Entity<ForecastPlanningProcess>()
-                .HasIndex(p => new { p.ForecastPlanningId, p.ProcessId })
+                .HasIndex(p => new { p.ForecastPlanningDateId, p.ProcessId })
                 .IsUnique();
 
             // Seeds

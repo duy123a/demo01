@@ -16,6 +16,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: path.resolve(__dirname, 'Assets/js/main.js'),
+                workflow: path.resolve(__dirname, 'Assets/js/workflow.js')
             },
             output: {
                 entryFileNames: '[name].js',

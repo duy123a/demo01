@@ -1,4 +1,4 @@
-﻿@model Demo01.WebApi.ViewModels.ForecastDetailViewModel
+﻿@model Demo01.WebApi.ViewModels.ForecastDetailViewModel.ForecastDetailViewModel
 @{
     ViewData["Title"] = "Forecast Viewer";
 }
@@ -42,7 +42,13 @@
     {
         <div class="mt-3 d-flex justify-content-end gap-2">
             <a href="#" class="btn btn-demo-submit btn-sm">Import</a>
-            <a href="#" class="btn btn-demo-submit btn-sm">Create</a>
+            <a asp-controller="ForecastCreate"
+               asp-action="Index"
+               asp-route-forecastId="@Model.SelectedForecastId"
+               asp-route-weekId="@Model.SelectedWeekId"
+               class="btn btn-demo-submit btn-sm">
+                Create
+            </a>
             <form asp-controller="ForecastPlanning" asp-action="Index" method="get" class="m-0">
                 <input type="hidden" name="forecastId" value="@Model.SelectedForecastId" />
                 <input type="hidden" name="weekId" value="@Model.SelectedWeekId" />

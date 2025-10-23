@@ -14,7 +14,7 @@
     <title>@ViewData["Title"] - ASAKA01.Web.Admin</title>
     <script type="importmap"></script>
     <link rel="stylesheet" vite-href="~/js/main.js" />
-    
+
 </head>
 <body class="w-100" data-page="@ViewData["Page"]">
     <div class="main-container">
@@ -53,28 +53,59 @@
                         </div>
                     </div>
 
-                    <!-- Sidebar navigation -->
+                    <!-- Nút Menu chỉ hiện ở < xl -->
                     <button class="btn btn-outline-secondary d-xl-none m-2" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#sidebarNav"
-                            aria-expanded="false" aria-controls="sidebarNav">
+                            data-bs-toggle="offcanvas" data-bs-target="#sidebarNav"
+                            aria-controls="sidebarNav">
                         <i class="bi bi-list"></i> Menu
                     </button>
 
-                    <div class="collapse d-xl-block" id="sidebarNav">
-                        <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
+                    <!-- Sidebar desktop hiển thị từ xl trở lên -->
+                    <div class="d-none d-xl-block" id="sidebarNavDesktop">
+                        <nav class="nav flex-column nav-pills p-2">
+                            <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Dashboard
+                            </a>
                             <a href="/ForecastDetail" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail"
-                                                                  && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            Forecast Detail
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Forecast Detail
+                            </a>
+                            <a href="/ForecastCreate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastCreate"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Forecast Create
                             </a>
                             <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning"
-                                                                    && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                                 Forecast Planning
                             </a>
+                            <a href="/ForecastProgress" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastProgress"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Forecast Progress
+                            </a>
                             <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate"
-                                                              && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                                 Qr Generate
                             </a>
                         </nav>
+                    </div>
+
+                    <!-- Offcanvas cho mobile (< xl) -->
+                    <div class="offcanvas offcanvas-start d-xl-none" tabindex="-1" id="sidebarNav" aria-labelledby="sidebarNavLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="sidebarNavLabel">Menu</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+                        </div>
+                        <div class="offcanvas-body p-0">
+                            <nav class="nav flex-column nav-pills p-2">
+                                <a href="/" class="sidebar-link">Dashboard</a>
+                                <a href="/ForecastDetail" class="sidebar-link">Forecast Detail</a>
+                                <a href="/ForecastCreate" class="sidebar-link">Forecast Create</a>
+                                <a href="/ForecastPlanning" class="sidebar-link">Forecast Planning</a>
+                                <a href="/ForecastProgress" class="sidebar-link">Forecast Progress</a>
+                                <a href="/QrGenerate" class="sidebar-link">Qr Generate</a>
+                            </nav>
+                        </div>
                     </div>
                 </div>
 
@@ -103,11 +134,27 @@
                                 </span>
                             }
 
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastCreate")
+                            {
+                                <span class="mx-1 text-muted">/</span>
+                                <span class="text-demo-primary">
+                                    Forecast Create
+                                </span>
+                            }
+
                             @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning")
                             {
                                 <span class="mx-1 text-muted">/</span>
                                 <span class="text-demo-primary">
                                     Forecast Planning
+                                </span>
+                            }
+
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastProgress")
+                            {
+                                <span class="mx-1 text-muted">/</span>
+                                <span class="text-demo-primary">
+                                    Forecast Progress
                                 </span>
                             }
                         </div>
@@ -200,22 +247,23 @@
          data-culture="@Thread.CurrentThread.CurrentCulture.Name">
     </div>
 
+    <!-- QR Scan Modal -->
+    <div class="modal fade" id="qrScanModal" tabindex="-1" aria-labelledby="qrScanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-3">
+                <h5 id="qrScanLabel" class="mb-2">Quét mã QR</h5>
+                <div id="qr-reader" style="width: 300px; margin: auto;"></div>
+                <p id="qr-result" class="mt-2 fw-bold text-primary"></p>
+                <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" vite-src="~/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     @await Html.PartialAsync("_LoadingOverlay")
     @await Html.PartialAsync("_ToastNotification")
-    <!-- QR Scan Modal -->
-    <div class="modal fade" id="qrScanModal" tabindex="-1" aria-labelledby="qrScanLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center p-3">
-          <h5 id="qrScanLabel" class="mb-2">Quét mã QR</h5>
-          <div id="qr-reader" style="width: 300px; margin: auto;"></div>
-          <p id="qr-result" class="mt-2 fw-bold text-primary"></p>
-          <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Đóng</button>
-        </div>
-      </div>
-    </div>
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <script type="module" vite-src="~/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
 </body>
 </html>

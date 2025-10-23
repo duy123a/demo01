@@ -14,6 +14,7 @@ namespace Demo01.Infrastructure.Data.UnitOfWork.Interfaces
         IProcessRepository Processes { get; }
         IHolidayRepository Holidays { get; }
         IForecastPlanningRepository ForecastPlannings { get; }
+        IForecastPlanningDateRepository ForecastPlanningDates { get; }
         IForecastPlanningProcessRepository ForecastPlanningProcesses { get; }
     }
 }

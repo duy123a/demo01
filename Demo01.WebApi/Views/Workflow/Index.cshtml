@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "Production Workflow";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <h2 class="text-center mb-4">Production Summary</h2>
+
+    <!-- Cutting Department -->
+    <div class="section">
+        <h4 class="section-title bg-info text-white">CUTTING DEPARTMENT</h4>
+        <div class="workflow" id="cut-section">
+            <div class="row">
+                <div class="process" id="receiveFabric" data-step="ReceiveFabric">Receive Fabric</div>
+                <div class="process" id="spreadFabric" data-step="SpreadFabric">Spread Fabric</div>
+                <div class="process" id="cutFabric" data-step="CutFabric">Cut Fabric</div>
+                <div class="process" id="deliverFabric" data-step="DeliverFabric">Deliver Fabric</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parachute Department -->
+    <div class="section mt-5">
+        <h4 class="section-title bg-warning text-dark">PARACHUTE DEPARTMENT</h4>
+        <div class="workflow" id="sew-section">
+
+            <!-- Row 1: Receive Fabric Centered -->
+            <div class="row center-row">
+                <div class="process" id="receiveFabricSew" data-step="ReceiveFabricSew">Receive Fabric</div>
+            </div>
+
+            <!-- Row 2: 4 processes horizontal -->
+            <div class="row">
+                <div class="process" id="joinTail" data-step="joinTail">Join Tail (1)</div>
+                <div class="process" id="joinBottom" data-step="JoinBottom">Join Bottom (2)</div>
+                <div class="process" id="joinTop" data-step="JoinTop">Join Top (3)</div>
+                <div class="process" id="sewPocket" data-step="SewPocket">Sew Pocket (4)</div>
+            </div>
+
+            <!-- Row 3: QC Join -->
+            <div class="row center-row">
+                <div class="process" id="qcJoin" data-step="QcJoin">QC Join</div>
+            </div>
+
+            <!-- Row 4: 3 processes horizontal -->
+            <div class="row">
+                <div class="process" id="sewTail" data-step="SewTail">Sew Tail</div>
+                <div class="process" id="sewBottom" data-step="SewBottom">Sew Bottom</div>
+                <div class="process" id="sewTop" data-step="SewTop">Sew Top</div>
+            </div>
+
+            <!-- Row 5: QC -->
+            <div class="row">
+                <div class="process" id="qcTail" data-step="QcTail">QC Tail</div>
+                <div class="process" id="qcBottom" data-step="QcBottom">QC Bottom</div>
+                <div class="process" id="qcTop" data-step="QcTop">QC Top</div>
+            </div>
+
+            <!-- Row 6: QC Final -->
+            <div class="row">
+                <div class="process" id="qcFinal" data-step="QcFinal">QC Final</div>
+            </div>
+            <div class="row">
+                <div class="process" id="packing" data-step="Packing">Packing</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="process normal">Normal</div>
+        <div class="process warning"> Warning</div>
+        <div class="process late">Late</div>
+        <div class="process error">Error</div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" vite-href="js/workflow.js" />
+    <script type="module" vite-src="js/workflow.js"></script>
+}

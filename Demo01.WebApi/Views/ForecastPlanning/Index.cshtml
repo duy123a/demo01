@@ -1,4 +1,4 @@
-﻿@model Demo01.WebApi.ViewModels.ForecastPlanningViewModel
+﻿@model Demo01.WebApi.ViewModels.ForecastPlanningViewModel.ForecastPlanningViewModel
 @using System.Globalization
 
 @{
@@ -81,7 +81,7 @@
             <button type="button" id="btnSaveDraft" class="btn btn-demo-submit btn-sm">
                 Save Draft
             </button>
-            <button type="button" id="btnSaveActualLf" class="btn btn-demo-submit btn-sm">
+            <button type="button" id="btnSave" class="btn btn-demo-submit btn-sm">
                 Submit
             </button>
         </div>
@@ -99,7 +99,7 @@
                     <th></th>
                     @foreach (var day in Model.DatesInWeek)
                     {
-                        <th>@day.ToString("dddd", new CultureInfo("vi-VN"))</th>
+                        <th>@day.ToString("dddd", new CultureInfo("en-US"))</th>
                     }
                 </tr>
             </thead>
@@ -116,7 +116,7 @@
                             var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
 
                             var record = Model.PlanningProcesses
-                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanning.PlanningDate == dateOnly);
+                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate == dateOnly);
 
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
@@ -141,7 +141,7 @@
                             var disabled = "disabled";
 
                             var record = Model.PlanningProcesses
-                                    .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanning.PlanningDate == dateOnly);
+                                    .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate == dateOnly);
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
                                        name="@($"actualLf_{process.Id}_{day:yyyyMMdd}")"
@@ -158,7 +158,7 @@
                     @foreach (var day in Model.DatesInWeek)
                     {
                         var firstRecord = Model.PlanningProcesses
-                            .FirstOrDefault(p => p.ForecastPlanning.PlanningDate == DateOnly.FromDateTime(day.DateTime));
+                            .FirstOrDefault(p => p.ForecastPlanningDate.PlanningDate == DateOnly.FromDateTime(day.DateTime));
 
                         <td>
                             <input type="text" class="form-control form-control-sm text-center"
@@ -173,14 +173,6 @@
 </div>
 
 <script>
-    const debounce = (func, delay) => {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    };
-
     async function saveWorkingHour(input) {
         const name = input.name;
         const value = parseFloat(input.value) || 0;
@@ -208,11 +200,11 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         // Auto-save working hours
-        document.querySelectorAll('input[name^="workingHour_"]').forEach(input => {
-            input.addEventListener('input', debounce(e => {
-                saveWorkingHour(e.target);
-            }, 700));
-        });
+        //document.querySelectorAll('input[name^="workingHour_"]').forEach(input => {
+        //    input.addEventListener('input', debounce(e => {
+        //        saveWorkingHour(e.target);
+        //    }, 700));
+        //});
 
         // Update HasSaturday flag
         const chk = document.getElementById('hasSaturday');
@@ -222,6 +214,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     forecastWeekId: '@Model.SelectedWeekId',
+                    departmentId: '@Model.SelectedDepartmentId',
                     hasSaturday: chk.checked
                 })
             });
@@ -232,10 +225,10 @@
             window.location.href = url.toString();
         });
 
-        // Update actual lf on button click
-        const btnSave = document.getElementById('btnSaveActualLf');
+        // Update working hour on button click
+        const btnSave = document.getElementById('btnSave');
         btnSave.addEventListener('click', async () => {
-            const inputs = document.querySelectorAll('input[name^="actualLf_"]');
+            const inputs = document.querySelectorAll('input[name^="workingHour_"]');
             const payload = [];
 
             inputs.forEach(input => {
@@ -244,7 +237,7 @@
                 payload.push({
                     processId: processId,
                     date: dateStr,
-                    actualLf: value,
+                    workingHour: value,
                     forecastId: '@Model.SelectedForecastId',
                     forecastWeekId: '@Model.SelectedWeekId',
                     departmentId: '@Model.SelectedDepartmentId'
@@ -253,7 +246,7 @@
 
             showLoading();
 
-            const res = await fetch('/ForecastPlanning/SaveActualLf', {
+            const res = await fetch('/ForecastPlanning/UpdateWorkingHourList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -262,7 +255,7 @@
             hideLoading();
 
             if (res.ok) {
-                showSuccessToast('✅ Saved successfully!');
+                showSuccessToastAfterRedirect('✅ Saved successfully!');
                 const url = new URL(window.location.href);
                 window.location.href = url.toString();
 

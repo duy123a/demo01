@@ -1,5 +1,5 @@
 ﻿using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
-using Demo01.WebApi.ViewModels;
+using Demo01.WebApi.ViewModels.ForecastDetailViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

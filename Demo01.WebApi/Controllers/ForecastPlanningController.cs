@@ -1,6 +1,6 @@
 ﻿using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
 using Demo01.Infrastructure.Entities;
-using Demo01.WebApi.ViewModels;
+using Demo01.WebApi.ViewModels.ForecastPlanningViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,24 +41,23 @@ namespace Demo01.WebApi.Controllers
             vm.SelectedForecastId = forecastId;
 
             // --- Weeks dropdown ---
-            if (forecastId.HasValue)
-            {
-                vm.Weeks = await _uow.ForecastWeeks
-                    .GetAll()
-                    .Where(w => w.ForecastId == forecastId.Value)
-                    .OrderBy(w => w.WeekNumber)
-                    .Select(w => new ForecastWeekDropdownItem
-                    {
-                        ForecastWeekId = w.ForecastWeekId,
-                        DisplayName = $"Week {w.WeekNumber:D2} ({w.StartDate:dd/MM} - {w.EndDate:dd/MM})"
-                    })
-                    .ToListAsync();
+            if (!forecastId.HasValue) return View(vm);
 
-                if (weekId == null && vm.Weeks.Any())
-                    weekId = vm.Weeks.First().ForecastWeekId;
+            vm.Weeks = await _uow.ForecastWeeks
+                .GetAll()
+                .Where(w => w.ForecastId == forecastId.Value)
+                .OrderBy(w => w.WeekNumber)
+                .Select(w => new ForecastWeekDropdownItem
+                {
+                    ForecastWeekId = w.ForecastWeekId,
+                    DisplayName = $"Week {w.WeekNumber:D2} ({w.StartDate:dd/MM} - {w.EndDate:dd/MM})"
+                })
+                .ToListAsync();
 
-                vm.SelectedWeekId = weekId;
-            }
+            if (weekId == null && vm.Weeks.Any())
+                weekId = vm.Weeks.First().ForecastWeekId;
+
+            vm.SelectedWeekId = weekId;
 
             // --- Department dropdown ---
             vm.Departments = await _uow.Departments
@@ -75,182 +74,180 @@ namespace Demo01.WebApi.Controllers
 
             vm.SelectedDepartmentId = departmentId;
 
-            // --- Load ForecastWeek info ---
-            if (vm.SelectedWeekId.HasValue)
-            {
-                var week = await _uow.ForecastWeeks
-                    .GetAll()
-                    .Where(w => w.ForecastWeekId == vm.SelectedWeekId.Value)
-                    .FirstOrDefaultAsync();
+            // --- Load week info ---
+            if (!vm.SelectedWeekId.HasValue || !vm.SelectedDepartmentId.HasValue)
+                return View(vm);
 
-                if (week != null)
-                {
-                    vm.SelectedWeek = week;
-                    vm.TargetLf = week.TotalLf;
-                    vm.HasSaturday = week.HasSaturday;
-                    vm.DatesInWeek = Enumerable.Range(0, (week.EndDate - week.StartDate).Days)
-                        .Select(i => week.StartDate.AddDays(i))
-                        .Where(d => d.DayOfWeek != DayOfWeek.Sunday)
-                        .ToList();
-                    vm.HolidayList = await _uow.Holidays
-                        .GetAll()
-                        .Where(h => h.Date >= DateOnly.FromDateTime(week.StartDate.DateTime)
-                                 && h.Date <= DateOnly.FromDateTime(week.EndDate.DateTime))
-                        .Select(h => h.Date)
-                        .ToListAsync();
-                }
-            }
+            var week = await _uow.ForecastWeeks
+                .GetAll()
+                .Where(w => w.ForecastWeekId == vm.SelectedWeekId.Value)
+                .FirstOrDefaultAsync();
 
-            // --- Load Processes (BOTTOM, TOP, FINAL, ...) ---
-            var processes = await _uow.Processes.GetAll().ToListAsync();
-            vm.AllProcesses = processes;
+            if (week == null)
+                return View(vm);
 
-            // --- Load Planning data ---
-            if (vm.SelectedWeekId.HasValue)
-            {
-                var start = vm.SelectedWeek.StartDate;
-                var end = vm.SelectedWeek.EndDate;
+            vm.SelectedWeek = week;
+            vm.TargetLf = week.TotalLf;
 
-                // tạo danh sách ngày
-                var days = Enumerable.Range(0, (end - start).Days + 1)
-                    .Select(i => start.AddDays(i))
-                    .Where(d => d.DayOfWeek != DayOfWeek.Sunday)
-                    .ToList();
+            // --- Build working days ---
+            var days = Enumerable.Range(0, (week.EndDate - week.StartDate).Days + 1)
+                .Select(i => week.StartDate.AddDays(i))
+                .Where(d => d.DayOfWeek != DayOfWeek.Sunday)
+                .ToList();
 
-                // lấy tất cả ForecastPlanning của tuần này
-                var weekPlannings = await _uow.ForecastPlannings
-                    .GetAll()
-                    .Where(p => p.ForecastWeekId == vm.SelectedWeekId.Value)
-                    .Include(p => p.ForecastWeek)
-                    .ToListAsync();
+            vm.DatesInWeek = days;
 
-                var existingProcesses = await _uow.ForecastPlanningProcesses
-                    .GetAll()
-                    .Include(fpp => fpp.ForecastPlanning)
-                    .Where(p => p.ForecastPlanning.ForecastWeekId == vm.SelectedWeekId.Value)
-                    .ToListAsync();
+            vm.HolidayList = await _uow.Holidays
+                .GetAll()
+                .Where(h => h.Date >= DateOnly.FromDateTime(week.StartDate.DateTime)
+                         && h.Date <= DateOnly.FromDateTime(week.EndDate.DateTime))
+                .Select(h => h.Date)
+                .ToListAsync();
 
-                foreach (var day in days)
-                {
-                    var planningDate = DateOnly.FromDateTime(day.DateTime);
-
-                    // nếu chưa có ForecastPlanning cho ngày này thì tạo mới
-                    var planning = weekPlannings.FirstOrDefault(x => x.PlanningDate == planningDate);
-                    if (planning == null)
-                    {
-                        planning = new ForecastPlanning
-                        {
-                            Id = Guid.NewGuid(),
-                            ForecastWeekId = vm.SelectedWeekId.Value,
-                            PlanningDate = planningDate,
-                            CreatedAt = DateTimeOffset.Now
-                        };
-                        await _uow.ForecastPlannings.AddAsync(planning);
-                        weekPlannings.Add(planning);
-                    }
-
-                    foreach (var process in processes)
-                    {
-                        // nếu chưa có ForecastPlanningProcess cho process + ngày này thì tạo mới
-                        var exist = existingProcesses.FirstOrDefault(x =>
-                            x.ProcessId == process.Id && x.ForecastPlanningId == planning.Id);
-
-                        if (exist == null)
-                        {
-                            decimal defaultHour = day.DayOfWeek switch
-                            {
-                                DayOfWeek.Monday => 11,
-                                DayOfWeek.Tuesday => 9,
-                                DayOfWeek.Wednesday => 11,
-                                DayOfWeek.Thursday => 9,
-                                DayOfWeek.Friday => 11,
-                                DayOfWeek.Saturday => 8,
-                                _ => 0
-                            };
-
-                            var newProc = new ForecastPlanningProcess
-                            {
-                                Id = Guid.NewGuid(),
-                                ForecastPlanningId = planning.Id,
-                                ProcessId = process.Id,
-                                WorkingHour = defaultHour,
-                                ActualLf = 0,
-                                TargetLf = 0
-                            };
-
-                            await _uow.ForecastPlanningProcesses.AddAsync(newProc);
-                            existingProcesses.Add(newProc);
-                        }
-                    }
-                }
-
-                await _uow.SaveChangesAsync(); // lưu các record mới tạo
-
-                vm.TotalHours = await CalculateTotalHourAsync(vm.SelectedWeekId!.Value);
-                vm.PlanningProcesses = existingProcesses;
-
-                await DistributeTargetLfAsync(vm.SelectedWeekId!.Value);
-            }
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateWorkingHour([FromBody] UpdateWorkingHourDto dto)
-        {
-            // Parse date từ string yyyyMMdd → DateOnly
-            if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-                return BadRequest("Invalid date format");
-
-            var planningDate = DateOnly.FromDateTime(parsedDate);
-
-            // Tìm ForecastPlanning tương ứng
+            // --- Get or create ForecastPlanning ---
             var planning = await _uow.ForecastPlannings
                 .GetAll()
+                .Include(p => p.ForecastPlanningDates)
+                .ThenInclude(d => d.ForecastPlanningProcesses)
                 .FirstOrDefaultAsync(p =>
-                    p.ForecastWeekId == dto.ForecastWeekId &&
-                    p.PlanningDate == planningDate);
+                    p.ForecastWeekId == week.ForecastWeekId &&
+                    p.DepartmentId == departmentId);
 
             if (planning == null)
             {
-                // Nếu chưa có thì tạo mới
                 planning = new ForecastPlanning
                 {
                     Id = Guid.NewGuid(),
-                    ForecastWeekId = dto.ForecastWeekId,
-                    PlanningDate = planningDate,
+                    ForecastWeekId = week.ForecastWeekId,
+                    DepartmentId = departmentId!.Value,
                     CreatedAt = DateTimeOffset.Now
                 };
                 await _uow.ForecastPlannings.AddAsync(planning);
                 await _uow.SaveChangesAsync();
             }
-            else
+
+            vm.HasSaturday = planning.HasSaturday;
+
+            // --- Load all processes ---
+            var processes = await _uow.Processes.GetAll().ToListAsync();
+            vm.AllProcesses = processes;
+
+            // --- Create ForecastPlanningDate + ForecastPlanningProcess if missing ---
+            foreach (var day in days)
             {
-                // Nếu có rồi thì chỉ update PlanningDate nếu cần (cho đồng bộ)
-                planning.PlanningDate = planningDate;
+                var planningDate = planning.ForecastPlanningDates
+                    .FirstOrDefault(x => x.PlanningDate == DateOnly.FromDateTime(day.DateTime));
+
+                if (planningDate == null)
+                {
+                    planningDate = new ForecastPlanningDate
+                    {
+                        Id = Guid.NewGuid(),
+                        PlanningDate = DateOnly.FromDateTime(day.DateTime),
+                        ForecastPlanningId = planning.Id,
+                        CreatedAt = DateTimeOffset.Now
+                    };
+                    await _uow.ForecastPlanningDates.AddAsync(planningDate);
+                    planning.ForecastPlanningDates.Add(planningDate);
+                }
+
+                foreach (var process in processes)
+                {
+                    if (!planningDate.ForecastPlanningProcesses.Any(p => p.ProcessId == process.Id))
+                    {
+                        decimal defaultHour = day.DayOfWeek switch
+                        {
+                            DayOfWeek.Monday => 11,
+                            DayOfWeek.Tuesday => 9,
+                            DayOfWeek.Wednesday => 11,
+                            DayOfWeek.Thursday => 9,
+                            DayOfWeek.Friday => 11,
+                            DayOfWeek.Saturday => 8,
+                            _ => 0
+                        };
+
+                        var newProc = new ForecastPlanningProcess
+                        {
+                            Id = Guid.NewGuid(),
+                            ForecastPlanningDateId = planningDate.Id,
+                            ProcessId = process.Id,
+                            WorkingHour = defaultHour,
+                            ActualLf = 0,
+                            TargetLf = 0,
+                            CreatedAt = DateTimeOffset.Now
+                        };
+
+                        await _uow.ForecastPlanningProcesses.AddAsync(newProc);
+                        planningDate.ForecastPlanningProcesses.Add(newProc);
+                    }
+                }
             }
 
-            // Tìm process tương ứng
-            var process = await _uow.Processes
+            await _uow.SaveChangesAsync();
+
+            vm.PlanningProcesses = planning.ForecastPlanningDates
+                .SelectMany(d => d.ForecastPlanningProcesses)
+                .ToList();
+
+            vm.TotalHours = await CalculateTotalHourAsync(vm.SelectedWeekId!.Value, departmentId!.Value);
+            await DistributeTargetLfAsync(vm.SelectedWeekId!.Value, departmentId!.Value);
+
+            return View(vm);
+        }
+
+        // ----------------------------- Update Working Hour -----------------------------
+        [HttpPost]
+        public async Task<IActionResult> UpdateWorkingHour([FromBody] UpdateWorkingHourDto dto)
+        {
+            if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                return BadRequest("Invalid date format");
+
+            var dateOnly = DateOnly.FromDateTime(parsedDate);
+
+            var planning = await _uow.ForecastPlannings
                 .GetAll()
-                .FirstOrDefaultAsync(x => x.Id == dto.ProcessId);
+                .FirstOrDefaultAsync(p => p.ForecastWeekId == dto.ForecastWeekId && p.DepartmentId == dto.DepartmentId);
 
-            if (process == null)
-                return BadRequest("Invalid process");
+            if (planning == null)
+            {
+                planning = new ForecastPlanning
+                {
+                    Id = Guid.NewGuid(),
+                    ForecastWeekId = dto.ForecastWeekId,
+                    DepartmentId = dto.DepartmentId,
+                    CreatedAt = DateTimeOffset.Now
+                };
+                await _uow.ForecastPlannings.AddAsync(planning);
+                await _uow.SaveChangesAsync();
+            }
 
-            // Tìm record trong ForecastPlanningProcesses
+            var planningDate = await _uow.ForecastPlanningDates
+                .GetAll()
+                .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate == dateOnly);
+
+            if (planningDate == null)
+            {
+                planningDate = new ForecastPlanningDate
+                {
+                    Id = Guid.NewGuid(),
+                    ForecastPlanningId = planning.Id,
+                    PlanningDate = dateOnly,
+                    CreatedAt = DateTimeOffset.Now
+                };
+                await _uow.ForecastPlanningDates.AddAsync(planningDate);
+                await _uow.SaveChangesAsync();
+            }
+
             var record = await _uow.ForecastPlanningProcesses
                 .GetAll()
-                .FirstOrDefaultAsync(p =>
-                    p.ForecastPlanningId == planning.Id &&
-                    p.ProcessId == dto.ProcessId);
+                .FirstOrDefaultAsync(p => p.ForecastPlanningDateId == planningDate.Id && p.ProcessId == dto.ProcessId);
 
             if (record == null)
             {
                 record = new ForecastPlanningProcess
                 {
                     Id = Guid.NewGuid(),
-                    ForecastPlanningId = planning.Id,
+                    ForecastPlanningDateId = planningDate.Id,
                     ProcessId = dto.ProcessId,
                     WorkingHour = dto.WorkingHour,
                     ActualLf = 0,
@@ -261,27 +258,111 @@ namespace Demo01.WebApi.Controllers
             else
             {
                 record.WorkingHour = dto.WorkingHour;
+                record.UpdatedAt = DateTimeOffset.Now;
             }
 
-            planning.UpdatedAt = DateTimeOffset.Now;
             await _uow.SaveChangesAsync();
-
             return Ok();
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateHasSaturday([FromBody] UpdateHasSaturdayDto dto)
+        public async Task<IActionResult> UpdateWorkingHourList([FromBody] List<UpdateWorkingHourDto> dtos)
         {
-            var week = await _uow.ForecastWeeks.GetByIdAsync(dto.ForecastWeekId);
-            if (week == null)
-                return NotFound();
+            if (dtos == null || !dtos.Any())
+                return BadRequest("Empty list");
 
-            week.HasSaturday = dto.HasSaturday;
+            // Group theo tuần và phòng ban để xử lý batch
+            var grouped = dtos
+                .GroupBy(x => new { x.ForecastWeekId, x.DepartmentId })
+                .ToList();
+
+            foreach (var group in grouped)
+            {
+                var weekId = group.Key.ForecastWeekId;
+                var departmentId = group.Key.DepartmentId;
+
+                // Load planning (nếu chưa có thì tạo mới)
+                var planning = await _uow.ForecastPlannings
+                    .GetAll()
+                    .FirstOrDefaultAsync(p => p.ForecastWeekId == weekId && p.DepartmentId == departmentId);
+
+                if (planning == null)
+                {
+                    planning = new ForecastPlanning
+                    {
+                        Id = Guid.NewGuid(),
+                        ForecastWeekId = weekId,
+                        DepartmentId = departmentId,
+                        CreatedAt = DateTimeOffset.Now
+                    };
+                    await _uow.ForecastPlannings.AddAsync(planning);
+                    await _uow.SaveChangesAsync();
+                }
+
+                // Lấy tất cả ngày trong batch
+                var dates = group
+                    .Select(x => DateOnly.FromDateTime(DateTime.ParseExact(x.Date, "yyyyMMdd", CultureInfo.InvariantCulture)))
+                    .Distinct()
+                    .ToList();
+
+                // Load trước tất cả ForecastPlanningDate liên quan
+                var existingDates = await _uow.ForecastPlanningDates
+                    .GetAll()
+                    .Where(d => d.ForecastPlanningId == planning.Id && dates.Contains(d.PlanningDate))
+                    .ToListAsync();
+
+                foreach (var dto in group)
+                {
+                    if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                        continue;
+
+                    var dateOnly = DateOnly.FromDateTime(parsedDate);
+                    var planningDate = existingDates.FirstOrDefault(d => d.PlanningDate == dateOnly);
+
+                    if (planningDate == null)
+                    {
+                        planningDate = new ForecastPlanningDate
+                        {
+                            Id = Guid.NewGuid(),
+                            ForecastPlanningId = planning.Id,
+                            PlanningDate = dateOnly,
+                            CreatedAt = DateTimeOffset.Now
+                        };
+                        await _uow.ForecastPlanningDates.AddAsync(planningDate);
+                        existingDates.Add(planningDate);
+                    }
+
+                    // Load or create process record
+                    var record = await _uow.ForecastPlanningProcesses
+                        .GetAll()
+                        .FirstOrDefaultAsync(p => p.ForecastPlanningDateId == planningDate.Id && p.ProcessId == dto.ProcessId);
+
+                    if (record == null)
+                    {
+                        record = new ForecastPlanningProcess
+                        {
+                            Id = Guid.NewGuid(),
+                            ForecastPlanningDateId = planningDate.Id,
+                            ProcessId = dto.ProcessId,
+                            WorkingHour = dto.WorkingHour,
+                            ActualLf = 0,
+                            TargetLf = 0
+                        };
+                        await _uow.ForecastPlanningProcesses.AddAsync(record);
+                    }
+                    else
+                    {
+                        record.WorkingHour = dto.WorkingHour;
+                        record.UpdatedAt = DateTimeOffset.Now;
+                    }
+                }
+            }
+
             await _uow.SaveChangesAsync();
-
             return Ok();
         }
 
+        // ----------------------------- Save Actual LF -----------------------------
         [HttpPost]
         public async Task<IActionResult> SaveActualLf([FromBody] List<UpdateActualLfDto> items)
         {
@@ -290,14 +371,11 @@ namespace Demo01.WebApi.Controllers
                 if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                     continue;
 
-                var planningDate = DateOnly.FromDateTime(parsedDate);
+                var dateOnly = DateOnly.FromDateTime(parsedDate);
 
-                // Tìm ForecastPlanning
                 var planning = await _uow.ForecastPlannings
                     .GetAll()
-                    .FirstOrDefaultAsync(p =>
-                        p.ForecastWeekId == dto.ForecastWeekId &&
-                        p.PlanningDate == planningDate);
+                    .FirstOrDefaultAsync(p => p.ForecastWeekId == dto.ForecastWeekId && p.DepartmentId == dto.DepartmentId);
 
                 if (planning == null)
                 {
@@ -305,37 +383,51 @@ namespace Demo01.WebApi.Controllers
                     {
                         Id = Guid.NewGuid(),
                         ForecastWeekId = dto.ForecastWeekId,
-                        PlanningDate = planningDate,
+                        DepartmentId = dto.DepartmentId,
                         CreatedAt = DateTimeOffset.Now
                     };
                     await _uow.ForecastPlannings.AddAsync(planning);
                     await _uow.SaveChangesAsync();
                 }
 
-                // Tìm process
-                var record = await _uow.ForecastPlanningProcesses
+                var planningDate = await _uow.ForecastPlanningDates
                     .GetAll()
-                    .FirstOrDefaultAsync(p =>
-                        p.ForecastPlanningId == planning.Id &&
-                        p.ProcessId == dto.ProcessId);
+                    .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate == dateOnly);
 
-                if (record != null)
+                if (planningDate == null)
                 {
-                    record.ActualLf = dto.ActualLf;
-                    record.UpdatedAt = DateTimeOffset.Now;
-                }
-                else
-                {
-                    var newProc = new ForecastPlanningProcess
+                    planningDate = new ForecastPlanningDate
                     {
                         Id = Guid.NewGuid(),
                         ForecastPlanningId = planning.Id,
+                        PlanningDate = dateOnly,
+                        CreatedAt = DateTimeOffset.Now
+                    };
+                    await _uow.ForecastPlanningDates.AddAsync(planningDate);
+                    await _uow.SaveChangesAsync();
+                }
+
+                var process = await _uow.ForecastPlanningProcesses
+                    .GetAll()
+                    .FirstOrDefaultAsync(p => p.ForecastPlanningDateId == planningDate.Id && p.ProcessId == dto.ProcessId);
+
+                if (process == null)
+                {
+                    process = new ForecastPlanningProcess
+                    {
+                        Id = Guid.NewGuid(),
+                        ForecastPlanningDateId = planningDate.Id,
                         ProcessId = dto.ProcessId,
                         WorkingHour = 0,
                         ActualLf = dto.ActualLf,
                         TargetLf = 0
                     };
-                    await _uow.ForecastPlanningProcesses.AddAsync(newProc);
+                    await _uow.ForecastPlanningProcesses.AddAsync(process);
+                }
+                else
+                {
+                    process.ActualLf = dto.ActualLf;
+                    process.UpdatedAt = DateTimeOffset.Now;
                 }
             }
 
@@ -343,65 +435,40 @@ namespace Demo01.WebApi.Controllers
             return Ok();
         }
 
-        private async Task DistributeTargetLfAsync(Guid weekId)
+        // ----------------------------- Distribute Target LF -----------------------------
+        private async Task DistributeTargetLfAsync(Guid weekId, int departmentId)
         {
-            // Lấy thông tin tuần và process
+            // Load target week and related planning for that department
             var week = await _uow.ForecastWeeks
                 .GetAll()
-                .Include(w => w.ForecastPlannings)
                 .FirstOrDefaultAsync(w => w.ForecastWeekId == weekId);
 
             if (week == null || week.TotalLf <= 0)
                 return;
 
-            // Tính tổng giờ (đã bỏ thứ 7 & holiday)
-            var totalHoursByProcess = await CalculateTotalHourAsync(weekId);
+            var planning = await _uow.ForecastPlannings
+                .GetAll()
+                .Include(p => p.ForecastPlanningDates)
+                    .ThenInclude(d => d.ForecastPlanningProcesses)
+                .FirstOrDefaultAsync(p => p.ForecastWeekId == weekId && p.DepartmentId == departmentId);
+
+            if (planning == null)
+                return;
+
+            var totalHoursByProcess = await CalculateTotalHourAsync(weekId, departmentId);
             if (!totalHoursByProcess.Any())
                 return;
 
-            // Lấy toàn bộ process thuộc tuần
-            var processes = await _uow.ForecastPlanningProcesses
-                .GetAll()
-                .Include(p => p.ForecastPlanning)
-                .Where(p => p.ForecastPlanning.ForecastWeek.ForecastWeekId == weekId)
-                .ToListAsync();
+            var holidays = await _uow.Holidays.GetAll().Select(h => h.Date).ToListAsync();
 
-            // Lấy holiday
-            var holidays = await _uow.Holidays
-                .GetAll()
-                .Select(h => h.Date)
-                .ToListAsync();
-
-            // Lọc bỏ thứ 7 và ngày nghỉ
-            if (!week.HasSaturday)
+            foreach (var date in planning.ForecastPlanningDates)
             {
-                processes = processes
-                    .Where(p => p.ForecastPlanning.PlanningDate.DayOfWeek != DayOfWeek.Saturday)
-                    .ToList();
-            }
-
-            processes = processes
-                .Where(p => !holidays.Contains(p.ForecastPlanning.PlanningDate))
-                .ToList();
-
-            // Duyệt từng ngày để chia target
-            var days = processes
-                .Select(p => p.ForecastPlanning.PlanningDate)
-                .Distinct()
-                .OrderBy(d => d)
-                .ToList();
-
-            foreach (var day in days)
-            {
-                var dayProcesses = processes
-                    .Where(p => p.ForecastPlanning.PlanningDate == day)
-                    .ToList();
-
-                if (!dayProcesses.Any())
+                if (!planning.HasSaturday && date.PlanningDate.DayOfWeek == DayOfWeek.Saturday)
+                    continue;
+                if (holidays.Contains(date.PlanningDate))
                     continue;
 
-                // Tính target dựa trên working hour
-                foreach (var proc in dayProcesses)
+                foreach (var proc in date.ForecastPlanningProcesses)
                 {
                     if (!totalHoursByProcess.TryGetValue(proc.ProcessId, out var totalHour) || totalHour == 0)
                         continue;
@@ -410,9 +477,9 @@ namespace Demo01.WebApi.Controllers
                     proc.TargetLf = Math.Round(target, 2);
                 }
 
-                // Cập nhật theo giá trị nhỏ nhất trong ngày (nếu cần đồng bộ)
-                var minTarget = dayProcesses.Min(p => p.TargetLf);
-                foreach (var proc in dayProcesses)
+                // Optional normalization
+                var minTarget = date.ForecastPlanningProcesses.Min(p => p.TargetLf);
+                foreach (var proc in date.ForecastPlanningProcesses)
                 {
                     proc.TargetLf = minTarget;
                 }
@@ -421,7 +488,8 @@ namespace Demo01.WebApi.Controllers
             await _uow.SaveChangesAsync();
         }
 
-        private async Task<Dictionary<int, decimal>> CalculateTotalHourAsync(Guid weekId)
+        // ----------------------------- Calculate Total Hours -----------------------------
+        private async Task<Dictionary<int, decimal>> CalculateTotalHourAsync(Guid weekId, int departmentId)
         {
             var week = await _uow.ForecastWeeks
                 .GetAll()
@@ -430,34 +498,25 @@ namespace Demo01.WebApi.Controllers
             if (week == null)
                 return new Dictionary<int, decimal>();
 
-            // Lấy toàn bộ ForecastPlanningProcess của tuần này
-            var list = await _uow.ForecastPlanningProcesses
+            var planning = await _uow.ForecastPlannings
                 .GetAll()
-                .Include(p => p.ForecastPlanning)
-                .Where(p => p.ForecastPlanning.ForecastWeek.ForecastWeekId == weekId)
-                .ToListAsync();
+                .AsNoTrackingWithIdentityResolution()
+                .Include(p => p.ForecastPlanningDates)
+                    .ThenInclude(d => d.ForecastPlanningProcesses)
+                .FirstOrDefaultAsync(p => p.ForecastWeekId == weekId && p.DepartmentId == departmentId);
 
-            // Lấy danh sách ngày nghỉ
-            var holidays = await _uow.Holidays
-                .GetAll()
-                .Select(h => h.Date)
-                .ToListAsync();
+            if (planning == null)
+                return new Dictionary<int, decimal>();
 
-            // Bỏ thứ 7 nếu không làm
-            if (!week.HasSaturday)
-            {
-                list = list
-                    .Where(p => p.ForecastPlanning.PlanningDate.DayOfWeek != DayOfWeek.Saturday)
-                    .ToList();
-            }
+            var holidays = await _uow.Holidays.GetAll().Select(h => h.Date).ToListAsync();
 
-            // Bỏ ngày nghỉ
-            list = list
-                .Where(p => !holidays.Contains(p.ForecastPlanning.PlanningDate))
+            var validDates = planning.ForecastPlanningDates
+                .Where(d => (planning.HasSaturday || d.PlanningDate.DayOfWeek != DayOfWeek.Saturday)
+                            && !holidays.Contains(d.PlanningDate))
                 .ToList();
 
-            // Nhóm theo ProcessId
-            var totalHoursByProcess = list
+            var totalHoursByProcess = validDates
+                .SelectMany(d => d.ForecastPlanningProcesses)
                 .GroupBy(p => p.ProcessId)
                 .ToDictionary(
                     g => g.Key,
@@ -466,15 +525,45 @@ namespace Demo01.WebApi.Controllers
 
             return totalHoursByProcess;
         }
+
+        // ----------------------------- Update Has Saturday -----------------------------
+        [HttpPost]
+        public async Task<IActionResult> UpdateHasSaturday([FromBody] UpdateHasSaturdayDto dto)
+        {
+            // Lấy ForecastPlanning theo tuần + phòng ban
+            var planning = await _uow.ForecastPlannings
+                .GetAll()
+                .FirstOrDefaultAsync(p =>
+                    p.ForecastWeekId == dto.ForecastWeekId &&
+                    p.DepartmentId == dto.DepartmentId);
+
+            if (planning == null)
+                return NotFound("Forecast planning not found for the specified week and department.");
+
+            // Cập nhật HasSaturday trong ForecastPlanning
+            planning.HasSaturday = dto.HasSaturday;
+            planning.UpdatedAt = DateTimeOffset.Now;
+
+            await _uow.SaveChangesAsync();
+
+            // Cập nhật lại Target LF theo thay đổi mới
+            await DistributeTargetLfAsync(dto.ForecastWeekId, dto.DepartmentId);
+
+            return Ok(new
+            {
+                message = $"Updated HasSaturday = {dto.HasSaturday} for department {dto.DepartmentId} in week {dto.ForecastWeekId}"
+            });
+        }
     }
 
+    // DTOs
     public class UpdateWorkingHourDto
     {
         public Guid ForecastId { get; set; }
         public Guid ForecastWeekId { get; set; }
         public int DepartmentId { get; set; }
         public int ProcessId { get; set; }
-        public string Date { get; set; } = string.Empty;
+        public string Date { get; set; } = string.Empty; // yyyyMMdd
         public decimal WorkingHour { get; set; }
     }
 
@@ -482,6 +571,7 @@ namespace Demo01.WebApi.Controllers
     {
         public Guid ForecastWeekId { get; set; }
         public bool HasSaturday { get; set; }
+        public int DepartmentId { get; set; }
     }
 
     public class UpdateActualLfDto

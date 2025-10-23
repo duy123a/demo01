@@ -17,6 +17,7 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
         public IProcessRepository Processes { get; }
         public IHolidayRepository Holidays { get; }
         public IForecastPlanningRepository ForecastPlannings { get; }
+        public IForecastPlanningDateRepository ForecastPlanningDates { get; }
         public IForecastPlanningProcessRepository ForecastPlanningProcesses { get; }
 
         public PlanningUnitOfWork(
@@ -31,6 +32,7 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
             IProcessRepository processes,
             IHolidayRepository holidays,
             IForecastPlanningRepository forecastPlannings,
+            IForecastPlanningDateRepository forecastPlanningDates,
             IForecastPlanningProcessRepository forecastPlanningProcesses)
             : base(context)
         {
@@ -45,6 +47,7 @@ namespace Demo01.Infrastructure.Data.UnitOfWork
             Processes = processes;
             Holidays = holidays;
             ForecastPlannings = forecastPlannings;
+            ForecastPlanningDates = forecastPlanningDates;
             ForecastPlanningProcesses = forecastPlanningProcesses;
         }
     }

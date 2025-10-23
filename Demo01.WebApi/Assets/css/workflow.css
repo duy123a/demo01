@@ -1,0 +1,73 @@
+﻿/* Container workflow */
+.workflow {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* khoảng cách giữa các row */
+    align-items: center;
+    max-width: 1200px; /* giới hạn màn hình */
+    margin: 0 auto;
+}
+
+/* Row */
+.row {
+    display: flex;
+    gap: 30px; /* khoảng cách giữa các process */
+    justify-content: center;
+    flex-wrap: nowrap; /* không wrap xuống hàng */
+}
+
+/* Row có 1 process căn giữa */
+.center-row {
+    justify-content: center;
+}
+
+/* Các step */
+.process {
+    min-width: 120px;
+    max-width: 140px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    cursor: default;
+    transition: all 0.2s;
+}
+
+    /* trạng thái màu sắc */
+    .process.normal {
+        background-color: #f0f0f0;
+        border: 2px solid #bbb;
+    }
+
+    .process.warning {
+        background-color: #ffe066;
+        border: 2px solid #d4b106;
+    }
+
+    .process.late {
+        background-color: #98fb98;
+        border: 2px solid #3c763d;
+    }
+
+    .process.error {
+        background-color: #ffb3b3;
+        border: 2px solid #a94442;
+    }
+
+/* Section title */
+.section-title {
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: inline-block;
+    font-weight: 700;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}

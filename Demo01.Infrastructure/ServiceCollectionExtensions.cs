@@ -76,6 +76,7 @@ namespace Demo01.Infrastructure
             services.AddScoped<IProcessRepository, ProcessRepository>();
             services.AddScoped<IHolidayRepository, HolidayRepository>();
             services.AddScoped<IForecastPlanningRepository, ForecastPlanningRepository>();
+            services.AddScoped<IForecastPlanningDateRepository, ForecastPlanningDateRepository>();
             services.AddScoped<IForecastPlanningProcessRepository, ForecastPlanningProcessRepository>();
             services.AddScoped<IPlanningUnitOfWork, PlanningUnitOfWork>();
             return services;

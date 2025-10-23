@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo01.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251022044624_InitialDatabase")]
+    [Migration("20251023021531_InitialDatabase")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -242,10 +242,42 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("ForecastItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ForecastWeekId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("HasSaturday")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ForecastItemId");
+
+                    b.HasIndex("ForecastWeekId");
+
+                    b.ToTable("ForecastPlannings");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningDate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("ForecastPlanningId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("PlanningDate")
@@ -256,11 +288,9 @@ namespace Demo01.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ForecastItemId");
+                    b.HasIndex("ForecastPlanningId");
 
-                    b.HasIndex("ForecastWeekId");
-
-                    b.ToTable("ForecastPlannings");
+                    b.ToTable("ForecastPlanningDates");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningProcess", b =>
@@ -275,7 +305,7 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("ForecastPlanningId")
+                    b.Property<Guid>("ForecastPlanningDateId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ProcessId")
@@ -294,7 +324,7 @@ namespace Demo01.Infrastructure.Migrations
 
                     b.HasIndex("ProcessId");
 
-                    b.HasIndex("ForecastPlanningId", "ProcessId")
+                    b.HasIndex("ForecastPlanningDateId", "ProcessId")
                         .IsUnique();
 
                     b.ToTable("ForecastPlanningProcesses");
@@ -314,12 +344,6 @@ namespace Demo01.Infrastructure.Migrations
 
                     b.Property<Guid>("ForecastId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("HasSaturday")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("LfRate")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
@@ -661,24 +685,43 @@ namespace Demo01.Infrastructure.Migrations
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanning", b =>
                 {
+                    b.HasOne("Demo01.Infrastructure.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Demo01.Infrastructure.Entities.ForecastItem", null)
                         .WithMany("ForecastPlannings")
                         .HasForeignKey("ForecastItemId");
 
                     b.HasOne("Demo01.Infrastructure.Entities.ForecastWeek", "ForecastWeek")
-                        .WithMany("ForecastPlannings")
+                        .WithMany()
                         .HasForeignKey("ForecastWeekId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Department");
 
                     b.Navigation("ForecastWeek");
                 });
 
-            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningProcess", b =>
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningDate", b =>
                 {
                     b.HasOne("Demo01.Infrastructure.Entities.ForecastPlanning", "ForecastPlanning")
-                        .WithMany()
+                        .WithMany("ForecastPlanningDates")
                         .HasForeignKey("ForecastPlanningId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ForecastPlanning");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningProcess", b =>
+                {
+                    b.HasOne("Demo01.Infrastructure.Entities.ForecastPlanningDate", "ForecastPlanningDate")
+                        .WithMany("ForecastPlanningProcesses")
+                        .HasForeignKey("ForecastPlanningDateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -688,7 +731,7 @@ namespace Demo01.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ForecastPlanning");
+                    b.Navigation("ForecastPlanningDate");
 
                     b.Navigation("Process");
                 });
@@ -776,11 +819,19 @@ namespace Demo01.Infrastructure.Migrations
                     b.Navigation("ForecastPlannings");
                 });
 
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanning", b =>
+                {
+                    b.Navigation("ForecastPlanningDates");
+                });
+
+            modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastPlanningDate", b =>
+                {
+                    b.Navigation("ForecastPlanningProcesses");
+                });
+
             modelBuilder.Entity("Demo01.Infrastructure.Entities.ForecastWeek", b =>
                 {
                     b.Navigation("ForecastItems");
-
-                    b.Navigation("ForecastPlannings");
                 });
 
             modelBuilder.Entity("Demo01.Infrastructure.Entities.Model", b =>

@@ -10,7 +10,7 @@ namespace Demo01.Infrastructure.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public Guid ForecastPlanningId { get; set; }
+        public Guid ForecastPlanningDateId { get; set; }
 
         [Required]
         public int ProcessId { get; set; }
@@ -22,8 +22,8 @@ namespace Demo01.Infrastructure.Entities
         public decimal TargetLf { get; set; }
 
         // Navigation
-        [ForeignKey(nameof(ForecastPlanningId))]
-        public ForecastPlanning ForecastPlanning { get; set; } = default!;
+        [ForeignKey(nameof(ForecastPlanningDateId))]
+        public ForecastPlanningDate ForecastPlanningDate { get; set; } = default!;
 
         [ForeignKey(nameof(ProcessId))]
         public Process Process { get; set; } = default!;

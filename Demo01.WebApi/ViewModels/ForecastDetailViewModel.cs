@@ -1,4 +1,4 @@
-﻿namespace Demo01.WebApi.ViewModels
+﻿namespace Demo01.WebApi.ViewModels.ForecastDetailViewModel
 {
     public class ForecastDetailViewModel
     {

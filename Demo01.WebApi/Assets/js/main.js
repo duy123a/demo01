@@ -79,6 +79,18 @@ window.showErrorToast = function (message) {
     window.showToast('error', message);
 };
 
+window.showSuccessToastAfterRedirect = function (message) {
+    localStorage.setItem('toastMessage', message);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const msg = localStorage.getItem('toastMessage');
+    if (msg) {
+        window.showSuccessToast(msg);
+        localStorage.removeItem('toastMessage');
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // Handle logout confirmation
     const logoutBtn = document.getElementById('confirmLogoutBtn');

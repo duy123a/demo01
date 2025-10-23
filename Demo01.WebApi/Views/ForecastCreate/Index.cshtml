@@ -1,0 +1,178 @@
+﻿@model Demo01.WebApi.ViewModels.ForecastCreateViewModel.ForecastCreateViewModel
+@{
+    ViewData["Title"] = "Forecast Create";
+}
+
+<style>
+    .order-check {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        background-color: #eee;
+        margin-right: 0.5rem;
+        position: relative;
+    }
+
+        .order-check:checked {
+            background-color: #888;
+            border: none;
+        }
+
+        .order-check:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #aaa;
+        }
+
+    .order-link {
+        flex-grow: 1;
+        color: #3a3a3a;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container mt-3">
+    <h2 class="mb-3">Forecast Create</h2>
+
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Forecast</label>
+                <select name="forecastId" class="form-select" onchange="this.form.submit()">
+                    @foreach (var f in Model.Forecasts)
+                    {
+                        <option value="@f.Id" selected="@(f.Id == Model.ForecastId)">
+                            @f.DisplayName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            @if (Model.Weeks.Any())
+            {
+                <div class="col-md-4">
+                    <label class="form-label">Week</label>
+                    <select id="weekId" name="weekId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var w in Model.Weeks)
+                        {
+                            <option value="@w.Id" selected="@(w.Id == Model.WeekId)">
+                                @w.DisplayName
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-end gap-2 mb-3">
+        <a asp-controller="ForecastDetail" asp-action="Index"
+           asp-route-forecastId="@Model.ForecastId"
+           asp-route-weekId="@Model.WeekId"
+           class="btn btn-demo-submit btn-sm">
+            Back
+        </a>
+
+        <button type="button" class="btn btn-demo-submit btn-sm" onclick="showSuccessToast('Save successfully!')">
+            Save
+        </button>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <h5>Orders</h5>
+            <ul class="list-group">
+                @foreach (var order in Model.Orders)
+                {
+                    <li class="list-group-item d-flex align-items-center">
+                        <input type="checkbox"
+                               class="form-check-input me-2 order-check"
+                               data-order-id="@order.OrderId"
+                               @(order.IsAssigned ? "checked" : "") />
+
+                        <a href="#" class="order-link text-decoration-none flex-grow-1"
+                           data-order-id="@order.OrderId">
+                            @order.SapOrderNumber
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-md-8">
+            <h5>Models</h5>
+            <div id="forecast-items">
+                <table class="table table-bordered table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Serie</th>
+                            <th>Model</th>
+                            <th>Size</th>
+                            <th>Colour</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" class="text-center text-muted">Select an order to view items</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const demoHistory = {
+            "Ikuma3P_24_Warrior": "Model này đã sản xuất ở forecast November 2024, xuất hiện nhiều lỗi khi may đuôi",
+            "KodeP_16_Citrik": "Model này đã sản xuất ở forecast October 2024, phòng cắt hay bị chậm tiến độ",
+            "Artik7P_20_Earth": "Model này đã sản xuất ở forecast September 2024, lỗi vải nhẹ"
+        };
+
+        function initTooltipWhenReady() {
+            if (typeof bootstrap === 'undefined') {
+                return setTimeout(initTooltipWhenReady, 100);
+            }
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+        }
+
+        // Load items khi click order
+        document.querySelectorAll('.order-link').forEach(link => {
+            link.addEventListener('click', async e => {
+                e.preventDefault();
+                const orderId = link.dataset.orderId;
+                const weekSelect = document.querySelector('#weekId');
+                const weekId = weekSelect ? weekSelect.value : '';
+
+                const res = await fetch(`/ForecastCreate/GetItemsByOrder?orderId=${orderId}&weekId=${weekId}`);
+                const items = await res.json();
+
+                const tbody = document.querySelector('#forecast-items tbody');
+                if (items.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No items found for this order</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = items.map(i => {
+                    const key = `${i.modelName}_${i.size}_${i.colour}`;
+                    return `
+                        <tr>
+                            <td>
+                                ${i.serieNumber}
+                                <i class="bi bi-info-circle text-info ms-1" title="${demoHistory[key] || 'No history available'}"></i>
+                            </td>
+                            <td>${i.modelName}</td>
+                            <td>${i.size}</td>
+                            <td>${i.colour}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                initTooltipWhenReady();
+            });
+        });
+
+        initTooltipWhenReady();
+    </script>
+}

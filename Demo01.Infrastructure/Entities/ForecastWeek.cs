@@ -15,10 +15,6 @@ namespace Demo01.Infrastructure.Entities
 
         public decimal TotalLf { get; set; }
 
-        public decimal LfRate { get; set; }
-
-        public bool HasSaturday { get; set; }
-
         [Required]
         public DateTimeOffset StartDate { get; set; }
 
@@ -30,7 +26,5 @@ namespace Demo01.Infrastructure.Entities
         public Forecast Forecast { get; set; } = default!;
 
         public ICollection<ForecastItem> ForecastItems { get; set; } = new List<ForecastItem>();
-
-        public ICollection<ForecastPlanning> ForecastPlannings { get; set; } = new List<ForecastPlanning>();
     }
 }

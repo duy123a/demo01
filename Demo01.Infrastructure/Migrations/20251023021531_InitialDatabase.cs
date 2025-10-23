@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -110,8 +109,6 @@ namespace Demo01.Infrastructure.Migrations
                     ForecastId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WeekNumber = table.Column<int>(type: "int", nullable: false),
                     TotalLf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    LfRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    HasSaturday = table.Column<bool>(type: "bit", nullable: false),
                     StartDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     EndDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -193,8 +190,9 @@ namespace Demo01.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlanningDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    HasSaturday = table.Column<bool>(type: "bit", nullable: false),
                     ForecastWeekId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
                     ForecastItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
@@ -202,6 +200,12 @@ namespace Demo01.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ForecastPlannings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForecastPlannings_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ForecastPlannings_ForecastItems_ForecastItemId",
                         column: x => x.ForecastItemId,
@@ -212,7 +216,28 @@ namespace Demo01.Infrastructure.Migrations
                         column: x => x.ForecastWeekId,
                         principalTable: "ForecastWeeks",
                         principalColumn: "ForecastWeekId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForecastPlanningDates",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanningDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ForecastPlanningId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForecastPlanningDates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForecastPlanningDates_ForecastPlannings_ForecastPlanningId",
+                        column: x => x.ForecastPlanningId,
+                        principalTable: "ForecastPlannings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +245,7 @@ namespace Demo01.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ForecastPlanningId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForecastPlanningDateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProcessId = table.Column<int>(type: "int", nullable: false),
                     WorkingHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ActualLf = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -232,9 +257,9 @@ namespace Demo01.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_ForecastPlanningProcesses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ForecastPlanningProcesses_ForecastPlannings_ForecastPlanningId",
-                        column: x => x.ForecastPlanningId,
-                        principalTable: "ForecastPlannings",
+                        name: "FK_ForecastPlanningProcesses_ForecastPlanningDates_ForecastPlanningDateId",
+                        column: x => x.ForecastPlanningDateId,
+                        principalTable: "ForecastPlanningDates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -285,15 +310,25 @@ namespace Demo01.Infrastructure.Migrations
                 column: "VariantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ForecastPlanningProcesses_ForecastPlanningId_ProcessId",
+                name: "IX_ForecastPlanningDates_ForecastPlanningId",
+                table: "ForecastPlanningDates",
+                column: "ForecastPlanningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlanningProcesses_ForecastPlanningDateId_ProcessId",
                 table: "ForecastPlanningProcesses",
-                columns: new[] { "ForecastPlanningId", "ProcessId" },
+                columns: new[] { "ForecastPlanningDateId", "ProcessId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForecastPlanningProcesses_ProcessId",
                 table: "ForecastPlanningProcesses",
                 column: "ProcessId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForecastPlannings_DepartmentId",
+                table: "ForecastPlannings",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForecastPlannings_ForecastItemId",
@@ -320,19 +355,22 @@ namespace Demo01.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Departments");
-
-            migrationBuilder.DropTable(
                 name: "ForecastPlanningProcesses");
 
             migrationBuilder.DropTable(
                 name: "Holidays");
 
             migrationBuilder.DropTable(
-                name: "ForecastPlannings");
+                name: "ForecastPlanningDates");
 
             migrationBuilder.DropTable(
                 name: "Processes");
+
+            migrationBuilder.DropTable(
+                name: "ForecastPlannings");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
 
             migrationBuilder.DropTable(
                 name: "ForecastItems");

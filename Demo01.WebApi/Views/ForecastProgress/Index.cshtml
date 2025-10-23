@@ -1,0 +1,157 @@
+﻿@model Demo01.WebApi.ViewModels.ForecastProgressViewModel.ForecastProgressViewModel
+@using Demo01.Infrastructure.Enums
+@{
+    ViewData["Title"] = "Forecast Progress Tracking";
+
+    string GetStatusClass(ProgressStatus status) => status switch
+    {
+        ProgressStatus.Done => "bg-success text-white",
+        ProgressStatus.InProgress => "bg-warning text-dark",
+        ProgressStatus.HasIssue => "bg-warning text-dark",
+        ProgressStatus.NotStarted => "bg-danger text-white",
+        _ => ""
+    };
+}
+
+<style>
+    /* CSS cho cột Serie sticky */
+    .table thead tr:first-child th:first-child,
+    .table tbody td:first-child {
+        position: sticky;
+        left: -2px;
+        background-color: #fff; /* nền trắng để che khi scroll */
+        z-index: 2; /* đảm bảo nó nằm trên các cột khác */
+    }
+</style>
+
+<div class="container mt-3">
+    <h2 class="mb-3">Forecast Progress</h2>
+
+    <form asp-action="Index" method="get" class="mb-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Forecast</label>
+                <select name="forecastId" class="form-select" onchange="this.form.submit()">
+                    @foreach (var f in Model.Forecasts)
+                    {
+                        <option value="@f.ForecastId" selected="@(f.ForecastId == Model.SelectedForecastId)">
+                            @f.DisplayName
+                        </option>
+                    }
+                </select>
+            </div>
+
+            @if (Model.Weeks.Any())
+            {
+                <div class="col-md-4">
+                    <label class="form-label">Week</label>
+                    <select name="weekId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var w in Model.Weeks)
+                        {
+                            <option value="@w.ForecastWeekId" selected="@(w.ForecastWeekId == Model.SelectedWeekId)">
+                                @w.DisplayName
+                            </option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered mt-3 text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th rowspan="2">Serie</th>
+                    <th colspan="3">Cutting</th>
+                    <th colspan="3">Parachute</th>
+                    <th colspan="2">Sewing</th>
+                    <th colspan="2">QC & Packing</th>
+                </tr>
+                <tr>
+                    <th>Fabric Received</th>
+                    <th>Spread Fabric</th>
+                    <th>Cut Fabric</th>
+
+                    <th>Fabric Received</th>
+                    <th>Join Fabric</th>
+                    <th>Sew Tail</th>
+
+                    <th>Sew Bottom</th>
+                    <th>Sew Top</th>
+
+                    <th>QC Final</th>
+                    <th>Packing</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Any())
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.SerieNumber</td>
+
+                            @foreach (var step in new[]
+                         {
+                                item.CuttingReceivedFabric,
+                                item.SpreadFabric,
+                                item.CutFabric,
+                                item.ParachuteReceivedFabric,
+                                item.JoinFabric,
+                                item.SewTail,
+                                item.SewBottom,
+                                item.SewTop,
+                                item.QcFinal,
+                                item.Packing
+                            })
+                            {
+                                <td class="@GetStatusClass(step.Status)">
+                                    @switch (step.Status)
+                                    {
+                                        case ProgressStatus.Done:
+                                            @:OK
+                                            break;
+                                        case ProgressStatus.InProgress:
+                                            @:In Progress
+                                            break;
+                                        case ProgressStatus.HasIssue:
+                                            <span>Has Issue</span>
+                                            <i class="bi bi-exclamation-circle ms-1 text-dark" data-bs-toggle="tooltip" title="@step.Message"></i>
+                                            break;
+                                        case ProgressStatus.NotStarted:
+                                            break;
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="13" class="text-center text-muted">
+                            No items found for this week.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function initTooltipWhenReady() {
+            if (typeof bootstrap === 'undefined') {
+                // thử lại sau 100ms
+                return setTimeout(initTooltipWhenReady, 100);
+            }
+
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+        }
+
+        initTooltipWhenReady();
+    </script>
+}
