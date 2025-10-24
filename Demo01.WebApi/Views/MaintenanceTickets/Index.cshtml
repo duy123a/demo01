@@ -1,0 +1,303 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Tickets_Title"];
+    ViewData["Page"] = "maintenance-tickets";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5><i class="bi bi-clipboard-check"></i> @Localizer["Tickets_List_Title"]</h5>
+            <small class="text-muted">@Localizer["Tickets_List_Subtitle"]</small>
+        </div>
+        <div>
+            <button class="btn btn-primary btn-sm" id="createTicketBtn">
+                <i class="bi bi-plus-circle"></i> @Localizer["Tickets_Create_New"]
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Workflow Explanation -->
+        <div class="alert alert-info mb-3">
+            <h6><i class="bi bi-info-circle"></i> @Localizer["Tickets_Workflow_Title"]</h6>
+            <div class="row text-center">
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-plus-circle text-primary"></i>
+                        <h6>@Localizer["Tickets_Workflow_Create"]</h6>
+                        <small>@Localizer["Tickets_Workflow_Create_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-gear-fill text-info"></i>
+                        <h6>@Localizer["Tickets_Workflow_Classify"]</h6>
+                        <small>@Localizer["Tickets_Workflow_Classify_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-play-circle text-warning"></i>
+                        <h6>@Localizer["Tickets_Workflow_Execute"]</h6>
+                        <small>@Localizer["Tickets_Workflow_Execute_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-box-seam text-secondary"></i>
+                        <h6>@Localizer["Tickets_Workflow_Input"]</h6>
+                        <small>@Localizer["Tickets_Workflow_Input_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <h6>@Localizer["Tickets_Workflow_Complete"]</h6>
+                        <small>@Localizer["Tickets_Workflow_Complete_Desc"]</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>@Localizer["Tickets_Table_ID"]</th>
+                        <th>@Localizer["Tickets_Table_Equipment"]</th>
+                        <th>@Localizer["Tickets_Table_Responsible"]</th>
+                        <th>@Localizer["Tickets_Table_Created_Date"]</th>
+                        <th>@Localizer["Tickets_Table_Maintenance_Type"]</th>
+                        <th>@Localizer["Tickets_Table_Assignee"]</th>
+                        <th>@Localizer["Tickets_Table_Priority"]</th>
+                        <th>@Localizer["Tickets_Table_Status"]</th>
+                        <th>@Localizer["Tickets_Table_Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketsTable">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Ticket Modal -->
+<div class="modal fade" id="createTicketModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Tickets_Create_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createTicketForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Equipment_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ticketEquipment" required>
+                            <option value="">@Localizer["Tickets_Select_Equipment"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Created_Date_Label"] <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="ticketDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Responsible_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ticketResponsible" required>
+                            <option value="">@Localizer["Tickets_Select_Responsible"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Maintenance_Type_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ticketType" required>
+                            <option value="">@Localizer["Tickets_Select_Maintenance_Type"]</option>
+                            <option value="internal">@Localizer["Tickets_Type_Internal"]</option>
+                            <option value="external">@Localizer["Tickets_Type_External"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="internalAssigneeSection" style="display: none;">
+                        <label class="form-label">@Localizer["Tickets_Assignee_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ticketAssignee">
+                            <option value="">@Localizer["Tickets_Select_Assignee"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="externalVendorSection" style="display: none;">
+                        <label class="form-label">@Localizer["Tickets_Vendor_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ticketVendor">
+                            <option value="">@Localizer["Tickets_Select_Vendor"]</option>
+                            <option value="Công ty ABC">Công ty ABC</option>
+                            <option value="Công ty XYZ">Công ty XYZ</option>
+                            <option value="Công ty DEF">Công ty DEF</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Description_Label"] <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="ticketDescription" rows="3" required placeholder="@Localizer["Tickets_Description_Placeholder"]"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Due_Date_Label"] <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="ticketDueDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Priority_Label"]</label>
+                        <select class="form-select" id="ticketPriority">
+                            <option value="low">@Localizer["Tickets_Priority_Low"]</option>
+                            <option value="medium" selected>@Localizer["Tickets_Priority_Medium"]</option>
+                            <option value="high">@Localizer["Tickets_Priority_High"]</option>
+                            <option value="urgent">@Localizer["Tickets_Priority_Urgent"]</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Tickets_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="submitTicket">@Localizer["Tickets_Modal_Create"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Ticket Modal -->
+<div class="modal fade" id="editTicketModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Tickets_Edit_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTicketForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Table_ID"]</label>
+                        <input type="text" class="form-control" id="editTicketId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Equipment_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editTicketEquipment" required>
+                            <option value="">@Localizer["Tickets_Select_Equipment"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Created_Date_Label"] <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="editTicketDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Responsible_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editTicketResponsible" required>
+                            <option value="">@Localizer["Tickets_Select_Responsible"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Maintenance_Type_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editTicketType" required>
+                            <option value="">@Localizer["Tickets_Select_Maintenance_Type"]</option>
+                            <option value="internal">@Localizer["Tickets_Type_Internal"]</option>
+                            <option value="external">@Localizer["Tickets_Type_External"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="editInternalAssigneeSection" style="display: none;">
+                        <label class="form-label">@Localizer["Tickets_Assignee_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editTicketAssignee">
+                            <option value="">@Localizer["Tickets_Select_Assignee"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="editExternalVendorSection" style="display: none;">
+                        <label class="form-label">@Localizer["Tickets_Vendor_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editTicketVendor">
+                            <option value="">@Localizer["Tickets_Select_Vendor"]</option>
+                            <option value="Công ty ABC">Công ty ABC</option>
+                            <option value="Công ty XYZ">Công ty XYZ</option>
+                            <option value="Công ty DEF">Công ty DEF</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Description_Label"] <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editTicketDescription" rows="3" required placeholder="@Localizer["Tickets_Description_Placeholder"]"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Due_Date_Label"] <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="editTicketDueDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Priority_Label"]</label>
+                        <select class="form-select" id="editTicketPriority">
+                            <option value="low">@Localizer["Tickets_Priority_Low"]</option>
+                            <option value="medium">@Localizer["Tickets_Priority_Medium"]</option>
+                            <option value="high">@Localizer["Tickets_Priority_High"]</option>
+                            <option value="urgent">@Localizer["Tickets_Priority_Urgent"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Table_Status"]</label>
+                        <select class="form-select" id="editTicketStatus">
+                            <option value="pending">@Localizer["Tickets_Status_Pending"]</option>
+                            <option value="in_progress">@Localizer["Tickets_Status_In_Progress"]</option>
+                            <option value="completed">@Localizer["Tickets_Status_Completed"]</option>
+                            <option value="cancelled">@Localizer["Tickets_Status_Cancelled"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Tickets_Notes_Label"]</label>
+                        <textarea class="form-control" id="editTicketNotes" rows="3" placeholder="@Localizer["Tickets_Notes_Placeholder"]"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Tickets_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="updateTicket">@Localizer["Tickets_Modal_Update"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ticket Detail Modal -->
+<div class="modal fade" id="ticketDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Tickets_Detail_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="ticketDetailModalBody">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-pending>@Localizer["Tickets_Status_Pending"]</span>
+    <span data-status-in-progress>@Localizer["Tickets_Status_In_Progress"]</span>
+    <span data-status-completed>@Localizer["Tickets_Status_Completed"]</span>
+    <span data-status-cancelled>@Localizer["Tickets_Status_Cancelled"]</span>
+    <span data-status-scheduled>@Localizer["Tickets_Status_Scheduled"]</span>
+    <span data-status-overdue>@Localizer["Tickets_Status_Overdue"]</span>
+</div>
+
+@section Scripts {
+    <script vite-src="~/js/tickets.js"></script>
+}

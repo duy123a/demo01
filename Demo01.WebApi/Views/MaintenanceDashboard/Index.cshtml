@@ -1,0 +1,163 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Dashboard_Title"];
+    ViewData["Page"] = "maintenance-dashboard";
+}
+
+<!-- Alert Banner -->
+<div class="alert alert-warning alert-banner d-flex align-items-center mb-4">
+    <i class="bi bi-exclamation-triangle-fill me-3"></i>
+    <div id="alertBannerContent">
+        <strong>3 thiết bị cần bảo trì hôm nay!</strong>
+        <div class="small">Máy cắt vải dù A01, Máy kiểm tra dây cáp C02, Máy kiểm tra khóa móc C03</div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card stat-success">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="stat-content">
+                <h3>42</h3>
+                <p>@Localizer["Dashboard_Active_Equipment"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-warning">
+            <div class="stat-icon">
+                <i class="bi bi-wrench"></i>
+            </div>
+            <div class="stat-content">
+                <h3>5</h3>
+                <p>@Localizer["Dashboard_Maintenance_In_Progress"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-danger">
+            <div class="stat-icon">
+                <i class="bi bi-exclamation-circle-fill"></i>
+            </div>
+            <div class="stat-content">
+                <h3>3</h3>
+                <p>@Localizer["Dashboard_Overdue"]</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card stat-info">
+            <div class="stat-icon">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="stat-content">
+                <h3>12</h3>
+                <p>@Localizer["Dashboard_This_Week"]</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Added Overdue Equipment Section -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle-fill"></i> 
+                    @Localizer["Dashboard_Overdue_Equipment_Title"]
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="overdueEquipmentList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Tables Row -->
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-calendar-week"></i> @Localizer["Dashboard_Today_Schedule_Title"] - @DateTime.Now.ToString("dd/MM/yyyy")</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>@Localizer["Dashboard_Equipment_Column"]</th>
+                                <th>@Localizer["Dashboard_Maintenance_Type_Column"]</th>
+                                <th>@Localizer["Dashboard_Time_Column"]</th>
+                                <th>@Localizer["Dashboard_Responsible_Column"]</th>
+                                <th>@Localizer["Dashboard_Status_Column"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="todayScheduleTable">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts & Notifications -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-bell"></i> @Localizer["Dashboard_Alerts_Title"]</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert-list" id="alertList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Row -->
+<div class="row g-3 mt-3">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-pie-chart"></i> @Localizer["Dashboard_Maintenance_Type_Chart"]</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="maintenanceTypeChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-graph-up"></i> @Localizer["Dashboard_Maintenance_Trend_Chart"]</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="maintenanceTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-pending>@Localizer["Dashboard_Status_Pending"]</span>
+    <span data-status-in-progress>@Localizer["Dashboard_Status_In_Progress"]</span>
+    <span data-status-completed>@Localizer["Dashboard_Status_Completed"]</span>
+    <span data-status-cancelled>@Localizer["Dashboard_Status_Cancelled"]</span>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script vite-src="~/js/dashboard.js"></script>
+}

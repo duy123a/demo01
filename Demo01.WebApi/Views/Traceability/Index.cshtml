@@ -1,0 +1,151 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Traceability_Title"];
+    ViewData["Page"] = "traceability";
+}
+
+<div class="min-vh-100 bg-gradient-to-br">
+    <div class="container-fluid py-6">
+        <!-- Header -->
+        <div class="card shadow-sm mb-6 border-0">
+            <div class="card-body p-6">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-clock-history text-primary fs-1 me-4"></i>
+                    <h1 class="h1 fw-bold text-slate-800 mb-0">@Localizer["Traceability_Title"]</h1>
+                </div>
+                <p class="text-slate-600 mb-0 fs-5">@Localizer["Traceability_Subtitle"]</p>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="card shadow-sm mb-6 border-0">
+            <div class="card-body p-6">
+                <!-- Product Type Selection -->
+                <div class="row g-4 mb-6">
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold text-slate-800 mb-3">
+                            <i class="bi bi-grid-3x3-gap me-2"></i>@Localizer["Traceability_Product_Type"]
+                        </label>
+                        <select class="form-select form-select-lg" id="productTypeSelect">
+                            <option value="paraglider">🪂 @Localizer["Traceability_Paraglider"]</option>
+                            <option value="harness">🪑 @Localizer["Traceability_Harness"]</option>
+                            <option value="material">📦 @Localizer["Traceability_Material"]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search Input with QR Scan -->
+                <div class="row g-3">
+                    <div class="col">
+                        <label class="form-label fw-semibold text-slate-800 mb-2">
+                            <i class="bi bi-search me-2"></i>@Localizer["Traceability_Search_By_Code"]
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search text-slate-400"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="@Localizer["Traceability_Search_Placeholder"]">
+                            <button type="button" class="btn btn-outline-secondary" id="qrScanBtn" title="@Localizer["Traceability_QR_Scan"]">
+                                <i class="bi bi-qr-code-scan"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-auto d-flex align-items-end">
+                        <button type="button" class="btn btn-primary btn-lg px-6 fw-medium" id="searchBtn">
+                            <i class="bi bi-search me-2"></i>@Localizer["Traceability_Search"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="d-none">
+            <!-- Tabs Navigation -->
+            <div id="tabsNav" class="card shadow-sm mb-4 border-0 d-none">
+                <div class="card-body p-2">
+                    <ul class="nav nav-pills nav-fill" id="resultsTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#overview" type="button">
+                                @Localizer["Traceability_Overview"]
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#timeline" type="button">
+                                @Localizer["Traceability_Timeline"]
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#qc" type="button">
+                                @Localizer["Traceability_QC_History"]
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#materials" type="button">
+                                @Localizer["Traceability_Materials"]
+                            </button>
+                        </li>
+                        <li class="nav-item d-none" id="cuttingTab">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#cutting" type="button">
+                                @Localizer["Traceability_Cutting_Info"]
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#metrics" type="button">
+                                @Localizer["Traceability_Quality_Metrics"]
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="resultsTabContent">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview">
+                    <div id="overviewContent"></div>
+                </div>
+
+                <!-- Timeline Tab -->
+                <div class="tab-pane fade" id="timeline">
+                    <div id="timelineContent"></div>
+                </div>
+
+                <!-- QC Tab -->
+                <div class="tab-pane fade" id="qc">
+                    <div id="qcContent"></div>
+                </div>
+
+                <!-- Materials Tab -->
+                <div class="tab-pane fade" id="materials">
+                    <div id="materialsContent"></div>
+                </div>
+
+                <!-- Cutting Tab -->
+                <div class="tab-pane fade" id="cutting">
+                    <div id="cuttingContent"></div>
+                </div>
+
+                <!-- Metrics Tab -->
+                <div class="tab-pane fade" id="metrics">
+                    <div id="metricsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-circle text-muted" style="font-size: 4rem;"></i>
+                <h3 class="h4 fw-semibold text-muted mt-3 mb-2">@Localizer["Traceability_No_Results_Title"]</h3>
+                <p class="text-muted mb-0">@Localizer["Traceability_No_Results_Message"]</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script vite-src="~/js/traceability.js"></script>
+}

@@ -228,4 +228,865 @@
   <data name="ShowMore" xml:space="preserve">
     <value>Show more</value>
   </data>
+  <data name="Dashboard_Title" xml:space="preserve">
+    <value>Maintenance Dashboard</value>
+  </data>
+  <data name="Dashboard_Active_Equipment" xml:space="preserve">
+    <value>Active Equipment</value>
+  </data>
+  <data name="Dashboard_Maintenance_In_Progress" xml:space="preserve">
+    <value>Under Maintenance</value>
+  </data>
+  <data name="Dashboard_Overdue" xml:space="preserve">
+    <value>Overdue</value>
+  </data>
+  <data name="Dashboard_This_Week" xml:space="preserve">
+    <value>This Week</value>
+  </data>
+  <data name="Dashboard_Overdue_Equipment_Title" xml:space="preserve">
+    <value>Overdue Maintenance Equipment</value>
+  </data>
+  <data name="Dashboard_Today_Schedule_Title" xml:space="preserve">
+    <value>Today's Maintenance Schedule</value>
+  </data>
+  <data name="Dashboard_Alerts_Title" xml:space="preserve">
+    <value>Alerts</value>
+  </data>
+  <data name="Dashboard_Maintenance_Type_Chart" xml:space="preserve">
+    <value>Maintenance Type Distribution</value>
+  </data>
+  <data name="Dashboard_Maintenance_Trend_Chart" xml:space="preserve">
+    <value>Maintenance Trend (6 Months)</value>
+  </data>
+  <data name="Dashboard_Equipment_Column" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Dashboard_Maintenance_Type_Column" xml:space="preserve">
+    <value>Maintenance Type</value>
+  </data>
+  <data name="Dashboard_Time_Column" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Dashboard_Responsible_Column" xml:space="preserve">
+    <value>Responsible</value>
+  </data>
+  <data name="Dashboard_Status_Column" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Dashboard_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Dashboard_Status_In_Progress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="Dashboard_Status_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Dashboard_Status_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Dashboard_Alert_Overdue_Title" xml:space="preserve">
+    <value>Equipment Overdue for Maintenance</value>
+  </data>
+  <data name="Dashboard_Alert_Parts_Low_Title" xml:space="preserve">
+    <value>Low Parts Inventory</value>
+  </data>
+  <data name="Dashboard_Alert_Next_Week_Title" xml:space="preserve">
+    <value>Next Week Maintenance</value>
+  </data>
+  <data name="Devices_Title" xml:space="preserve">
+    <value>Equipment Management</value>
+  </data>
+  <data name="Devices_List_Title" xml:space="preserve">
+    <value>Equipment List</value>
+  </data>
+  <data name="Devices_Add_New" xml:space="preserve">
+    <value>Add New Equipment</value>
+  </data>
+  <data name="Devices_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Devices_Filter_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Devices_Filter_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Devices_Filter_Maintenance" xml:space="preserve">
+    <value>Under Maintenance</value>
+  </data>
+  <data name="Devices_Filter_Overdue" xml:space="preserve">
+    <value>Overdue</value>
+  </data>
+  <data name="Devices_Search_Placeholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="Devices_Table_ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Devices_Table_Name" xml:space="preserve">
+    <value>Equipment Name</value>
+  </data>
+  <data name="Devices_Table_Department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="Devices_Table_Last_Maintenance" xml:space="preserve">
+    <value>Last Maintenance</value>
+  </data>
+  <data name="Devices_Table_Maintenance_Type" xml:space="preserve">
+    <value>Maintenance Type</value>
+  </data>
+  <data name="Devices_Table_Next_Maintenance" xml:space="preserve">
+    <value>Next Maintenance</value>
+  </data>
+  <data name="Devices_Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Devices_Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Devices_Add_Modal_Title" xml:space="preserve">
+    <value>Add New Equipment</value>
+  </data>
+  <data name="Devices_Add_Modal_ID" xml:space="preserve">
+    <value>Equipment ID</value>
+  </data>
+  <data name="Devices_Add_Modal_Name" xml:space="preserve">
+    <value>Equipment Name</value>
+  </data>
+  <data name="Devices_Add_Modal_Department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="Devices_Add_Modal_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Devices_Modal_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Devices_Modal_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Devices_Detail_Modal_Title" xml:space="preserve">
+    <value>Equipment Details</value>
+  </data>
+  <data name="Devices_Status_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Devices_Status_Maintenance" xml:space="preserve">
+    <value>Under Maintenance</value>
+  </data>
+  <data name="Devices_Status_Overdue" xml:space="preserve">
+    <value>Overdue</value>
+  </data>
+  <data name="Devices_Edit_Modal_Title" xml:space="preserve">
+    <value>Edit Equipment</value>
+  </data>
+  <data name="Tickets_Title" xml:space="preserve">
+    <value>Maintenance Tickets</value>
+  </data>
+  <data name="Tickets_List_Title" xml:space="preserve">
+    <value>Maintenance Tickets</value>
+  </data>
+  <data name="Tickets_List_Subtitle" xml:space="preserve">
+    <value>Scheduled maintenance work</value>
+  </data>
+  <data name="Tickets_Create_New" xml:space="preserve">
+    <value>Create New Ticket</value>
+  </data>
+  <data name="Tickets_Workflow_Title" xml:space="preserve">
+    <value>Maintenance Ticket Workflow - Improved</value>
+  </data>
+  <data name="Tickets_Workflow_Create" xml:space="preserve">
+    <value>CREATE TICKET</value>
+  </data>
+  <data name="Tickets_Workflow_Create_Desc" xml:space="preserve">
+    <value>Assign responsible person</value>
+  </data>
+  <data name="Tickets_Workflow_Classify" xml:space="preserve">
+    <value>CLASSIFY</value>
+  </data>
+  <data name="Tickets_Workflow_Classify_Desc" xml:space="preserve">
+    <value>Self-maintenance or external maintenance</value>
+  </data>
+  <data name="Tickets_Workflow_Execute" xml:space="preserve">
+    <value>EXECUTE</value>
+  </data>
+  <data name="Tickets_Workflow_Execute_Desc" xml:space="preserve">
+    <value>Technician or vendor executes</value>
+  </data>
+  <data name="Tickets_Workflow_Input" xml:space="preserve">
+    <value>INPUT</value>
+  </data>
+  <data name="Tickets_Workflow_Input_Desc" xml:space="preserve">
+    <value>Parts or costs &amp; invoices</value>
+  </data>
+  <data name="Tickets_Workflow_Complete" xml:space="preserve">
+    <value>COMPLETE</value>
+  </data>
+  <data name="Tickets_Workflow_Complete_Desc" xml:space="preserve">
+    <value>Quality check and close ticket</value>
+  </data>
+  <data name="Tickets_Table_ID" xml:space="preserve">
+    <value>Ticket ID</value>
+  </data>
+  <data name="Tickets_Table_Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Tickets_Table_Created_Date" xml:space="preserve">
+    <value>Created Date</value>
+  </data>
+  <data name="Tickets_Table_Responsible" xml:space="preserve">
+    <value>Responsible Person</value>
+  </data>
+  <data name="Tickets_Table_Maintenance_Type" xml:space="preserve">
+    <value>Maintenance Type</value>
+  </data>
+  <data name="Tickets_Table_Due_Date" xml:space="preserve">
+    <value>Due Date</value>
+  </data>
+  <data name="Tickets_Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Tickets_Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Tickets_Create_Modal_Title" xml:space="preserve">
+    <value>Create New Maintenance Ticket</value>
+  </data>
+  <data name="Tickets_Equipment_Label" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Tickets_Select_Equipment" xml:space="preserve">
+    <value>Select equipment...</value>
+  </data>
+  <data name="Tickets_Created_Date_Label" xml:space="preserve">
+    <value>Ticket Created Date</value>
+  </data>
+  <data name="Tickets_Responsible_Label" xml:space="preserve">
+    <value>Responsible Person</value>
+  </data>
+  <data name="Tickets_Select_Responsible" xml:space="preserve">
+    <value>Select responsible person...</value>
+  </data>
+  <data name="Tickets_Maintenance_Type_Label" xml:space="preserve">
+    <value>Maintenance Type</value>
+  </data>
+  <data name="Tickets_Select_Maintenance_Type" xml:space="preserve">
+    <value>Select maintenance type...</value>
+  </data>
+  <data name="Tickets_Type_Internal" xml:space="preserve">
+    <value>Internal Maintenance</value>
+  </data>
+  <data name="Tickets_Type_External" xml:space="preserve">
+    <value>External Maintenance (Vendor)</value>
+  </data>
+  <data name="Tickets_Assignee_Label" xml:space="preserve">
+    <value>Assigned Technician</value>
+  </data>
+  <data name="Tickets_Select_Assignee" xml:space="preserve">
+    <value>Select technician...</value>
+  </data>
+  <data name="Tickets_Vendor_Label" xml:space="preserve">
+    <value>Vendor</value>
+  </data>
+  <data name="Tickets_Select_Vendor" xml:space="preserve">
+    <value>Select vendor...</value>
+  </data>
+  <data name="Tickets_Description_Label" xml:space="preserve">
+    <value>Work Items to Process</value>
+  </data>
+  <data name="Tickets_Description_Placeholder" xml:space="preserve">
+    <value>Describe detailed work to be performed...</value>
+  </data>
+  <data name="Tickets_Due_Date_Label" xml:space="preserve">
+    <value>Expected Completion</value>
+  </data>
+  <data name="Tickets_Priority_Label" xml:space="preserve">
+    <value>Priority Level</value>
+  </data>
+  <data name="Tickets_Priority_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="Tickets_Priority_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Tickets_Priority_High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="Tickets_Priority_Urgent" xml:space="preserve">
+    <value>Urgent</value>
+  </data>
+  <data name="Tickets_Modal_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Tickets_Modal_Create" xml:space="preserve">
+    <value>Create Ticket</value>
+  </data>
+  <data name="Tickets_Edit_Modal_Title" xml:space="preserve">
+    <value>Edit Maintenance Ticket</value>
+  </data>
+  <data name="Tickets_Modal_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Tickets_Detail_Modal_Title" xml:space="preserve">
+    <value>Maintenance Ticket Details</value>
+  </data>
+  <data name="Tickets_Notes_Label" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Tickets_Notes_Placeholder" xml:space="preserve">
+    <value>Additional notes...</value>
+  </data>
+  <data name="Tickets_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Tickets_Status_In_Progress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="Tickets_Status_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Tickets_Status_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Tickets_Status_Scheduled" xml:space="preserve">
+    <value>Scheduled</value>
+  </data>
+  <data name="Parts_Title" xml:space="preserve">
+    <value>Spare Parts Management</value>
+  </data>
+  <data name="Parts_List_Title" xml:space="preserve">
+    <value>Spare Parts Management</value>
+  </data>
+  <data name="Parts_Add_New" xml:space="preserve">
+    <value>Add New Part</value>
+  </data>
+  <data name="Parts_Filter_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Parts_Filter_Low" xml:space="preserve">
+    <value>Low Stock</value>
+  </data>
+  <data name="Parts_Filter_Out" xml:space="preserve">
+    <value>Out of Stock</value>
+  </data>
+  <data name="Parts_Filter_Sufficient" xml:space="preserve">
+    <value>Sufficient</value>
+  </data>
+  <data name="Parts_Search_Placeholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="Parts_Table_Code" xml:space="preserve">
+    <value>Part Code</value>
+  </data>
+  <data name="Parts_Table_Name" xml:space="preserve">
+    <value>Part Name</value>
+  </data>
+  <data name="Parts_Table_Quantity" xml:space="preserve">
+    <value>Stock Quantity</value>
+  </data>
+  <data name="Parts_Table_Unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="Parts_Table_Location" xml:space="preserve">
+    <value>Warehouse Location</value>
+  </data>
+  <data name="Parts_Table_Min_Quantity" xml:space="preserve">
+    <value>Min Quantity</value>
+  </data>
+  <data name="Parts_Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Parts_Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Parts_Add_Modal_Title" xml:space="preserve">
+    <value>Add New Part</value>
+  </data>
+  <data name="Parts_Code_Label" xml:space="preserve">
+    <value>Part Code</value>
+  </data>
+  <data name="Parts_Code_Placeholder" xml:space="preserve">
+    <value>e.g. LK016</value>
+  </data>
+  <data name="Parts_Name_Label" xml:space="preserve">
+    <value>Part Name</value>
+  </data>
+  <data name="Parts_Name_Placeholder" xml:space="preserve">
+    <value>e.g. Bearing 6202</value>
+  </data>
+  <data name="Parts_Quantity_Label" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="Parts_Unit_Label" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="Parts_Select_Unit" xml:space="preserve">
+    <value>Select unit...</value>
+  </data>
+  <data name="Parts_Unit_Piece" xml:space="preserve">
+    <value>Piece</value>
+  </data>
+  <data name="Parts_Unit_Meter" xml:space="preserve">
+    <value>Meter</value>
+  </data>
+  <data name="Parts_Unit_Liter" xml:space="preserve">
+    <value>Liter</value>
+  </data>
+  <data name="Parts_Unit_Kg" xml:space="preserve">
+    <value>Kg</value>
+  </data>
+  <data name="Parts_Unit_Tube" xml:space="preserve">
+    <value>Tube</value>
+  </data>
+  <data name="Parts_Location_Label" xml:space="preserve">
+    <value>Warehouse Location</value>
+  </data>
+  <data name="Parts_Location_Placeholder" xml:space="preserve">
+    <value>e.g. Warehouse A-05</value>
+  </data>
+  <data name="Parts_Add_Date_Label" xml:space="preserve">
+    <value>Add Date</value>
+  </data>
+  <data name="Parts_Notes_Label" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Parts_Notes_Placeholder" xml:space="preserve">
+    <value>Additional information...</value>
+  </data>
+  <data name="Parts_Modal_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Parts_Modal_Add" xml:space="preserve">
+    <value>Add to Stock</value>
+  </data>
+  <data name="Parts_Add_Stock_Modal_Title" xml:space="preserve">
+    <value>Add More Stock</value>
+  </data>
+  <data name="Parts_Modal_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="Parts_Status_Sufficient" xml:space="preserve">
+    <value>Sufficient</value>
+  </data>
+  <data name="Parts_Status_Low" xml:space="preserve">
+    <value>Low Stock</value>
+  </data>
+  <data name="Parts_Status_Out" xml:space="preserve">
+    <value>Out of Stock</value>
+  </data>
+  <data name="Parts_Edit_Modal_Title" xml:space="preserve">
+    <value>Edit Part</value>
+  </data>
+  <data name="Parts_Min_Quantity_Label" xml:space="preserve">
+    <value>Minimum Quantity</value>
+  </data>
+  <data name="Parts_Last_Updated_Label" xml:space="preserve">
+    <value>Last Updated</value>
+  </data>
+  <data name="Parts_Modal_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Tickets_Table_Assignee" xml:space="preserve">
+    <value>Assignee</value>
+  </data>
+  <data name="Tickets_Table_Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="Requests_Title" xml:space="preserve">
+    <value>Maintenance Requests</value>
+  </data>
+  <data name="Requests_List_Title" xml:space="preserve">
+    <value>Maintenance Requests</value>
+  </data>
+  <data name="Requests_List_Subtitle" xml:space="preserve">
+    <value>Report and handle issues reported by users</value>
+  </data>
+  <data name="Requests_Create_New" xml:space="preserve">
+    <value>Create New Request</value>
+  </data>
+  <data name="Requests_Workflow_Title" xml:space="preserve">
+    <value>Maintenance Request Workflow - Real World</value>
+  </data>
+  <data name="Requests_Workflow_Create" xml:space="preserve">
+    <value>CREATE REQUEST</value>
+  </data>
+  <data name="Requests_Workflow_Create_Desc" xml:space="preserve">
+    <value>Workers report issues</value>
+  </data>
+  <data name="Requests_Workflow_Approve" xml:space="preserve">
+    <value>APPROVE</value>
+  </data>
+  <data name="Requests_Workflow_Approve_Desc" xml:space="preserve">
+    <value>Manager reviews and decides</value>
+  </data>
+  <data name="Requests_Workflow_Assign" xml:space="preserve">
+    <value>ASSIGN</value>
+  </data>
+  <data name="Requests_Workflow_Assign_Desc" xml:space="preserve">
+    <value>Assign to technician or vendor</value>
+  </data>
+  <data name="Requests_Workflow_Execute" xml:space="preserve">
+    <value>EXECUTE</value>
+  </data>
+  <data name="Requests_Workflow_Execute_Desc" xml:space="preserve">
+    <value>Technician performs repair</value>
+  </data>
+  <data name="Requests_Workflow_Complete" xml:space="preserve">
+    <value>COMPLETE</value>
+  </data>
+  <data name="Requests_Workflow_Complete_Desc" xml:space="preserve">
+    <value>Check and close request</value>
+  </data>
+  <data name="Requests_Table_ID" xml:space="preserve">
+    <value>Request ID</value>
+  </data>
+  <data name="Requests_Table_Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Requests_Table_Requester" xml:space="preserve">
+    <value>Requester</value>
+  </data>
+  <data name="Requests_Table_Created_Date" xml:space="preserve">
+    <value>Created Date</value>
+  </data>
+  <data name="Requests_Table_Assigned_To" xml:space="preserve">
+    <value>Assigned To</value>
+  </data>
+  <data name="Requests_Table_Impact" xml:space="preserve">
+    <value>Impact</value>
+  </data>
+  <data name="Requests_Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Requests_Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Requests_Create_Modal_Title" xml:space="preserve">
+    <value>Create Maintenance Request</value>
+  </data>
+  <data name="Requests_Equipment_Label" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Requests_Select_Equipment" xml:space="preserve">
+    <value>Select Equipment</value>
+  </data>
+  <data name="Requests_Requester_Label" xml:space="preserve">
+    <value>Requester</value>
+  </data>
+  <data name="Requests_Select_Requester" xml:space="preserve">
+    <value>Select Requester</value>
+  </data>
+  <data name="Requests_Department_Label" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="Requests_Select_Department" xml:space="preserve">
+    <value>Select Department</value>
+  </data>
+  <data name="Requests_Impact_Label" xml:space="preserve">
+    <value>Impact Level</value>
+  </data>
+  <data name="Requests_Select_Impact" xml:space="preserve">
+    <value>Select Impact Level</value>
+  </data>
+  <data name="Requests_Impact_Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="Requests_Impact_Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="Requests_Impact_Serious" xml:space="preserve">
+    <value>Serious</value>
+  </data>
+  <data name="Requests_Impact_Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="Requests_Description_Label" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Requests_Description_Placeholder" xml:space="preserve">
+    <value>Describe the issue in detail...</value>
+  </data>
+  <data name="Requests_Image_Label" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Requests_Image_Help" xml:space="preserve">
+    <value>Upload an image to help describe the issue</value>
+  </data>
+  <data name="Requests_Modal_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Requests_Modal_Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Requests_Edit_Modal_Title" xml:space="preserve">
+    <value>Edit Maintenance Request</value>
+  </data>
+  <data name="Requests_Assigned_To_Label" xml:space="preserve">
+    <value>Assigned To</value>
+  </data>
+  <data name="Requests_Select_Assigned_To" xml:space="preserve">
+    <value>Select Assignee</value>
+  </data>
+  <data name="Requests_Deadline_Label" xml:space="preserve">
+    <value>Deadline</value>
+  </data>
+  <data name="Requests_Notes_Label" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Requests_Notes_Placeholder" xml:space="preserve">
+    <value>Additional notes...</value>
+  </data>
+  <data name="Requests_Modal_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Requests_Detail_Modal_Title" xml:space="preserve">
+    <value>Request Details</value>
+  </data>
+  <data name="Requests_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Requests_Status_Approved" xml:space="preserve">
+    <value>Approved</value>
+  </data>
+  <data name="Requests_Status_Assigned" xml:space="preserve">
+    <value>Assigned</value>
+  </data>
+  <data name="Requests_Status_In_Progress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="Requests_Status_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Requests_Status_Rejected" xml:space="preserve">
+    <value>Rejected</value>
+  </data>
+  <data name="Purchase_Title" xml:space="preserve">
+    <value>Purchase Plans</value>
+  </data>
+  <data name="Purchase_Plan_Title" xml:space="preserve">
+    <value>Purchase Plan for October 2025</value>
+  </data>
+  <data name="Purchase_Create_New" xml:space="preserve">
+    <value>Create New Plan</value>
+  </data>
+  <data name="Purchase_Previous_Month" xml:space="preserve">
+    <value>Previous Month</value>
+  </data>
+  <data name="Purchase_Current_Month" xml:space="preserve">
+    <value>Current Month</value>
+  </data>
+  <data name="Purchase_Next_Month" xml:space="preserve">
+    <value>Next Month</value>
+  </data>
+  <data name="Purchase_Table_Part_ID" xml:space="preserve">
+    <value>Part ID</value>
+  </data>
+  <data name="Purchase_Table_Part_Name" xml:space="preserve">
+    <value>Part Name</value>
+  </data>
+  <data name="Purchase_Table_Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="Purchase_Table_Actual" xml:space="preserve">
+    <value>Actual</value>
+  </data>
+  <data name="Purchase_Table_Difference" xml:space="preserve">
+    <value>Difference</value>
+  </data>
+  <data name="Purchase_Table_Supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Purchase_Table_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Purchase_Table_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Purchase_Trend_Title" xml:space="preserve">
+    <value>Purchase Trend (6 Months)</value>
+  </data>
+  <data name="Purchase_Create_Modal_Title" xml:space="preserve">
+    <value>Create New Purchase Plan</value>
+  </data>
+  <data name="Purchase_Part_ID_Label" xml:space="preserve">
+    <value>Part ID</value>
+  </data>
+  <data name="Purchase_Part_ID_Placeholder" xml:space="preserve">
+    <value>Enter part ID</value>
+  </data>
+  <data name="Purchase_Part_Name_Label" xml:space="preserve">
+    <value>Part Name</value>
+  </data>
+  <data name="Purchase_Part_Name_Placeholder" xml:space="preserve">
+    <value>Enter part name</value>
+  </data>
+  <data name="Purchase_Planned_Quantity_Label" xml:space="preserve">
+    <value>Planned Quantity</value>
+  </data>
+  <data name="Purchase_Actual_Quantity_Label" xml:space="preserve">
+    <value>Actual Quantity</value>
+  </data>
+  <data name="Purchase_Unit_Label" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="Purchase_Select_Unit" xml:space="preserve">
+    <value>Select Unit</value>
+  </data>
+  <data name="Purchase_Unit_Piece" xml:space="preserve">
+    <value>Piece</value>
+  </data>
+  <data name="Purchase_Unit_Meter" xml:space="preserve">
+    <value>Meter</value>
+  </data>
+  <data name="Purchase_Unit_Liter" xml:space="preserve">
+    <value>Liter</value>
+  </data>
+  <data name="Purchase_Unit_Kg" xml:space="preserve">
+    <value>Kg</value>
+  </data>
+  <data name="Purchase_Unit_Tube" xml:space="preserve">
+    <value>Tube</value>
+  </data>
+  <data name="Purchase_Unit_Price_Label" xml:space="preserve">
+    <value>Unit Price</value>
+  </data>
+  <data name="Purchase_Supplier_Label" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="Purchase_Select_Supplier" xml:space="preserve">
+    <value>Select Supplier</value>
+  </data>
+  <data name="Purchase_Order_Date_Label" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="Purchase_Expected_Delivery_Label" xml:space="preserve">
+    <value>Expected Delivery</value>
+  </data>
+  <data name="Purchase_Status_Label" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Purchase_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Purchase_Status_Ordered" xml:space="preserve">
+    <value>Ordered</value>
+  </data>
+  <data name="Purchase_Status_Delivered" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="Purchase_Status_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="Purchase_Modal_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Purchase_Modal_Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="Purchase_Edit_Modal_Title" xml:space="preserve">
+    <value>Edit Purchase Plan</value>
+  </data>
+  <data name="Purchase_Modal_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Purchase_View_Modal_Title" xml:space="preserve">
+    <value>Purchase Plan Details</value>
+  </data>
+  <data name="Purchase_Modal_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Calendar_Title" xml:space="preserve">
+    <value>Maintenance Schedule</value>
+  </data>
+  <data name="Calendar_Maintenance_Schedule_Title" xml:space="preserve">
+    <value>Maintenance Schedule</value>
+  </data>
+  <data name="Calendar_Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="Calendar_Equipment" xml:space="preserve">
+    <value>Equipment</value>
+  </data>
+  <data name="Calendar_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Calendar_Technician" xml:space="preserve">
+    <value>Technician</value>
+  </data>
+  <data name="Calendar_Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Calendar_Status_Scheduled" xml:space="preserve">
+    <value>Scheduled</value>
+  </data>
+  <data name="Calendar_Status_Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Calendar_Type_Periodic" xml:space="preserve">
+    <value>Periodic</value>
+  </data>
+  <data name="Calendar_Type_Mechanical" xml:space="preserve">
+    <value>Mechanical</value>
+  </data>
+  <data name="Calendar_Type_Electrical" xml:space="preserve">
+    <value>Electrical</value>
+  </data>
+  <data name="Calendar_Event_Details" xml:space="preserve">
+    <value>Maintenance Details</value>
+  </data>
+  <data name="Traceability_Title" xml:space="preserve">
+    <value>Traceability System</value>
+  </data>
+  <data name="Traceability_Subtitle" xml:space="preserve">
+    <value>Track detailed production history, QC, materials and equipment</value>
+  </data>
+  <data name="Traceability_Product_Type" xml:space="preserve">
+    <value>Select product type</value>
+  </data>
+  <data name="Traceability_Paraglider" xml:space="preserve">
+    <value>Paraglider</value>
+  </data>
+  <data name="Traceability_Harness" xml:space="preserve">
+    <value>Harness</value>
+  </data>
+  <data name="Traceability_Material" xml:space="preserve">
+    <value>Raw Materials</value>
+  </data>
+  <data name="Traceability_Search_By_Code" xml:space="preserve">
+    <value>Search by code</value>
+  </data>
+  <data name="Traceability_Search_Placeholder" xml:space="preserve">
+    <value>Enter product code or scan QR code</value>
+  </data>
+  <data name="Traceability_QR_Scan" xml:space="preserve">
+    <value>Scan QR Code</value>
+  </data>
+  <data name="Traceability_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Traceability_Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="Traceability_Timeline" xml:space="preserve">
+    <value>Production Timeline</value>
+  </data>
+  <data name="Traceability_QC_History" xml:space="preserve">
+    <value>QC History</value>
+  </data>
+  <data name="Traceability_Materials" xml:space="preserve">
+    <value>Materials</value>
+  </data>
+  <data name="Traceability_Cutting_Info" xml:space="preserve">
+    <value>Cutting Information</value>
+  </data>
+  <data name="Traceability_Quality_Metrics" xml:space="preserve">
+    <value>Quality Metrics</value>
+  </data>
+  <data name="Traceability_No_Results_Title" xml:space="preserve">
+    <value>No search results yet</value>
+  </data>
+  <data name="Traceability_No_Results_Message" xml:space="preserve">
+    <value>Please select traceability type and enter code to search</value>
+  </data>
 </root>
