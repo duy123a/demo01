@@ -1,0 +1,228 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Devices_Title"];
+    ViewData["Page"] = "devices";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5><i class="bi bi-gear-fill"></i> @Localizer["Devices_List_Title"]</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-primary" id="addEquipmentBtn">@Localizer["Devices_Add_New"]</button>
+            <button class="btn btn-sm btn-outline-secondary" id="importEquipmentBtn">@Localizer["Devices_Import"]</button>
+        </div>
+        <div class="d-flex gap-2">
+            <select class="form-select form-select-sm" id="equipmentFilter">
+                <option value="all">@Localizer["Devices_Filter_All"]</option>
+                <option value="active">@Localizer["Devices_Filter_Active"]</option>
+                <option value="maintenance">@Localizer["Devices_Filter_Maintenance"]</option>
+                <option value="overdue">@Localizer["Devices_Filter_Overdue"]</option>
+            </select>
+            <input type="text" class="form-control form-control-sm" placeholder="@Localizer["Devices_Search_Placeholder"]" id="equipmentSearch">
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>@Localizer["Devices_Table_ID"]</th>
+                        <th>@Localizer["Devices_Table_Name"]</th>
+                        <th>@Localizer["Devices_Table_Department"]</th>
+                        <th>@Localizer["Devices_Table_Last_Maintenance"]</th>
+                        <th>@Localizer["Devices_Table_Maintenance_Type"]</th>
+                        <th>@Localizer["Devices_Table_Next_Maintenance"]</th>
+                        <th>@Localizer["Devices_Table_Status"]</th>
+                        <th>@Localizer["Devices_Table_Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody id="equipmentTable">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Equipment Modal -->
+<div class="modal fade" id="addEquipmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Devices_Add_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="newEquipmentId" class="form-label">@Localizer["Devices_Add_Modal_ID"]</label>
+                        <input type="text" class="form-control" id="newEquipmentId">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEquipmentName" class="form-label">@Localizer["Devices_Add_Modal_Name"]</label>
+                        <input type="text" class="form-control" id="newEquipmentName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEquipmentDepartment" class="form-label">@Localizer["Devices_Add_Modal_Department"]</label>
+                        <input type="text" class="form-control" id="newEquipmentDepartment">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEquipmentStatus" class="form-label">@Localizer["Devices_Add_Modal_Status"]</label>
+                        <select class="form-select" id="newEquipmentStatus">
+                            <option value="active">@Localizer["Devices_Status_Active"]</option>
+                            <option value="maintenance">@Localizer["Devices_Status_Maintenance"]</option>
+                            <option value="overdue">@Localizer["Devices_Status_Overdue"]</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Devices_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary">@Localizer["Devices_Modal_Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Equipment Detail Modal -->
+<div class="modal fade" id="equipmentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Devices_Detail_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="equipmentModalBody">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Equipment Modal -->
+<div class="modal fade" id="editEquipmentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Devices_Edit_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editEquipmentForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentId" class="form-label">@Localizer["Devices_Add_Modal_ID"]</label>
+                                <input type="text" class="form-control" id="editEquipmentId" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentName" class="form-label">@Localizer["Devices_Add_Modal_Name"]</label>
+                                <input type="text" class="form-control" id="editEquipmentName" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentDepartment" class="form-label">@Localizer["Devices_Add_Modal_Department"]</label>
+                                <input type="text" class="form-control" id="editEquipmentDepartment" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentStatus" class="form-label">@Localizer["Devices_Add_Modal_Status"]</label>
+                                <select class="form-select" id="editEquipmentStatus" required>
+                                    <option value="active">@Localizer["Devices_Status_Active"]</option>
+                                    <option value="maintenance">@Localizer["Devices_Status_Maintenance"]</option>
+                                    <option value="overdue">@Localizer["Devices_Status_Overdue"]</option>
+                                    <option value="warning">@Localizer["Devices_Status_Warning"]</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentLocation" class="form-label">Vị trí</label>
+                                <input type="text" class="form-control" id="editEquipmentLocation" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentCriticality" class="form-label">Mức độ quan trọng</label>
+                                <select class="form-select" id="editEquipmentCriticality" required>
+                                    <option value="critical">Quan trọng</option>
+                                    <option value="high">Cao</option>
+                                    <option value="medium">Trung bình</option>
+                                    <option value="low">Thấp</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentManufacturer" class="form-label">Nhà sản xuất</label>
+                                <input type="text" class="form-control" id="editEquipmentManufacturer" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentModel" class="form-label">Model</label>
+                                <input type="text" class="form-control" id="editEquipmentModel" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentSerialNumber" class="form-label">Số serial</label>
+                                <input type="text" class="form-control" id="editEquipmentSerialNumber" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentMaintenanceInterval" class="form-label">Chu kỳ bảo trì (ngày)</label>
+                                <input type="number" class="form-control" id="editEquipmentMaintenanceInterval" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentWarrantyExpiry" class="form-label">Bảo hành đến</label>
+                                <input type="date" class="form-control" id="editEquipmentWarrantyExpiry" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editEquipmentOperatingHours" class="form-label">Giờ hoạt động</label>
+                                <input type="number" class="form-control" id="editEquipmentOperatingHours" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Devices_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="saveEditEquipment">@Localizer["Devices_Modal_Save"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-active>@Localizer["Devices_Status_Active"]</span>
+    <span data-status-maintenance>@Localizer["Devices_Status_Maintenance"]</span>
+    <span data-status-overdue>@Localizer["Devices_Status_Overdue"]</span>
+    <span data-status-warning>@Localizer["Devices_Status_Warning"]</span>
+</div>
+
+@section Scripts {
+    <script vite-src="~/js/equipment.js"></script>
+}

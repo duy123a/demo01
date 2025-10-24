@@ -1,0 +1,194 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Parts_Title"];
+    ViewData["Page"] = "spare-parts";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5><i class="bi bi-box-seam"></i> @Localizer["Parts_List_Title"]</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" id="addPartBtn">
+                <i class="bi bi-plus-circle"></i> @Localizer["Parts_Add_New"]
+            </button>
+            <select class="form-select form-select-sm" id="partsFilter">
+                <option value="all">@Localizer["Parts_Filter_All"]</option>
+                <option value="low">@Localizer["Parts_Filter_Low"]</option>
+                <option value="out">@Localizer["Parts_Filter_Out"]</option>
+                <option value="sufficient">@Localizer["Parts_Filter_Sufficient"]</option>
+            </select>
+            <input type="text" class="form-control form-control-sm" placeholder="@Localizer["Parts_Search_Placeholder"]" id="partsSearch">
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>@Localizer["Parts_Table_Code"]</th>
+                        <th>@Localizer["Parts_Table_Name"]</th>
+                        <th>@Localizer["Parts_Table_Quantity"]</th>
+                        <th>@Localizer["Parts_Table_Unit"]</th>
+                        <th>@Localizer["Parts_Table_Location"]</th>
+                        <th>@Localizer["Parts_Table_Min_Quantity"]</th>
+                        <th>@Localizer["Parts_Table_Status"]</th>
+                        <th>@Localizer["Parts_Table_Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody id="partsTable">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Part Modal -->
+<div class="modal fade" id="addPartModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Parts_Add_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addPartForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Code_Label"]</label>
+                        <input type="text" class="form-control" id="partCode" placeholder="@Localizer["Parts_Code_Placeholder"]" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Name_Label"]</label>
+                        <input type="text" class="form-control" id="partName" placeholder="@Localizer["Parts_Name_Placeholder"]" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Parts_Quantity_Label"]</label>
+                            <input type="number" class="form-control" id="partQuantity" min="1" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Parts_Unit_Label"]</label>
+                            <select class="form-select" id="partUnit" required>
+                                <option value="">@Localizer["Parts_Select_Unit"]</option>
+                                <option value="cái">@Localizer["Parts_Unit_Piece"]</option>
+                                <option value="mét">@Localizer["Parts_Unit_Meter"]</option>
+                                <option value="lít">@Localizer["Parts_Unit_Liter"]</option>
+                                <option value="kg">@Localizer["Parts_Unit_Kg"]</option>
+                                <option value="ống">@Localizer["Parts_Unit_Tube"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Location_Label"]</label>
+                        <input type="text" class="form-control" id="partLocation" placeholder="@Localizer["Parts_Location_Placeholder"]" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Add_Date_Label"]</label>
+                        <input type="date" class="form-control" id="addPartDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Notes_Label"]</label>
+                        <textarea class="form-control" id="partNotes" rows="2" placeholder="@Localizer["Parts_Notes_Placeholder"]"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Parts_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="submitPart">@Localizer["Parts_Modal_Add"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Stock Modal -->
+<div class="modal fade" id="addStockModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Parts_Add_Stock_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="addStockModalBody">
+                <!-- Populated by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Parts_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="confirmAddStock">@Localizer["Parts_Modal_Confirm"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Part Modal -->
+<div class="modal fade" id="editPartModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Parts_Edit_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPartForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Code_Label"]</label>
+                        <input type="text" class="form-control" id="editPartCode" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Name_Label"]</label>
+                        <input type="text" class="form-control" id="editPartName" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Parts_Quantity_Label"]</label>
+                            <input type="number" class="form-control" id="editPartQuantity" min="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Parts_Unit_Label"]</label>
+                            <select class="form-select" id="editPartUnit" required>
+                                <option value="">@Localizer["Parts_Select_Unit"]</option>
+                                <option value="cái">@Localizer["Parts_Unit_Piece"]</option>
+                                <option value="mét">@Localizer["Parts_Unit_Meter"]</option>
+                                <option value="lít">@Localizer["Parts_Unit_Liter"]</option>
+                                <option value="kg">@Localizer["Parts_Unit_Kg"]</option>
+                                <option value="ống">@Localizer["Parts_Unit_Tube"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Location_Label"]</label>
+                        <input type="text" class="form-control" id="editPartLocation" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Min_Quantity_Label"]</label>
+                        <input type="number" class="form-control" id="editPartMinQuantity" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Last_Updated_Label"]</label>
+                        <input type="date" class="form-control" id="editPartLastUpdated" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Parts_Notes_Label"]</label>
+                        <textarea class="form-control" id="editPartNotes" rows="2" placeholder="@Localizer["Parts_Notes_Placeholder"]"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Parts_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="updatePart">@Localizer["Parts_Modal_Update"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-sufficient>@Localizer["Parts_Status_Sufficient"]</span>
+    <span data-status-low>@Localizer["Parts_Status_Low"]</span>
+    <span data-status-out>@Localizer["Parts_Status_Out"]</span>
+</div>
+
+@section Scripts {
+    <script vite-src="~/js/parts.js"></script>
+}

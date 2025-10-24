@@ -1,0 +1,280 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Requests_Title"];
+    ViewData["Page"] = "maintenance-requests";
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5><i class="bi bi-chat-left-dots"></i> @Localizer["Requests_List_Title"]</h5>
+            <small class="text-muted">@Localizer["Requests_List_Subtitle"]</small>
+        </div>
+        <div>
+            <button class="btn btn-primary btn-sm" id="createRequestBtn">
+                <i class="bi bi-plus-circle"></i> @Localizer["Requests_Create_New"]
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Workflow Explanation -->
+        <div class="alert alert-warning mb-3">
+            <h6><i class="bi bi-info-circle"></i> @Localizer["Requests_Workflow_Title"]</h6>
+            <div class="row text-center">
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-chat-left-dots text-info"></i>
+                        <h6>@Localizer["Requests_Workflow_Create"]</h6>
+                        <small>@Localizer["Requests_Workflow_Create_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-eye text-warning"></i>
+                        <h6>@Localizer["Requests_Workflow_Approve"]</h6>
+                        <small>@Localizer["Requests_Workflow_Approve_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-person-plus text-primary"></i>
+                        <h6>@Localizer["Requests_Workflow_Assign"]</h6>
+                        <small>@Localizer["Requests_Workflow_Assign_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-tools text-warning"></i>
+                        <h6>@Localizer["Requests_Workflow_Execute"]</h6>
+                        <small>@Localizer["Requests_Workflow_Execute_Desc"]</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="workflow-step">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <h6>@Localizer["Requests_Workflow_Complete"]</h6>
+                        <small>@Localizer["Requests_Workflow_Complete_Desc"]</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>@Localizer["Requests_Table_ID"]</th>
+                        <th>@Localizer["Requests_Table_Equipment"]</th>
+                        <th>@Localizer["Requests_Table_Requester"]</th>
+                        <th>@Localizer["Requests_Table_Created_Date"]</th>
+                        <th>@Localizer["Requests_Table_Assigned_To"]</th>
+                        <th>@Localizer["Requests_Table_Impact"]</th>
+                        <th>@Localizer["Requests_Table_Status"]</th>
+                        <th>@Localizer["Requests_Table_Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTable">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Request Modal -->
+<div class="modal fade" id="createRequestModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Requests_Create_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createRequestForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Equipment_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="requestEquipment" required>
+                            <option value="">@Localizer["Requests_Select_Equipment"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Requester_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="requestRequester" required>
+                            <option value="">@Localizer["Requests_Select_Requester"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Department_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="requestDepartment" required>
+                            <option value="">@Localizer["Requests_Select_Department"]</option>
+                            <option value="Cắt vải dù">Cắt vải dù</option>
+                            <option value="May dù">May dù</option>
+                            <option value="Kiểm tra chất lượng">Kiểm tra chất lượng</option>
+                            <option value="Đóng gói">Đóng gói</option>
+                            <option value="Kho">Kho</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Impact_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="requestImpact" required>
+                            <option value="">@Localizer["Requests_Select_Impact"]</option>
+                            <option value="low">@Localizer["Requests_Impact_Low"]</option>
+                            <option value="medium">@Localizer["Requests_Impact_Medium"]</option>
+                            <option value="serious">@Localizer["Requests_Impact_Serious"]</option>
+                            <option value="critical">@Localizer["Requests_Impact_Critical"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Description_Label"] <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="requestDescription" rows="4" required placeholder="@Localizer["Requests_Description_Placeholder"]"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Image_Label"]</label>
+                        <input type="file" class="form-control" id="requestImage" accept="image/*">
+                        <small class="form-text text-muted">@Localizer["Requests_Image_Help"]</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Requests_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="submitRequest">@Localizer["Requests_Modal_Create"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Request Modal -->
+<div class="modal fade" id="editRequestModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Requests_Edit_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editRequestForm">
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Table_ID"]</label>
+                        <input type="text" class="form-control" id="editRequestId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Equipment_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editRequestEquipment" required>
+                            <option value="">@Localizer["Requests_Select_Equipment"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Requester_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editRequestRequester" required>
+                            <option value="">@Localizer["Requests_Select_Requester"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Department_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editRequestDepartment" required>
+                            <option value="">@Localizer["Requests_Select_Department"]</option>
+                            <option value="Cắt vải dù">Cắt vải dù</option>
+                            <option value="May dù">May dù</option>
+                            <option value="Kiểm tra chất lượng">Kiểm tra chất lượng</option>
+                            <option value="Đóng gói">Đóng gói</option>
+                            <option value="Kho">Kho</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Impact_Label"] <span class="text-danger">*</span></label>
+                        <select class="form-select" id="editRequestImpact" required>
+                            <option value="">@Localizer["Requests_Select_Impact"]</option>
+                            <option value="low">@Localizer["Requests_Impact_Low"]</option>
+                            <option value="medium">@Localizer["Requests_Impact_Medium"]</option>
+                            <option value="serious">@Localizer["Requests_Impact_Serious"]</option>
+                            <option value="critical">@Localizer["Requests_Impact_Critical"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Description_Label"] <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="editRequestDescription" rows="4" required placeholder="@Localizer["Requests_Description_Placeholder"]"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Assigned_To_Label"]</label>
+                        <select class="form-select" id="editRequestAssignedTo">
+                            <option value="">@Localizer["Requests_Select_Assigned_To"]</option>
+                            <option value="Nguyễn Văn A">Nguyễn Văn A</option>
+                            <option value="Trần Thị B">Trần Thị B</option>
+                            <option value="Lê Văn C">Lê Văn C</option>
+                            <option value="Phạm Văn D">Phạm Văn D</option>
+                            <option value="Hoàng Thị E">Hoàng Thị E</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Deadline_Label"]</label>
+                        <input type="date" class="form-control" id="editRequestDeadline">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Table_Status"]</label>
+                        <select class="form-select" id="editRequestStatus">
+                            <option value="pending">@Localizer["Requests_Status_Pending"]</option>
+                            <option value="approved">@Localizer["Requests_Status_Approved"]</option>
+                            <option value="assigned">@Localizer["Requests_Status_Assigned"]</option>
+                            <option value="in_progress">@Localizer["Requests_Status_In_Progress"]</option>
+                            <option value="completed">@Localizer["Requests_Status_Completed"]</option>
+                            <option value="rejected">@Localizer["Requests_Status_Rejected"]</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Requests_Notes_Label"]</label>
+                        <textarea class="form-control" id="editRequestNotes" rows="3" placeholder="@Localizer["Requests_Notes_Placeholder"]"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Requests_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-primary" id="updateRequest">@Localizer["Requests_Modal_Update"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Detail Modal -->
+<div class="modal fade" id="requestDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Localizer["Requests_Detail_Modal_Title"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="requestDetailModalBody">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-pending>@Localizer["Requests_Status_Pending"]</span>
+    <span data-status-approved>@Localizer["Requests_Status_Approved"]</span>
+    <span data-status-assigned>@Localizer["Requests_Status_Assigned"]</span>
+    <span data-status-in_progress>@Localizer["Requests_Status_In_Progress"]</span>
+    <span data-status-completed>@Localizer["Requests_Status_Completed"]</span>
+    <span data-status-rejected>@Localizer["Requests_Status_Rejected"]</span>
+    <span data-impact-low>@Localizer["Requests_Impact_Low"]</span>
+    <span data-impact-medium>@Localizer["Requests_Impact_Medium"]</span>
+    <span data-impact-serious>@Localizer["Requests_Impact_Serious"]</span>
+    <span data-impact-critical>@Localizer["Requests_Impact_Critical"]</span>
+</div>
+
+@section Scripts {
+    <script vite-src="~/js/requests.js"></script>
+}

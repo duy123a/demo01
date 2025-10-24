@@ -228,4 +228,865 @@
   <data name="ShowMore" xml:space="preserve">
     <value>Hiển thị thêm</value>
   </data>
+  <data name="Dashboard_Title" xml:space="preserve">
+    <value>Bảng Điều Khiển Bảo Trì</value>
+  </data>
+  <data name="Dashboard_Active_Equipment" xml:space="preserve">
+    <value>Đang Hoạt Động</value>
+  </data>
+  <data name="Dashboard_Maintenance_In_Progress" xml:space="preserve">
+    <value>Đang Bảo Trì</value>
+  </data>
+  <data name="Dashboard_Overdue" xml:space="preserve">
+    <value>Quá Hạn</value>
+  </data>
+  <data name="Dashboard_This_Week" xml:space="preserve">
+    <value>Tuần Này</value>
+  </data>
+  <data name="Dashboard_Overdue_Equipment_Title" xml:space="preserve">
+    <value>Thiết Bị Quá Hạn Bảo Trì</value>
+  </data>
+  <data name="Dashboard_Today_Schedule_Title" xml:space="preserve">
+    <value>Lịch Bảo Trì Hôm Nay</value>
+  </data>
+  <data name="Dashboard_Alerts_Title" xml:space="preserve">
+    <value>Cảnh Báo</value>
+  </data>
+  <data name="Dashboard_Maintenance_Type_Chart" xml:space="preserve">
+    <value>Phân Loại Bảo Trì</value>
+  </data>
+  <data name="Dashboard_Maintenance_Trend_Chart" xml:space="preserve">
+    <value>Xu Hướng Bảo Trì (6 Tháng)</value>
+  </data>
+  <data name="Dashboard_Equipment_Column" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Dashboard_Maintenance_Type_Column" xml:space="preserve">
+    <value>Loại Bảo Trì</value>
+  </data>
+  <data name="Dashboard_Time_Column" xml:space="preserve">
+    <value>Thời Gian</value>
+  </data>
+  <data name="Dashboard_Responsible_Column" xml:space="preserve">
+    <value>Người Phụ Trách</value>
+  </data>
+  <data name="Dashboard_Status_Column" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Dashboard_Status_Pending" xml:space="preserve">
+    <value>Chờ thực hiện</value>
+  </data>
+  <data name="Dashboard_Status_In_Progress" xml:space="preserve">
+    <value>Đang thực hiện</value>
+  </data>
+  <data name="Dashboard_Status_Completed" xml:space="preserve">
+    <value>Hoàn thành</value>
+  </data>
+  <data name="Dashboard_Status_Cancelled" xml:space="preserve">
+    <value>Đã hủy</value>
+  </data>
+  <data name="Dashboard_Alert_Overdue_Title" xml:space="preserve">
+    <value>Thiết bị quá hạn bảo trì</value>
+  </data>
+  <data name="Dashboard_Alert_Parts_Low_Title" xml:space="preserve">
+    <value>Linh kiện sắp hết</value>
+  </data>
+  <data name="Dashboard_Alert_Next_Week_Title" xml:space="preserve">
+    <value>Bảo trì tuần tới</value>
+  </data>
+  <data name="Devices_Title" xml:space="preserve">
+    <value>Quản Lý Thiết Bị</value>
+  </data>
+  <data name="Devices_List_Title" xml:space="preserve">
+    <value>Danh Sách Thiết Bị</value>
+  </data>
+  <data name="Devices_Add_New" xml:space="preserve">
+    <value>Thêm mới thiết bị</value>
+  </data>
+  <data name="Devices_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Devices_Filter_All" xml:space="preserve">
+    <value>Tất Cả</value>
+  </data>
+  <data name="Devices_Filter_Active" xml:space="preserve">
+    <value>Đang Hoạt Động</value>
+  </data>
+  <data name="Devices_Filter_Maintenance" xml:space="preserve">
+    <value>Đang Bảo Trì</value>
+  </data>
+  <data name="Devices_Filter_Overdue" xml:space="preserve">
+    <value>Quá Hạn</value>
+  </data>
+  <data name="Devices_Search_Placeholder" xml:space="preserve">
+    <value>Tìm kiếm...</value>
+  </data>
+  <data name="Devices_Table_ID" xml:space="preserve">
+    <value>Mã TB</value>
+  </data>
+  <data name="Devices_Table_Name" xml:space="preserve">
+    <value>Tên Thiết Bị</value>
+  </data>
+  <data name="Devices_Table_Department" xml:space="preserve">
+    <value>Bộ Phận</value>
+  </data>
+  <data name="Devices_Table_Last_Maintenance" xml:space="preserve">
+    <value>Bảo Trì Gần Nhất</value>
+  </data>
+  <data name="Devices_Table_Maintenance_Type" xml:space="preserve">
+    <value>Loại BT</value>
+  </data>
+  <data name="Devices_Table_Next_Maintenance" xml:space="preserve">
+    <value>Bảo Trì Kế Tiếp</value>
+  </data>
+  <data name="Devices_Table_Status" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Devices_Table_Actions" xml:space="preserve">
+    <value>Thao Tác</value>
+  </data>
+  <data name="Devices_Add_Modal_Title" xml:space="preserve">
+    <value>Thêm thiết bị mới</value>
+  </data>
+  <data name="Devices_Add_Modal_ID" xml:space="preserve">
+    <value>Mã thiết bị</value>
+  </data>
+  <data name="Devices_Add_Modal_Name" xml:space="preserve">
+    <value>Tên thiết bị</value>
+  </data>
+  <data name="Devices_Add_Modal_Department" xml:space="preserve">
+    <value>Bộ phận</value>
+  </data>
+  <data name="Devices_Add_Modal_Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Devices_Modal_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Devices_Modal_Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Devices_Detail_Modal_Title" xml:space="preserve">
+    <value>Chi Tiết Thiết Bị</value>
+  </data>
+  <data name="Devices_Status_Active" xml:space="preserve">
+    <value>Đang hoạt động</value>
+  </data>
+  <data name="Devices_Status_Maintenance" xml:space="preserve">
+    <value>Đang bảo trì</value>
+  </data>
+  <data name="Devices_Status_Overdue" xml:space="preserve">
+    <value>Quá hạn</value>
+  </data>
+  <data name="Devices_Edit_Modal_Title" xml:space="preserve">
+    <value>Chỉnh sửa thiết bị</value>
+  </data>
+  <data name="Tickets_Title" xml:space="preserve">
+    <value>Phiếu Bảo Trì</value>
+  </data>
+  <data name="Tickets_List_Title" xml:space="preserve">
+    <value>Phiếu Bảo Trì</value>
+  </data>
+  <data name="Tickets_List_Subtitle" xml:space="preserve">
+    <value>Công việc bảo trì đã được lên kế hoạch từ trước</value>
+  </data>
+  <data name="Tickets_Create_New" xml:space="preserve">
+    <value>Tạo Phiếu Mới</value>
+  </data>
+  <data name="Tickets_Workflow_Title" xml:space="preserve">
+    <value>Luồng Phiếu Bảo Trì - Cải Tiến</value>
+  </data>
+  <data name="Tickets_Workflow_Create" xml:space="preserve">
+    <value>TẠO PHIẾU</value>
+  </data>
+  <data name="Tickets_Workflow_Create_Desc" xml:space="preserve">
+    <value>Chỉ định người chịu trách nhiệm</value>
+  </data>
+  <data name="Tickets_Workflow_Classify" xml:space="preserve">
+    <value>PHÂN LOẠI</value>
+  </data>
+  <data name="Tickets_Workflow_Classify_Desc" xml:space="preserve">
+    <value>Tự bảo trì hoặc bảo trì bên ngoài</value>
+  </data>
+  <data name="Tickets_Workflow_Execute" xml:space="preserve">
+    <value>THỰC HIỆN</value>
+  </data>
+  <data name="Tickets_Workflow_Execute_Desc" xml:space="preserve">
+    <value>Kỹ thuật viên hoặc NCC thực hiện</value>
+  </data>
+  <data name="Tickets_Workflow_Input" xml:space="preserve">
+    <value>NHẬP LIỆU</value>
+  </data>
+  <data name="Tickets_Workflow_Input_Desc" xml:space="preserve">
+    <value>Phụ tùng hoặc chi phí &amp; hóa đơn</value>
+  </data>
+  <data name="Tickets_Workflow_Complete" xml:space="preserve">
+    <value>HOÀN THÀNH</value>
+  </data>
+  <data name="Tickets_Workflow_Complete_Desc" xml:space="preserve">
+    <value>Kiểm tra chất lượng và đóng phiếu</value>
+  </data>
+  <data name="Tickets_Table_ID" xml:space="preserve">
+    <value>Mã Phiếu</value>
+  </data>
+  <data name="Tickets_Table_Equipment" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Tickets_Table_Created_Date" xml:space="preserve">
+    <value>Ngày Lập</value>
+  </data>
+  <data name="Tickets_Table_Responsible" xml:space="preserve">
+    <value>Người Chịu Trách Nhiệm</value>
+  </data>
+  <data name="Tickets_Table_Maintenance_Type" xml:space="preserve">
+    <value>Loại Bảo Trì</value>
+  </data>
+  <data name="Tickets_Table_Due_Date" xml:space="preserve">
+    <value>Dự Kiến Hoàn Thành</value>
+  </data>
+  <data name="Tickets_Table_Status" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Tickets_Table_Actions" xml:space="preserve">
+    <value>Thao Tác</value>
+  </data>
+  <data name="Tickets_Create_Modal_Title" xml:space="preserve">
+    <value>Tạo Phiếu Bảo Trì Mới</value>
+  </data>
+  <data name="Tickets_Equipment_Label" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Tickets_Select_Equipment" xml:space="preserve">
+    <value>Chọn thiết bị...</value>
+  </data>
+  <data name="Tickets_Created_Date_Label" xml:space="preserve">
+    <value>Ngày Lập Phiếu</value>
+  </data>
+  <data name="Tickets_Responsible_Label" xml:space="preserve">
+    <value>Người Chịu Trách Nhiệm</value>
+  </data>
+  <data name="Tickets_Select_Responsible" xml:space="preserve">
+    <value>Chọn người chịu trách nhiệm...</value>
+  </data>
+  <data name="Tickets_Maintenance_Type_Label" xml:space="preserve">
+    <value>Loại Bảo Trì</value>
+  </data>
+  <data name="Tickets_Select_Maintenance_Type" xml:space="preserve">
+    <value>Chọn loại bảo trì...</value>
+  </data>
+  <data name="Tickets_Type_Internal" xml:space="preserve">
+    <value>Tự bảo trì (Nội bộ)</value>
+  </data>
+  <data name="Tickets_Type_External" xml:space="preserve">
+    <value>Bảo trì bên ngoài (NCC)</value>
+  </data>
+  <data name="Tickets_Assignee_Label" xml:space="preserve">
+    <value>Kỹ Thuật Viên Thực Hiện</value>
+  </data>
+  <data name="Tickets_Select_Assignee" xml:space="preserve">
+    <value>Chọn kỹ thuật viên...</value>
+  </data>
+  <data name="Tickets_Vendor_Label" xml:space="preserve">
+    <value>Nhà Cung Cấp</value>
+  </data>
+  <data name="Tickets_Select_Vendor" xml:space="preserve">
+    <value>Chọn nhà cung cấp...</value>
+  </data>
+  <data name="Tickets_Description_Label" xml:space="preserve">
+    <value>Hạng Mục Cần Xử Lý</value>
+  </data>
+  <data name="Tickets_Description_Placeholder" xml:space="preserve">
+    <value>Mô tả chi tiết công việc cần thực hiện...</value>
+  </data>
+  <data name="Tickets_Due_Date_Label" xml:space="preserve">
+    <value>Dự Kiến Hoàn Thành</value>
+  </data>
+  <data name="Tickets_Priority_Label" xml:space="preserve">
+    <value>Mức Độ Ưu Tiên</value>
+  </data>
+  <data name="Tickets_Priority_Low" xml:space="preserve">
+    <value>Thấp</value>
+  </data>
+  <data name="Tickets_Priority_Medium" xml:space="preserve">
+    <value>Trung bình</value>
+  </data>
+  <data name="Tickets_Priority_High" xml:space="preserve">
+    <value>Cao</value>
+  </data>
+  <data name="Tickets_Priority_Urgent" xml:space="preserve">
+    <value>Khẩn cấp</value>
+  </data>
+  <data name="Tickets_Modal_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Tickets_Modal_Create" xml:space="preserve">
+    <value>Tạo Phiếu</value>
+  </data>
+  <data name="Tickets_Edit_Modal_Title" xml:space="preserve">
+    <value>Chỉnh Sửa Phiếu Bảo Trì</value>
+  </data>
+  <data name="Tickets_Modal_Update" xml:space="preserve">
+    <value>Cập Nhật</value>
+  </data>
+  <data name="Tickets_Detail_Modal_Title" xml:space="preserve">
+    <value>Chi Tiết Phiếu Bảo Trì</value>
+  </data>
+  <data name="Tickets_Notes_Label" xml:space="preserve">
+    <value>Ghi Chú</value>
+  </data>
+  <data name="Tickets_Notes_Placeholder" xml:space="preserve">
+    <value>Ghi chú bổ sung...</value>
+  </data>
+  <data name="Tickets_Status_Pending" xml:space="preserve">
+    <value>Chờ thực hiện</value>
+  </data>
+  <data name="Tickets_Status_In_Progress" xml:space="preserve">
+    <value>Đang thực hiện</value>
+  </data>
+  <data name="Tickets_Status_Completed" xml:space="preserve">
+    <value>Hoàn thành</value>
+  </data>
+  <data name="Tickets_Status_Cancelled" xml:space="preserve">
+    <value>Đã hủy</value>
+  </data>
+  <data name="Tickets_Status_Scheduled" xml:space="preserve">
+    <value>Đã lên lịch</value>
+  </data>
+  <data name="Parts_Title" xml:space="preserve">
+    <value>Quản Lý Linh Kiện</value>
+  </data>
+  <data name="Parts_List_Title" xml:space="preserve">
+    <value>Quản Lý Linh Kiện</value>
+  </data>
+  <data name="Parts_Add_New" xml:space="preserve">
+    <value>Nhập Linh Kiện</value>
+  </data>
+  <data name="Parts_Filter_All" xml:space="preserve">
+    <value>Tất Cả</value>
+  </data>
+  <data name="Parts_Filter_Low" xml:space="preserve">
+    <value>Sắp Hết</value>
+  </data>
+  <data name="Parts_Filter_Out" xml:space="preserve">
+    <value>Hết Hàng</value>
+  </data>
+  <data name="Parts_Filter_Sufficient" xml:space="preserve">
+    <value>Đủ Dùng</value>
+  </data>
+  <data name="Parts_Search_Placeholder" xml:space="preserve">
+    <value>Tìm kiếm...</value>
+  </data>
+  <data name="Parts_Table_Code" xml:space="preserve">
+    <value>Mã LK</value>
+  </data>
+  <data name="Parts_Table_Name" xml:space="preserve">
+    <value>Tên Linh Kiện</value>
+  </data>
+  <data name="Parts_Table_Quantity" xml:space="preserve">
+    <value>Số Lượng Tồn</value>
+  </data>
+  <data name="Parts_Table_Unit" xml:space="preserve">
+    <value>Đơn Vị</value>
+  </data>
+  <data name="Parts_Table_Location" xml:space="preserve">
+    <value>Vị Trí Kho</value>
+  </data>
+  <data name="Parts_Table_Min_Quantity" xml:space="preserve">
+    <value>Số Lượng Tối Thiểu</value>
+  </data>
+  <data name="Parts_Table_Status" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Parts_Table_Actions" xml:space="preserve">
+    <value>Thao Tác</value>
+  </data>
+  <data name="Parts_Add_Modal_Title" xml:space="preserve">
+    <value>Nhập Linh Kiện Mới</value>
+  </data>
+  <data name="Parts_Code_Label" xml:space="preserve">
+    <value>Mã Linh Kiện</value>
+  </data>
+  <data name="Parts_Code_Placeholder" xml:space="preserve">
+    <value>VD: LK016</value>
+  </data>
+  <data name="Parts_Name_Label" xml:space="preserve">
+    <value>Tên Linh Kiện</value>
+  </data>
+  <data name="Parts_Name_Placeholder" xml:space="preserve">
+    <value>VD: Bạc đạn 6202</value>
+  </data>
+  <data name="Parts_Quantity_Label" xml:space="preserve">
+    <value>Số Lượng</value>
+  </data>
+  <data name="Parts_Unit_Label" xml:space="preserve">
+    <value>Đơn Vị</value>
+  </data>
+  <data name="Parts_Select_Unit" xml:space="preserve">
+    <value>Chọn đơn vị...</value>
+  </data>
+  <data name="Parts_Unit_Piece" xml:space="preserve">
+    <value>Cái</value>
+  </data>
+  <data name="Parts_Unit_Meter" xml:space="preserve">
+    <value>Mét</value>
+  </data>
+  <data name="Parts_Unit_Liter" xml:space="preserve">
+    <value>Lít</value>
+  </data>
+  <data name="Parts_Unit_Kg" xml:space="preserve">
+    <value>Kg</value>
+  </data>
+  <data name="Parts_Unit_Tube" xml:space="preserve">
+    <value>Ống</value>
+  </data>
+  <data name="Parts_Location_Label" xml:space="preserve">
+    <value>Vị Trí Kho</value>
+  </data>
+  <data name="Parts_Location_Placeholder" xml:space="preserve">
+    <value>VD: Kho A-05</value>
+  </data>
+  <data name="Parts_Add_Date_Label" xml:space="preserve">
+    <value>Ngày Nhập Kho</value>
+  </data>
+  <data name="Parts_Notes_Label" xml:space="preserve">
+    <value>Ghi Chú</value>
+  </data>
+  <data name="Parts_Notes_Placeholder" xml:space="preserve">
+    <value>Thông tin bổ sung...</value>
+  </data>
+  <data name="Parts_Modal_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Parts_Modal_Add" xml:space="preserve">
+    <value>Nhập Kho</value>
+  </data>
+  <data name="Parts_Add_Stock_Modal_Title" xml:space="preserve">
+    <value>Nhập Thêm Linh Kiện</value>
+  </data>
+  <data name="Parts_Modal_Confirm" xml:space="preserve">
+    <value>Xác Nhận</value>
+  </data>
+  <data name="Parts_Status_Sufficient" xml:space="preserve">
+    <value>Đủ Dùng</value>
+  </data>
+  <data name="Parts_Status_Low" xml:space="preserve">
+    <value>Sắp Hết</value>
+  </data>
+  <data name="Parts_Status_Out" xml:space="preserve">
+    <value>Hết Hàng</value>
+  </data>
+  <data name="Parts_Edit_Modal_Title" xml:space="preserve">
+    <value>Chỉnh Sửa Linh Kiện</value>
+  </data>
+  <data name="Parts_Min_Quantity_Label" xml:space="preserve">
+    <value>Số Lượng Tối Thiểu</value>
+  </data>
+  <data name="Parts_Last_Updated_Label" xml:space="preserve">
+    <value>Cập Nhật Lần Cuối</value>
+  </data>
+  <data name="Parts_Modal_Update" xml:space="preserve">
+    <value>Cập Nhật</value>
+  </data>
+  <data name="Tickets_Table_Assignee" xml:space="preserve">
+    <value>Người Thực Hiện</value>
+  </data>
+  <data name="Tickets_Table_Priority" xml:space="preserve">
+    <value>Mức Độ Ưu Tiên</value>
+  </data>
+  <data name="Requests_Title" xml:space="preserve">
+    <value>Yêu Cầu Bảo Trì</value>
+  </data>
+  <data name="Requests_List_Title" xml:space="preserve">
+    <value>Yêu Cầu Bảo Trì</value>
+  </data>
+  <data name="Requests_List_Subtitle" xml:space="preserve">
+    <value>Báo cáo và xử lý các vấn đề phát sinh từ người sử dụng</value>
+  </data>
+  <data name="Requests_Create_New" xml:space="preserve">
+    <value>Tạo Yêu Cầu Mới</value>
+  </data>
+  <data name="Requests_Workflow_Title" xml:space="preserve">
+    <value>Luồng Yêu Cầu Bảo Trì - Thực Tế</value>
+  </data>
+  <data name="Requests_Workflow_Create" xml:space="preserve">
+    <value>TẠO YÊU CẦU</value>
+  </data>
+  <data name="Requests_Workflow_Create_Desc" xml:space="preserve">
+    <value>Công nhân báo cáo vấn đề</value>
+  </data>
+  <data name="Requests_Workflow_Approve" xml:space="preserve">
+    <value>PHÊ DUYỆT</value>
+  </data>
+  <data name="Requests_Workflow_Approve_Desc" xml:space="preserve">
+    <value>Quản lý xem xét và quyết định</value>
+  </data>
+  <data name="Requests_Workflow_Assign" xml:space="preserve">
+    <value>PHÂN CÔNG</value>
+  </data>
+  <data name="Requests_Workflow_Assign_Desc" xml:space="preserve">
+    <value>Gán cho kỹ thuật viên hoặc nhà CC</value>
+  </data>
+  <data name="Requests_Workflow_Execute" xml:space="preserve">
+    <value>THỰC HIỆN</value>
+  </data>
+  <data name="Requests_Workflow_Execute_Desc" xml:space="preserve">
+    <value>Kỹ thuật viên thực hiện sửa chữa</value>
+  </data>
+  <data name="Requests_Workflow_Complete" xml:space="preserve">
+    <value>HOÀN THÀNH</value>
+  </data>
+  <data name="Requests_Workflow_Complete_Desc" xml:space="preserve">
+    <value>Kiểm tra và đóng yêu cầu</value>
+  </data>
+  <data name="Requests_Table_ID" xml:space="preserve">
+    <value>Mã YC</value>
+  </data>
+  <data name="Requests_Table_Equipment" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Requests_Table_Requester" xml:space="preserve">
+    <value>Người Yêu Cầu</value>
+  </data>
+  <data name="Requests_Table_Created_Date" xml:space="preserve">
+    <value>Ngày Tạo</value>
+  </data>
+  <data name="Requests_Table_Assigned_To" xml:space="preserve">
+    <value>Người Phụ Trách</value>
+  </data>
+  <data name="Requests_Table_Impact" xml:space="preserve">
+    <value>Mức Độ</value>
+  </data>
+  <data name="Requests_Table_Status" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Requests_Table_Actions" xml:space="preserve">
+    <value>Thao Tác</value>
+  </data>
+  <data name="Requests_Create_Modal_Title" xml:space="preserve">
+    <value>Tạo Yêu Cầu Bảo Trì</value>
+  </data>
+  <data name="Requests_Equipment_Label" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Requests_Select_Equipment" xml:space="preserve">
+    <value>Chọn Thiết Bị</value>
+  </data>
+  <data name="Requests_Requester_Label" xml:space="preserve">
+    <value>Người Yêu Cầu</value>
+  </data>
+  <data name="Requests_Select_Requester" xml:space="preserve">
+    <value>Chọn Người Yêu Cầu</value>
+  </data>
+  <data name="Requests_Department_Label" xml:space="preserve">
+    <value>Phòng Ban</value>
+  </data>
+  <data name="Requests_Select_Department" xml:space="preserve">
+    <value>Chọn Phòng Ban</value>
+  </data>
+  <data name="Requests_Impact_Label" xml:space="preserve">
+    <value>Mức Độ Ảnh Hưởng</value>
+  </data>
+  <data name="Requests_Select_Impact" xml:space="preserve">
+    <value>Chọn Mức Độ Ảnh Hưởng</value>
+  </data>
+  <data name="Requests_Impact_Low" xml:space="preserve">
+    <value>Thấp</value>
+  </data>
+  <data name="Requests_Impact_Medium" xml:space="preserve">
+    <value>Trung Bình</value>
+  </data>
+  <data name="Requests_Impact_Serious" xml:space="preserve">
+    <value>Nghiêm Trọng</value>
+  </data>
+  <data name="Requests_Impact_Critical" xml:space="preserve">
+    <value>Khẩn Cấp</value>
+  </data>
+  <data name="Requests_Description_Label" xml:space="preserve">
+    <value>Mô Tả</value>
+  </data>
+  <data name="Requests_Description_Placeholder" xml:space="preserve">
+    <value>Mô tả chi tiết vấn đề...</value>
+  </data>
+  <data name="Requests_Image_Label" xml:space="preserve">
+    <value>Hình Ảnh</value>
+  </data>
+  <data name="Requests_Image_Help" xml:space="preserve">
+    <value>Tải lên hình ảnh để mô tả vấn đề</value>
+  </data>
+  <data name="Requests_Modal_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Requests_Modal_Create" xml:space="preserve">
+    <value>Tạo</value>
+  </data>
+  <data name="Requests_Edit_Modal_Title" xml:space="preserve">
+    <value>Chỉnh Sửa Yêu Cầu Bảo Trì</value>
+  </data>
+  <data name="Requests_Assigned_To_Label" xml:space="preserve">
+    <value>Người Phụ Trách</value>
+  </data>
+  <data name="Requests_Select_Assigned_To" xml:space="preserve">
+    <value>Chọn Người Phụ Trách</value>
+  </data>
+  <data name="Requests_Deadline_Label" xml:space="preserve">
+    <value>Hạn Chót</value>
+  </data>
+  <data name="Requests_Notes_Label" xml:space="preserve">
+    <value>Ghi Chú</value>
+  </data>
+  <data name="Requests_Notes_Placeholder" xml:space="preserve">
+    <value>Ghi chú thêm...</value>
+  </data>
+  <data name="Requests_Modal_Update" xml:space="preserve">
+    <value>Cập Nhật</value>
+  </data>
+  <data name="Requests_Detail_Modal_Title" xml:space="preserve">
+    <value>Chi Tiết Yêu Cầu</value>
+  </data>
+  <data name="Requests_Status_Pending" xml:space="preserve">
+    <value>Chờ Xử Lý</value>
+  </data>
+  <data name="Requests_Status_Approved" xml:space="preserve">
+    <value>Đã Phê Duyệt</value>
+  </data>
+  <data name="Requests_Status_Assigned" xml:space="preserve">
+    <value>Đã Phân Công</value>
+  </data>
+  <data name="Requests_Status_In_Progress" xml:space="preserve">
+    <value>Đang Thực Hiện</value>
+  </data>
+  <data name="Requests_Status_Completed" xml:space="preserve">
+    <value>Hoàn Thành</value>
+  </data>
+  <data name="Requests_Status_Rejected" xml:space="preserve">
+    <value>Từ Chối</value>
+  </data>
+  <data name="Purchase_Title" xml:space="preserve">
+    <value>Kế Hoạch Mua Hàng</value>
+  </data>
+  <data name="Purchase_Plan_Title" xml:space="preserve">
+    <value>Kế Hoạch Mua Linh Kiện Tháng 10/2025</value>
+  </data>
+  <data name="Purchase_Create_New" xml:space="preserve">
+    <value>Tạo Kế Hoạch Mới</value>
+  </data>
+  <data name="Purchase_Previous_Month" xml:space="preserve">
+    <value>Tháng Trước</value>
+  </data>
+  <data name="Purchase_Current_Month" xml:space="preserve">
+    <value>Tháng Này</value>
+  </data>
+  <data name="Purchase_Next_Month" xml:space="preserve">
+    <value>Tháng Sau</value>
+  </data>
+  <data name="Purchase_Table_Part_ID" xml:space="preserve">
+    <value>Mã LK</value>
+  </data>
+  <data name="Purchase_Table_Part_Name" xml:space="preserve">
+    <value>Tên Linh Kiện</value>
+  </data>
+  <data name="Purchase_Table_Planned" xml:space="preserve">
+    <value>Kế Hoạch</value>
+  </data>
+  <data name="Purchase_Table_Actual" xml:space="preserve">
+    <value>Thực Tế</value>
+  </data>
+  <data name="Purchase_Table_Difference" xml:space="preserve">
+    <value>Chênh Lệch</value>
+  </data>
+  <data name="Purchase_Table_Supplier" xml:space="preserve">
+    <value>Nhà Cung Cấp</value>
+  </data>
+  <data name="Purchase_Table_Status" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Purchase_Table_Actions" xml:space="preserve">
+    <value>Thao Tác</value>
+  </data>
+  <data name="Purchase_Trend_Title" xml:space="preserve">
+    <value>Xu Hướng Mua Hàng (6 Tháng)</value>
+  </data>
+  <data name="Purchase_Create_Modal_Title" xml:space="preserve">
+    <value>Tạo Kế Hoạch Mua Hàng Mới</value>
+  </data>
+  <data name="Purchase_Part_ID_Label" xml:space="preserve">
+    <value>Mã Linh Kiện</value>
+  </data>
+  <data name="Purchase_Part_ID_Placeholder" xml:space="preserve">
+    <value>Nhập mã linh kiện</value>
+  </data>
+  <data name="Purchase_Part_Name_Label" xml:space="preserve">
+    <value>Tên Linh Kiện</value>
+  </data>
+  <data name="Purchase_Part_Name_Placeholder" xml:space="preserve">
+    <value>Nhập tên linh kiện</value>
+  </data>
+  <data name="Purchase_Planned_Quantity_Label" xml:space="preserve">
+    <value>Số Lượng Kế Hoạch</value>
+  </data>
+  <data name="Purchase_Actual_Quantity_Label" xml:space="preserve">
+    <value>Số Lượng Thực Tế</value>
+  </data>
+  <data name="Purchase_Unit_Label" xml:space="preserve">
+    <value>Đơn Vị</value>
+  </data>
+  <data name="Purchase_Select_Unit" xml:space="preserve">
+    <value>Chọn Đơn Vị</value>
+  </data>
+  <data name="Purchase_Unit_Piece" xml:space="preserve">
+    <value>Cái</value>
+  </data>
+  <data name="Purchase_Unit_Meter" xml:space="preserve">
+    <value>Mét</value>
+  </data>
+  <data name="Purchase_Unit_Liter" xml:space="preserve">
+    <value>Lít</value>
+  </data>
+  <data name="Purchase_Unit_Kg" xml:space="preserve">
+    <value>Kg</value>
+  </data>
+  <data name="Purchase_Unit_Tube" xml:space="preserve">
+    <value>Ống</value>
+  </data>
+  <data name="Purchase_Unit_Price_Label" xml:space="preserve">
+    <value>Đơn Giá</value>
+  </data>
+  <data name="Purchase_Supplier_Label" xml:space="preserve">
+    <value>Nhà Cung Cấp</value>
+  </data>
+  <data name="Purchase_Select_Supplier" xml:space="preserve">
+    <value>Chọn Nhà Cung Cấp</value>
+  </data>
+  <data name="Purchase_Order_Date_Label" xml:space="preserve">
+    <value>Ngày Đặt Hàng</value>
+  </data>
+  <data name="Purchase_Expected_Delivery_Label" xml:space="preserve">
+    <value>Ngày Giao Hàng Dự Kiến</value>
+  </data>
+  <data name="Purchase_Status_Label" xml:space="preserve">
+    <value>Trạng Thái</value>
+  </data>
+  <data name="Purchase_Status_Pending" xml:space="preserve">
+    <value>Chờ Xử Lý</value>
+  </data>
+  <data name="Purchase_Status_Ordered" xml:space="preserve">
+    <value>Đã Đặt Hàng</value>
+  </data>
+  <data name="Purchase_Status_Delivered" xml:space="preserve">
+    <value>Đã Giao Hàng</value>
+  </data>
+  <data name="Purchase_Status_Cancelled" xml:space="preserve">
+    <value>Đã Hủy</value>
+  </data>
+  <data name="Purchase_Modal_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Purchase_Modal_Create" xml:space="preserve">
+    <value>Tạo</value>
+  </data>
+  <data name="Purchase_Edit_Modal_Title" xml:space="preserve">
+    <value>Chỉnh Sửa Kế Hoạch Mua Hàng</value>
+  </data>
+  <data name="Purchase_Modal_Update" xml:space="preserve">
+    <value>Cập Nhật</value>
+  </data>
+  <data name="Purchase_View_Modal_Title" xml:space="preserve">
+    <value>Chi Tiết Kế Hoạch Mua Hàng</value>
+  </data>
+  <data name="Purchase_Modal_Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Calendar_Title" xml:space="preserve">
+    <value>Lịch Bảo Trì</value>
+  </data>
+  <data name="Calendar_Maintenance_Schedule_Title" xml:space="preserve">
+    <value>Lịch Bảo Trì</value>
+  </data>
+  <data name="Calendar_Today" xml:space="preserve">
+    <value>Hôm Nay</value>
+  </data>
+  <data name="Calendar_Equipment" xml:space="preserve">
+    <value>Thiết Bị</value>
+  </data>
+  <data name="Calendar_Type" xml:space="preserve">
+    <value>Loại</value>
+  </data>
+  <data name="Calendar_Technician" xml:space="preserve">
+    <value>Kỹ Thuật Viên</value>
+  </data>
+  <data name="Calendar_Status_Pending" xml:space="preserve">
+    <value>Chờ Xử Lý</value>
+  </data>
+  <data name="Calendar_Status_Scheduled" xml:space="preserve">
+    <value>Đã Lên Lịch</value>
+  </data>
+  <data name="Calendar_Status_Completed" xml:space="preserve">
+    <value>Hoàn Thành</value>
+  </data>
+  <data name="Calendar_Type_Periodic" xml:space="preserve">
+    <value>Định Kỳ</value>
+  </data>
+  <data name="Calendar_Type_Mechanical" xml:space="preserve">
+    <value>Cơ Khí</value>
+  </data>
+  <data name="Calendar_Type_Electrical" xml:space="preserve">
+    <value>Điện</value>
+  </data>
+  <data name="Calendar_Event_Details" xml:space="preserve">
+    <value>Chi Tiết Bảo Trì</value>
+  </data>
+  <data name="Traceability_Title" xml:space="preserve">
+    <value>Hệ Thống Truy Xuất Nguồn Gốc</value>
+  </data>
+  <data name="Traceability_Subtitle" xml:space="preserve">
+    <value>Tra cứu chi tiết lịch sử sản xuất, QC, nguyên vật liệu và thiết bị</value>
+  </data>
+  <data name="Traceability_Product_Type" xml:space="preserve">
+    <value>Chọn loại sản phẩm</value>
+  </data>
+  <data name="Traceability_Paraglider" xml:space="preserve">
+    <value>Dù lượn (Paraglider)</value>
+  </data>
+  <data name="Traceability_Harness" xml:space="preserve">
+    <value>Ghế bay (Harness)</value>
+  </data>
+  <data name="Traceability_Material" xml:space="preserve">
+    <value>Nguyên vật liệu (Raw Materials)</value>
+  </data>
+  <data name="Traceability_Search_By_Code" xml:space="preserve">
+    <value>Tìm kiếm theo mã</value>
+  </data>
+  <data name="Traceability_Search_Placeholder" xml:space="preserve">
+    <value>Nhập mã sản phẩm hoặc quét QR code</value>
+  </data>
+  <data name="Traceability_QR_Scan" xml:space="preserve">
+    <value>Quét QR Code</value>
+  </data>
+  <data name="Traceability_Search" xml:space="preserve">
+    <value>Tra cứu</value>
+  </data>
+  <data name="Traceability_Overview" xml:space="preserve">
+    <value>Tổng quan</value>
+  </data>
+  <data name="Traceability_Timeline" xml:space="preserve">
+    <value>Tiến độ sản xuất</value>
+  </data>
+  <data name="Traceability_QC_History" xml:space="preserve">
+    <value>Lịch sử QC</value>
+  </data>
+  <data name="Traceability_Materials" xml:space="preserve">
+    <value>Nguyên vật liệu</value>
+  </data>
+  <data name="Traceability_Cutting_Info" xml:space="preserve">
+    <value>Thông tin cắt</value>
+  </data>
+  <data name="Traceability_Quality_Metrics" xml:space="preserve">
+    <value>Chỉ số chất lượng</value>
+  </data>
+  <data name="Traceability_No_Results_Title" xml:space="preserve">
+    <value>Chưa có kết quả tra cứu</value>
+  </data>
+  <data name="Traceability_No_Results_Message" xml:space="preserve">
+    <value>Vui lòng chọn loại truy xuất và nhập mã để tra cứu</value>
+  </data>
 </root>

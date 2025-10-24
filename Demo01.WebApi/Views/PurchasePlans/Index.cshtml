@@ -1,0 +1,271 @@
+﻿@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = Localizer["Purchase_Title"];
+    ViewData["Page"] = "purchase-plans";
+}
+
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-graph-up"></i> @Localizer["Purchase_Trend_Title"]</h5>
+            </div>
+            <div class="card-body">
+                <div class="purchase-chart-container">
+                    <canvas id="purchasingTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="bi bi-cart-check"></i> @Localizer["Purchase_Plan_Title"]</h5>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-success" onclick="createNewPurchasingPlan()">
+                        <i class="bi bi-plus-circle"></i> @Localizer["Purchase_Create_New"]
+                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-chevron-left"></i> @Localizer["Purchase_Previous_Month"]
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary">@Localizer["Purchase_Current_Month"]</button>
+                        <button class="btn btn-sm btn-outline-primary">
+                            @Localizer["Purchase_Next_Month"] <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>@Localizer["Purchase_Table_Part_ID"]</th>
+                                <th>@Localizer["Purchase_Table_Part_Name"]</th>
+                                <th>@Localizer["Purchase_Table_Planned"]</th>
+                                <th>@Localizer["Purchase_Table_Actual"]</th>
+                                <th>@Localizer["Purchase_Table_Difference"]</th>
+                                <th>@Localizer["Purchase_Table_Supplier"]</th>
+                                <th>@Localizer["Purchase_Table_Status"]</th>
+                                <th>@Localizer["Purchase_Table_Actions"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchasingPlanTable">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create New Purchasing Plan Modal -->
+<div class="modal fade" id="createPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle text-success"></i> @Localizer["Purchase_Create_Modal_Title"]
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createPlanForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Part_ID_Label"] <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="partId" placeholder="@Localizer["Purchase_Part_ID_Placeholder"]" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Part_Name_Label"] <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="partName" placeholder="@Localizer["Purchase_Part_Name_Placeholder"]" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Planned_Quantity_Label"] <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="plannedQuantity" min="1" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Unit_Label"] <span class="text-danger">*</span></label>
+                            <select class="form-select" id="unit" required>
+                                <option value="">@Localizer["Purchase_Select_Unit"]</option>
+                                <option value="cái">@Localizer["Purchase_Unit_Piece"]</option>
+                                <option value="mét">@Localizer["Purchase_Unit_Meter"]</option>
+                                <option value="lít">@Localizer["Purchase_Unit_Liter"]</option>
+                                <option value="kg">@Localizer["Purchase_Unit_Kg"]</option>
+                                <option value="ống">@Localizer["Purchase_Unit_Tube"]</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Unit_Price_Label"] <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="unitPrice" min="0" step="1000" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Supplier_Label"] <span class="text-danger">*</span></label>
+                            <select class="form-select" id="supplier" required>
+                                <option value="">@Localizer["Purchase_Select_Supplier"]</option>
+                                <option value="Công ty ABC">Công ty ABC</option>
+                                <option value="Công ty XYZ">Công ty XYZ</option>
+                                <option value="Công ty DEF">Công ty DEF</option>
+                                <option value="Công ty GHI">Công ty GHI</option>
+                                <option value="Công ty JKL">Công ty JKL</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Order_Date_Label"] <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="orderDate" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Expected_Delivery_Label"] <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="expectedDelivery" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Status_Label"]</label>
+                            <select class="form-select" id="status">
+                                <option value="pending">@Localizer["Purchase_Status_Pending"]</option>
+                                <option value="ordered">@Localizer["Purchase_Status_Ordered"]</option>
+                                <option value="delivered">@Localizer["Purchase_Status_Delivered"]</option>
+                                <option value="cancelled">@Localizer["Purchase_Status_Cancelled"]</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Purchase_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-success" id="submitPlan">@Localizer["Purchase_Modal_Create"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Purchasing Plan Modal -->
+<div class="modal fade" id="editPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil text-warning"></i> @Localizer["Purchase_Edit_Modal_Title"]
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPlanForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Part_ID_Label"]</label>
+                            <input type="text" class="form-control" id="editPartId" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Part_Name_Label"] <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editPartName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Planned_Quantity_Label"] <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="editPlannedQuantity" min="1" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Actual_Quantity_Label"]</label>
+                            <input type="number" class="form-control" id="editActualQuantity" min="0">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Unit_Label"] <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editUnit" required>
+                                <option value="">@Localizer["Purchase_Select_Unit"]</option>
+                                <option value="cái">@Localizer["Purchase_Unit_Piece"]</option>
+                                <option value="mét">@Localizer["Purchase_Unit_Meter"]</option>
+                                <option value="lít">@Localizer["Purchase_Unit_Liter"]</option>
+                                <option value="kg">@Localizer["Purchase_Unit_Kg"]</option>
+                                <option value="ống">@Localizer["Purchase_Unit_Tube"]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Unit_Price_Label"] <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="editUnitPrice" min="0" step="1000" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Supplier_Label"] <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editSupplier" required>
+                                <option value="">@Localizer["Purchase_Select_Supplier"]</option>
+                                <option value="Công ty ABC">Công ty ABC</option>
+                                <option value="Công ty XYZ">Công ty XYZ</option>
+                                <option value="Công ty DEF">Công ty DEF</option>
+                                <option value="Công ty GHI">Công ty GHI</option>
+                                <option value="Công ty JKL">Công ty JKL</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Order_Date_Label"] <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="editOrderDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["Purchase_Expected_Delivery_Label"] <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="editExpectedDelivery" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Purchase_Status_Label"]</label>
+                        <select class="form-select" id="editStatus">
+                            <option value="pending">@Localizer["Purchase_Status_Pending"]</option>
+                            <option value="ordered">@Localizer["Purchase_Status_Ordered"]</option>
+                            <option value="delivered">@Localizer["Purchase_Status_Delivered"]</option>
+                            <option value="cancelled">@Localizer["Purchase_Status_Cancelled"]</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Purchase_Modal_Cancel"]</button>
+                <button type="button" class="btn btn-warning" id="updatePlan">@Localizer["Purchase_Modal_Update"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Purchase Plan Modal -->
+<div class="modal fade" id="viewPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-eye text-primary"></i> @Localizer["Purchase_View_Modal_Title"]
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="viewPlanModalBody">
+                <!-- Populated by JS -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Purchase_Modal_Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden elements for JavaScript localization -->
+<div class="d-none">
+    <span data-status-pending>@Localizer["Purchase_Status_Pending"]</span>
+    <span data-status-ordered>@Localizer["Purchase_Status_Ordered"]</span>
+    <span data-status-delivered>@Localizer["Purchase_Status_Delivered"]</span>
+    <span data-status-cancelled>@Localizer["Purchase_Status_Cancelled"]</span>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script vite-src="~/js/purchasing.js"></script>
+}

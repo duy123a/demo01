@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Dashboard is now loaded directly in the CSHTML file
+
 document.addEventListener("DOMContentLoaded", () => {
     let html5QrCode;
     const qrModalEl = document.getElementById('qrScanModal');

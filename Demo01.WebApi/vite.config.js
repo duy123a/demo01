@@ -14,10 +14,18 @@ export default defineConfig({
         emptyOutDir: true,
         assetsDir: '',
         rollupOptions: {
-            input: {
-                main: path.resolve(__dirname, 'Assets/js/main.js'),
-                workflow: path.resolve(__dirname, 'Assets/js/workflow.js')
-            },
+                    input: {
+                        main: path.resolve(__dirname, 'Assets/js/main.js'),
+                        dashboard: path.resolve(__dirname, 'Assets/js/dashboard.js'),
+                        equipment: path.resolve(__dirname, 'Assets/js/equipment.js'),
+                        tickets: path.resolve(__dirname, 'Assets/js/tickets.js'),
+                        parts: path.resolve(__dirname, 'Assets/js/parts.js'),
+                        requests: path.resolve(__dirname, 'Assets/js/requests.js'),
+                        purchasing: path.resolve(__dirname, 'Assets/js/purchasing.js'),
+                        calendar: path.resolve(__dirname, 'Assets/js/calendar.js'),
+                        traceability: path.resolve(__dirname, 'Assets/js/traceability.js'),
+                        workflow: path.resolve(__dirname, 'Assets/js/workflow.js')
+                    },
             output: {
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
