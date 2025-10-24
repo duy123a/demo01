@@ -25,7 +25,7 @@ namespace Demo01.Shared.Services
 
         public async Task<GoogleCalendarResponse?> GetVietnamHolidaysAsync(int year)
         {
-            var apiKey = _config["Google:ApiKey"];
+            var apiKey = _config["GoogleSettings:ApiKey"];
             var timeMin = new DateTime(year, 1, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
             var timeMax = new DateTime(year, 12, 31).ToString("yyyy-MM-ddTHH:mm:ssZ");
 

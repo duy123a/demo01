@@ -101,7 +101,6 @@ namespace Demo01.WebApi.Controllers
                 .GetAll()
                 .Where(h => h.Date >= week.StartDate.Date
                          && h.Date <= week.EndDate.Date)
-                .Select(h => h.Date)
                 .ToListAsync();
 
             // --- Get or create ForecastPlanning ---

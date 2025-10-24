@@ -24,7 +24,7 @@ namespace Demo01.WebApi.ViewModels.ForecastPlanningViewModel
         public bool HasSaturday { get; set; }
         public Dictionary<int, decimal> TotalHours { get; set; } = new();
         public List<DateTimeOffset> DatesInWeek { get; set; } = new();
-        public List<DateTimeOffset> HolidayList { get; set; } = new();
+        public List<Holiday> HolidayList { get; set; } = new();
     }
 
     public class ForecastDropdownItem

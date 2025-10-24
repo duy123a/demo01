@@ -9,12 +9,9 @@
         /// <param name="utcDate">The UTC date to convert.</param>
         /// <param name="format">The output format (default: "yyyy-MM-dd HH:mm").</param>
         /// <returns>The formatted local time string, or an empty string if null.</returns>
-        public static string ToLocalTimeString(this DateTimeOffset? utcDate, string format = "yyyy-MM-dd HH:mm")
+        public static string ToLocalTimeString(this DateTimeOffset utcDate, string format = "yyyy-MM-dd HH:mm")
         {
-            if (!utcDate.HasValue)
-                return string.Empty;
-
-            var localTime = utcDate.Value.ToOffset(TimeSpan.FromHours(7)); // Vietnam (UTC+7)
+            var localTime = utcDate.ToOffset(TimeSpan.FromHours(7)); // Vietnam (UTC+7)
             return localTime.ToString(format);
         }
 

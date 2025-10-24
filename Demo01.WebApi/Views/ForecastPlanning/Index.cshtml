@@ -99,7 +99,15 @@
                     <th></th>
                     @foreach (var day in Model.DatesInWeek)
                     {
-                        <th>@day.ToString("dddd", new CultureInfo("en-US"))</th>
+                        var holiday = Model.HolidayList.FirstOrDefault(h => h.Date.Date == day.Date);
+                        if (holiday != null)
+                        {
+                            <th class="text-danger">@holiday.Description</th>
+                        }
+                        else
+                        {
+                            <th>@day.ToString("dddd", new CultureInfo("en-US"))</th>
+                        }
                     }
                 </tr>
             </thead>
@@ -112,7 +120,7 @@
                         @foreach (var day in Model.DatesInWeek)
                         {
                             var dateOnly = day.Date;
-                            var isHoliday = Model.HolidayList.Contains(day.Date);
+                            var isHoliday = Model.HolidayList.Any(h => h.Date.Date == day.Date);
                             var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
 
                             var record = Model.PlanningProcesses
@@ -136,7 +144,7 @@
                         @foreach (var day in Model.DatesInWeek)
                         {
                             var dateOnly = day.Date;
-                            var isHoliday = Model.HolidayList.Contains(day.Date);
+                            var isHoliday = Model.HolidayList.Any(h => h.Date.Date == day.Date);
                             //var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
                             var disabled = "disabled";
 

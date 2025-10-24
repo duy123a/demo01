@@ -16,24 +16,6 @@
     <link rel="stylesheet" vite-href="~/js/main.js" />
     
     <style>
-        .sidebar.collapsed {
-            width: 60px !important;
-            min-width: 60px !important;
-            transition: width 0.2s;
-        }
-        .sidebar:not(.collapsed) {
-            width: 250px;
-            min-width: 250px;
-            transition: width 0.2s;
-        }
-        .sidebar.collapsed .sidebar-link,
-        .sidebar.collapsed .sidebar-title,
-        .sidebar.collapsed .sidebar-logo-desktop {
-            display: none !important;
-        }
-        .sidebar.collapsed .sidebar-logo-mobile {
-            display: block !important;
-        }
         .submenu-container {
             margin-left: 1.5rem;
             display: flex;
@@ -123,6 +105,10 @@
                             <a href="/ForecastProgress" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastProgress"
             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                                 Forecast Progress
+                            </a>
+                            <a href="/Holiday" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Holiday"
+&& ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Holiday
                             </a>
                             <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate"
             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
