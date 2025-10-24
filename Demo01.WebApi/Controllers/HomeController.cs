@@ -34,7 +34,7 @@ namespace Demo01.WebApi.Controllers
             if (statusCode.HasValue)
             {
                 model.StatusCode = statusCode.Value;
-                model.Message = TempData["ErrorMessage"]?.ToString() ?? statusCode switch
+                model.Message = TempData["Error"]?.ToString() ?? statusCode switch
                 {
                     404 => "Page not found.",
                     403 => "Access denied.",
@@ -54,7 +54,7 @@ namespace Demo01.WebApi.Controllers
             else
             {
                 model.StatusCode = 500;
-                model.Message = TempData["ErrorMessage"]?.ToString() ?? "Unknown error occurred.";
+                model.Message = TempData["Error"]?.ToString() ?? "Unknown error occurred.";
             }
 
             return View(model);

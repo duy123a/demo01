@@ -99,8 +99,8 @@ namespace Demo01.WebApi.Controllers
 
             vm.HolidayList = await _uow.Holidays
                 .GetAll()
-                .Where(h => h.Date >= DateOnly.FromDateTime(week.StartDate.DateTime)
-                         && h.Date <= DateOnly.FromDateTime(week.EndDate.DateTime))
+                .Where(h => h.Date >= week.StartDate.Date
+                         && h.Date <= week.EndDate.Date)
                 .Select(h => h.Date)
                 .ToListAsync();
 
@@ -136,14 +136,14 @@ namespace Demo01.WebApi.Controllers
             foreach (var day in days)
             {
                 var planningDate = planning.ForecastPlanningDates
-                    .FirstOrDefault(x => x.PlanningDate == DateOnly.FromDateTime(day.DateTime));
+                    .FirstOrDefault(x => x.PlanningDate.Date == day.Date);
 
                 if (planningDate == null)
                 {
                     planningDate = new ForecastPlanningDate
                     {
                         Id = Guid.NewGuid(),
-                        PlanningDate = DateOnly.FromDateTime(day.DateTime),
+                        PlanningDate = day.Date,
                         ForecastPlanningId = planning.Id,
                         CreatedAt = DateTimeOffset.Now
                     };
@@ -202,7 +202,7 @@ namespace Demo01.WebApi.Controllers
             if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                 return BadRequest("Invalid date format");
 
-            var dateOnly = DateOnly.FromDateTime(parsedDate);
+            var dateOnly = parsedDate.Date;
 
             var planning = await _uow.ForecastPlannings
                 .GetAll()
@@ -223,7 +223,7 @@ namespace Demo01.WebApi.Controllers
 
             var planningDate = await _uow.ForecastPlanningDates
                 .GetAll()
-                .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate == dateOnly);
+                .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate.Date == dateOnly);
 
             if (planningDate == null)
             {
@@ -301,14 +301,14 @@ namespace Demo01.WebApi.Controllers
 
                 // Lấy tất cả ngày trong batch
                 var dates = group
-                    .Select(x => DateOnly.FromDateTime(DateTime.ParseExact(x.Date, "yyyyMMdd", CultureInfo.InvariantCulture)))
+                    .Select(x => DateTime.ParseExact(x.Date, "yyyyMMdd", CultureInfo.InvariantCulture))
                     .Distinct()
                     .ToList();
 
                 // Load trước tất cả ForecastPlanningDate liên quan
                 var existingDates = await _uow.ForecastPlanningDates
                     .GetAll()
-                    .Where(d => d.ForecastPlanningId == planning.Id && dates.Contains(d.PlanningDate))
+                    .Where(d => d.ForecastPlanningId == planning.Id && dates.Contains(d.PlanningDate.Date))
                     .ToListAsync();
 
                 foreach (var dto in group)
@@ -316,8 +316,8 @@ namespace Demo01.WebApi.Controllers
                     if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                         continue;
 
-                    var dateOnly = DateOnly.FromDateTime(parsedDate);
-                    var planningDate = existingDates.FirstOrDefault(d => d.PlanningDate == dateOnly);
+                    var dateOnly = parsedDate.Date;
+                    var planningDate = existingDates.FirstOrDefault(d => d.PlanningDate.Date == dateOnly);
 
                     if (planningDate == null)
                     {
@@ -371,7 +371,7 @@ namespace Demo01.WebApi.Controllers
                 if (!DateTime.TryParseExact(dto.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                     continue;
 
-                var dateOnly = DateOnly.FromDateTime(parsedDate);
+                var dateOnly = parsedDate.Date;
 
                 var planning = await _uow.ForecastPlannings
                     .GetAll()
@@ -392,7 +392,7 @@ namespace Demo01.WebApi.Controllers
 
                 var planningDate = await _uow.ForecastPlanningDates
                     .GetAll()
-                    .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate == dateOnly);
+                    .FirstOrDefaultAsync(d => d.ForecastPlanningId == planning.Id && d.PlanningDate.Date == dateOnly);
 
                 if (planningDate == null)
                 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Demo01.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251023021531_InitialDatabase")]
+    [Migration("20251024024934_InitialDatabase")]
     partial class InitialDatabase
     {
         /// <inheritdoc />
@@ -280,8 +280,8 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<Guid>("ForecastPlanningId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("PlanningDate")
-                        .HasColumnType("date");
+                    b.Property<DateTimeOffset>("PlanningDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -373,8 +373,8 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");

@@ -43,6 +43,7 @@ namespace Demo01.Shared
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
             services.AddSingleton<IEmailSender, MailKitEmailSender>();
             services.AddScoped<IBlobStorageService, BlobStorageService>();
+            services.AddScoped<IGoogleHolidayService, GoogleHolidayService>();
 
             return services;
         }

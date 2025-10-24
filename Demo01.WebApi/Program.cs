@@ -1,6 +1,8 @@
 using Demo01.Infrastructure;
 using Demo01.Infrastructure.Utilities;
 using Demo01.Shared;
+using Demo01.Shared.Services;
+using Demo01.Shared.Services.Interfaces;
 using Demo01.Shared.Utilities;
 using Vite.AspNetCore;
 
@@ -23,6 +25,10 @@ var adminEmail = builder.Configuration["SeedUsers:AdminEmail"] ?? string.Empty;
 var adminPassword = builder.Configuration["SeedUsers:AdminPassword"] ?? string.Empty;
 
 builder.Services.AddAppLocalization();
+builder.Services.AddHttpClient<IHttpClientService, HttpClientService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddSharedService(builder.Configuration);
 

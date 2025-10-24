@@ -111,12 +111,12 @@
                         <td class="fw-bold text-start">Work hours @process.Name</td>
                         @foreach (var day in Model.DatesInWeek)
                         {
-                            var dateOnly = DateOnly.FromDateTime(day.DateTime);
-                            var isHoliday = Model.HolidayList.Contains(DateOnly.FromDateTime(day.DateTime));
+                            var dateOnly = day.Date;
+                            var isHoliday = Model.HolidayList.Contains(day.Date);
                             var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
 
                             var record = Model.PlanningProcesses
-                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate == dateOnly);
+                                .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate.Date == dateOnly);
 
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
@@ -135,13 +135,13 @@
                         <td class="fw-bold text-start">@process.Name</td>
                         @foreach (var day in Model.DatesInWeek)
                         {
-                            var dateOnly = DateOnly.FromDateTime(day.DateTime);
-                            var isHoliday = Model.HolidayList.Contains(DateOnly.FromDateTime(day.DateTime));
+                            var dateOnly = day.Date;
+                            var isHoliday = Model.HolidayList.Contains(day.Date);
                             //var disabled = ((!Model.HasSaturday && day.DayOfWeek == DayOfWeek.Saturday) || isHoliday) ? "disabled" : "";
                             var disabled = "disabled";
 
                             var record = Model.PlanningProcesses
-                                    .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate == dateOnly);
+                                    .FirstOrDefault(p => p.ProcessId == process.Id && p.ForecastPlanningDate.PlanningDate.Date == dateOnly);
                             <td>
                                 <input type="number" step="0.01" class="form-control form-control-sm text-center"
                                        name="@($"actualLf_{process.Id}_{day:yyyyMMdd}")"
@@ -158,7 +158,7 @@
                     @foreach (var day in Model.DatesInWeek)
                     {
                         var firstRecord = Model.PlanningProcesses
-                            .FirstOrDefault(p => p.ForecastPlanningDate.PlanningDate == DateOnly.FromDateTime(day.DateTime));
+                            .FirstOrDefault(p => p.ForecastPlanningDate.PlanningDate.Date == day.Date);
 
                         <td>
                             <input type="text" class="form-control form-control-sm text-center"

@@ -9,7 +9,7 @@ namespace Demo01.Infrastructure.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public DateOnly PlanningDate { get; set; }
+        public DateTimeOffset PlanningDate { get; set; }
 
         public Guid ForecastPlanningId { get; set; }
 

@@ -277,8 +277,8 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<Guid>("ForecastPlanningId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("PlanningDate")
-                        .HasColumnType("date");
+                    b.Property<DateTimeOffset>("PlanningDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -370,8 +370,8 @@ namespace Demo01.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
