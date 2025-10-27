@@ -1,0 +1,409 @@
+@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = "Báo cáo sản xuất";
+    ViewData["Page"] = "production-report";
+}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* Một số style tuỳ chỉnh nhẹ để nhìn gọn */
+
+        .kpi-card {
+            border-radius: .8rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .04);
+        }
+
+        .progress-bar-small {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        #ganttContainer {
+            position: relative;
+            overflow-x: auto; /* Cho phép cuộn ngang nếu quá dài */
+            overflow-y: hidden;
+            padding-bottom: 6px;
+        }
+
+        .timeline-row {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            min-width: 100%; /* Giữ chiều rộng không bị co */
+        }
+
+        .timeline-row .gantt-bar {
+            position: relative;
+            height: 18px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .timeline-row .track {
+            position: relative;
+            flex-grow: 1;
+            overflow: hidden; /* NGĂN bar tràn */
+            height: 22px;
+        }
+
+        .gantt-bar {
+            height: 18px;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .alert-badge {
+            font-size: .85rem;
+        }
+
+        @@media (max-width:767px) {
+            .kpi-card .h5 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+<div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="d-flex align-items-center mb-3">
+            <h3 class="me-auto">Báo cáo sản xuất</h3>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-3 p-3">
+            <form id="filterForm" class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Khoảng ngày</label>
+                    <div class="d-flex">
+                        <input id="dateFrom" type="date" class="form-control me-2" />
+                        <input id="dateTo" type="date" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Product Type</label>
+                    <select id="productType" class="form-select">
+                        <option value="Paraglider">Paraglider</option>
+                        <option value="all">Tất cả</option>
+                        <option value="Harness">Harness/Backpack</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Priority</label>
+                    <select id="priority" class="form-select">
+                        <option value="all">Tất cả</option>
+                        <option value="High">High</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="button" id="applyFilter" class="btn btn-primary">Áp dụng</button>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="button" id="exportExcel" class="btn btn-primary">Export Excel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- KPI cards -->
+        <div class="row g-3 mb-3">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card p-3 kpi-card">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="h6 text-muted">Tổng đơn hàng</div>
+                            <div class="h4" id="kpi-orders">--</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="h6 text-muted">On Time</div>
+                            <div id="kpi-ontime" class="h5">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card p-3 kpi-card">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="h6 text-muted">Tổng sản lượng (tuần)</div>
+                            <div class="h4" id="kpi-output">--</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="h6 text-muted">Năng lực (%)</div>
+                            <div id="kpi-capacity" class="h5">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card p-3 kpi-card">
+                    <div>
+                        <div class="h6 text-muted">Cảnh báo đỏ</div>
+                        <div class="h4 text-danger" id="kpi-alerts">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card p-3 kpi-card">
+                    <div>
+                        <div class="h6 text-muted">Tỷ lệ QC pass</div>
+                        <div class="h4" id="kpi-qc">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and timeline -->
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="card p-3 mb-3">
+                    <h5>Biểu đồ năng lực & sản lượng</h5>
+                    <canvas id="capacityChart" height="180"></canvas>
+                </div>
+
+                <div class="card p-3 mb-3 d-none">
+                    <h5>Tiến độ sản phẩm</h5>
+                    <div id="ganttContainer" class="mt-2">
+                        <!-- timeline rows will be injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card p-3 mb-3">
+                    <h5>Các cảnh báo & hành động</h5>
+                    <ul id="alertList" class="list-group list-group-flush mt-2"></ul>
+                </div>
+
+                <div class="card p-3 mb-3 d-none">
+                    <h5>QC - Tóm tắt</h5>
+                    <div class="mb-2">Pass: <span id="qcPass">--</span> / Total: <span id="qcTotal">--</span></div>
+                    <div class="progress">
+                        <div id="qcProgress" class="progress-bar progress-bar-small" role="progressbar"
+                            style="width:0%">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders table -->
+        <div class="card p-3 mt-3">
+            <h5>Danh sách sản phẩm</h5>
+            <div class="table-responsive">
+                <table id="ordersTable" class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Serie number</th>
+                            <th>Product</th>
+                            <th>Ship Date</th>
+                            <th>Stage</th>
+                            <th>Progress</th>
+                            <th>Department</th>
+                            <th>Priority</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+
+@section Scripts {
+<!-- Bootstrap JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+        /*
+          Demo JS: tạo dữ liệu mẫu và render charts, table, gantt-like, alerts.
+          Thay phần generateSampleData() bằng fetch() nếu bạn có API.
+        */
+
+        function generateSampleData() {
+            // 8 orders sample
+            const list = [
+                { id: 'TGSKP20S00021', product: 'Paraglider', ship: '2025-07-30', stage: 'Nhận vải', progress: 80, dept: 'Cut', priority: 'High', weeklyCapacity: 180 },
+                { id: 'TGSKX20W00003', product: 'Paraglider', ship: '2025-07-28', stage: 'Ghép vải đuôi', progress: 45, dept: 'Sewing', priority: 'Normal', weeklyCapacity: 60 },
+                { id: 'TGAKP24E00128', product: 'Paraglider', ship: '2025-07-31', stage: 'Đóng gói', progress: 95, dept: 'Packing', priority: 'High', weeklyCapacity: 180 },
+                { id: 'TGAKP24E00129', product: 'Paraglider', ship: '2025-08-04', stage: 'Trải vải', progress: 20, dept: 'Cut', priority: 'Low', weeklyCapacity: 70 },
+                { id: 'TGAKP24E00130', product: 'Paraglider', ship: '2025-08-01', stage: 'Ghép vải top', progress: 55, dept: 'Sewing', priority: 'Normal', weeklyCapacity: 180 },
+                { id: 'TGAKP24E00131', product: 'Paraglider', ship: '2025-07-29', stage: 'QC ghép vải', progress: 100, dept: 'QC', priority: 'High', weeklyCapacity: 80 },
+                { id: 'TGAKP24E00132', product: 'Paraglider', ship: '2025-07-27', stage: 'Cắt vải', progress: 10, dept: 'Cut', priority: 'Normal', weeklyCapacity: 180 },
+                { id: 'TGAKP24M00135', product: 'Paraglider', ship: '2025-07-26', stage: 'Đóng gói', progress: 100, dept: 'Packing', priority: 'Normal', weeklyCapacity: 90 },
+            ];
+            return list;
+        }
+
+        /* Render KPI */
+        function renderKPI(data) {
+            const total = data.length;
+            const ontime = data.filter(d => d.progress >= 30).length;
+            const weeklyOutput = data.reduce((s, d) => s + Math.round((d.weeklyCapacity || 0)), 0);
+            const avgCapacityPct = Math.round((data.reduce((s, d) => s + (d.progress || 0), 0) / (data.length * 100)) * 100);
+            const qcPass = data.filter(d => d.stage === 'QC' && d.progress >= 90).length;
+            const qcTotal = data.filter(d => d.stage === 'QC').length;
+            document.getElementById('kpi-orders').innerText = total;
+            document.getElementById('kpi-ontime').innerText = ontime;
+            // document.getElementById('kpi-output').innerText = weeklyOutput + ' / wk';
+            // document.getElementById('kpi-capacity').innerText = avgCapacityPct + '%';
+            document.getElementById('kpi-output').innerText = '200LF' + ' / wk';
+            document.getElementById('kpi-capacity').innerText = '90' + '%';
+            document.getElementById('kpi-alerts').innerText = data.filter(d => d.progress < 30).length;
+            // document.getElementById('kpi-qc').innerText = qcTotal ? Math.round((qcPass / qcTotal) * 100) + '%' : 'N/A';
+            document.getElementById('kpi-qc').innerText = '95%';
+            // QC progress bar
+            document.getElementById('qcPass').innerText = qcPass;
+            document.getElementById('qcTotal').innerText = qcTotal;
+            const pct = qcTotal ? Math.round((qcPass / qcTotal) * 100) : 0;
+            const qcBar = document.getElementById('qcProgress');
+            qcBar.style.width = pct + '%';
+            qcBar.innerText = pct + '%';
+        }
+
+        /* Render Table */
+        function renderTable(data) {
+            const tbody = document.querySelector('#ordersTable tbody');
+            tbody.innerHTML = '';
+            data.forEach((d, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${d.id}</td>
+      <td>${d.product}</td>
+      <td>${d.ship}</td>
+      <td>${d.stage}</td>
+      <td style="min-width:160px;">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1 me-2">
+            <div class="progress">
+              <div class="progress-bar ${d.progress < 30 ? 'bg-danger' : d.progress < 70 ? 'bg-warning' : 'bg-success'}" role="progressbar" style="width:${d.progress}%">${d.progress}%</div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td>${d.dept}</td>
+      <td><span class="badge ${d.priority === 'High' ? 'bg-danger' : d.priority === 'Normal' ? 'bg-primary' : 'bg-secondary'}">${d.priority}</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* Render alerts */
+        function renderAlerts(data) {
+            const list = document.getElementById('alertList');
+            list.innerHTML = '';
+            // Alert for low progress or capacity conflict
+            data.filter(d => d.progress < 30).forEach(d => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-start';
+                li.innerHTML = `<div>
+      <div class="fw-bold">${d.id} — ${d.product}</div>
+      <div class="small text-muted">Stage: ${d.stage} — Dept: ${d.dept} — Progress: ${d.progress}%</div>
+    </div>
+    <span class="badge bg-danger rounded-pill alert-badge">Late</span>`;
+                list.appendChild(li);
+            });
+            if (list.innerHTML === '') {
+                list.innerHTML = '<li class="list-group-item">Không có cảnh báo.</li>';
+            }
+        }
+
+        /* Render gantt-like */
+        function renderGantt(data) {
+            const container = document.getElementById('ganttContainer');
+            container.innerHTML = '';
+            // compute timeline scale: find min ship-date - N days and max ship-date
+            const dates = data.map(d => new Date(d.ship));
+            const min = new Date(Math.min(...dates));
+            const max = new Date(Math.max(...dates));
+            // Extend range for display
+            min.setDate(min.getDate() - 10);
+            max.setDate(max.getDate() + 5);
+            const totalDays = Math.ceil((max - min) / (1000 * 60 * 60 * 24));
+            // for each order, random start offset for demo
+            data.forEach(d => {
+                const row = document.createElement('div');
+                row.className = 'timeline-row d-flex align-items-center';
+                const info = document.createElement('div');
+                info.style.width = '22%';
+                info.innerHTML = `<div class="fw-bold">${d.id}</div><div class="small text-muted">${d.product} • ${d.ship}</div>`;
+                const track = document.createElement('div');
+                track.className = 'track';
+                // compute bar position by using ship date and progress
+                const ship = new Date(d.ship);
+                // demo: assume work starts X days before ship (varies by product)
+                const lead = (d.product === 'Paraglider') ? 30 : 52;
+                const start = new Date(ship); start.setDate(start.getDate() - lead);
+                const startOffset = Math.max(0, Math.floor((start - min) / (1000 * 60 * 60 * 24)));
+                const barLengthDays = Math.max(3, Math.floor((ship - start) / (1000 * 60 * 60 * 24)));
+                const leftPct = (startOffset / totalDays) * 100;
+                const widthPct = (barLengthDays / totalDays) * 100;
+                const bar = document.createElement('div');
+                bar.className = 'gantt-bar';
+                bar.style.marginLeft = leftPct + '%';
+                bar.style.width = widthPct + '%';
+                bar.style.background = (d.priority === 'High') ? 'linear-gradient(90deg,#ff7a7a,#ff3b3b)' : '#6c757d';
+                bar.innerHTML = `<div style="position:absolute;left:6px;top:0;font-size:12px;color:#fff;">${d.progress}%</div>`;
+                track.appendChild(bar);
+                row.appendChild(info);
+                row.appendChild(track);
+                container.appendChild(row);
+            });
+        }
+
+        /* Render capacity chart with Chart.js */
+        let capacityChart;
+        function renderCapacityChart(data) {
+            const ctx = document.getElementById('capacityChart');
+            const labels = ['Cut', 'Sewing', 'BTP', 'Packing', 'QC'];
+            // compute capacity usage as random-ish aggregated from orders
+            const values = labels.map(l => {
+                return Math.min(120, Math.round(Math.random() * 60 + data.filter(d => d.dept.toLowerCase().includes(l.toLowerCase())).length * 10));
+            });
+            if (capacityChart) capacityChart.destroy();
+            capacityChart = new Chart(ctx, {
+                type: 'bar',
+                data: { labels, datasets: [{ label: 'Workload (%)', data: values, borderRadius: 6 }] },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 150 } }
+                }
+            });
+        }
+
+        /* Main render */
+        function rerender(allData) {
+            renderKPI(allData);
+            renderTable(allData);
+            renderAlerts(allData);
+            renderGantt(allData);
+            renderCapacityChart(allData);
+        }
+
+        /* Filter handler */
+        document.getElementById('applyFilter').addEventListener('click', () => {
+            const from = document.getElementById('dateFrom').value;
+            const to = document.getElementById('dateTo').value;
+            const product = document.getElementById('productType').value;
+            const priority = document.getElementById('priority').value;
+            let data = window._sampleData.slice();
+            if (from) data = data.filter(d => new Date(d.ship) >= new Date(from));
+            if (to) data = data.filter(d => new Date(d.ship) <= new Date(to));
+            if (product && product !== 'all') data = data.filter(d => d.product === product);
+            if (priority && priority !== 'all') data = data.filter(d => d.priority === priority);
+            rerender(data);
+        });
+
+        /* Init */
+        (function init() {
+            const data = generateSampleData();
+            window._sampleData = data;
+            // default dateFrom/to = around data range
+            document.getElementById('dateFrom').value = '2025-07-20';
+            document.getElementById('dateTo').value = '2025-08-05';
+            rerender(data);
+        })();
+</script>
+}

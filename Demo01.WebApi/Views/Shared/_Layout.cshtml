@@ -114,6 +114,10 @@
             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
                                 Qr Generate
                             </a>
+                            <a href="/ProductionReport" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ProductionReport"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                Báo cáo sản xuất
+                            </a>
 
                             <!-- Quản lý bảo trì - Bảo dưỡng -->
                             <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
@@ -133,6 +137,16 @@
                             <a class="sidebar-link d-flex align-items-center justify-content-between mt-3" href="/Traceability">
                                 Truy xuất nguồn gốc
                             </a>
+                            <!-- IQC -->
+                            <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
+                               href="javascript:void(0);" id="iqcMenuToggle">
+                                QC
+                                <i id="iqcMenuIcon" class="bi bi-chevron-down"></i>
+                            </a>
+                            <div id="iqcSubmenu" class="submenu-container d-none">
+                                <a href="/IQC" class="sidebar-link">IQC Đầu vào</a>
+                                <a href="/IQC/DashBoard" class="sidebar-link">IQC Đầu vào Tổng quan</a>
+                            </div>
                         </nav>
                     </div>
 
@@ -150,6 +164,7 @@
                                 <a href="/ForecastPlanning" class="sidebar-link">Forecast Planning</a>
                                 <a href="/ForecastProgress" class="sidebar-link">Forecast Progress</a>
                                 <a href="/QrGenerate" class="sidebar-link">Qr Generate</a>
+                                <a href="/ProductionReport" class="sidebar-link">Báo cáo sản xuất</a>
                             </nav>
                         </div>
                     </div>
@@ -201,6 +216,14 @@
                                 <span class="mx-1 text-muted">/</span>
                                 <span class="text-demo-primary">
                                     Forecast Progress
+                                </span>
+                            }
+
+                            @if (ViewContext.RouteData.Values["controller"]?.ToString() == "ProductionReport")
+                            {
+                                <span class="mx-1 text-muted">/</span>
+                                <span class="text-demo-primary">
+                                    Báo cáo sản xuất
                                 </span>
                             }
                         </div>
@@ -310,7 +333,6 @@
     @await Html.PartialAsync("_LoadingOverlay")
     @await Html.PartialAsync("_ToastNotification")
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <script type="module" vite-src="~/js/main.js"></script>
     <script>
         const maintenanceMenuToggle = document.getElementById('maintenanceMenuToggle');
         const maintenanceSubmenu = document.getElementById('maintenanceSubmenu');
@@ -320,6 +342,17 @@
                 maintenanceSubmenu.classList.toggle('d-none');
                 maintenanceMenuIcon.classList.toggle('bi-chevron-down');
                 maintenanceMenuIcon.classList.toggle('bi-chevron-up');
+            });
+        }
+
+        const iqcMenuToggle = document.getElementById('iqcMenuToggle');
+        const iqcSubmenu = document.getElementById('iqcSubmenu');
+        const iqcMenuIcon = document.getElementById('iqcMenuIcon');
+        if (iqcMenuToggle && iqcSubmenu && iqcMenuIcon) {
+            iqcMenuToggle.addEventListener('click', function() {
+                iqcSubmenu.classList.toggle('d-none');
+                iqcMenuIcon.classList.toggle('bi-chevron-down');
+                iqcMenuIcon.classList.toggle('bi-chevron-up');
             });
         }
     </script>
