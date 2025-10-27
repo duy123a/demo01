@@ -7,8 +7,8 @@
     {
         ProgressStatus.Done => "bg-success text-white",
         ProgressStatus.InProgress => "bg-warning text-dark",
-        ProgressStatus.HasIssue => "bg-warning text-dark",
-        ProgressStatus.NotStarted => "bg-danger text-white",
+        ProgressStatus.HasIssue => "bg-danger text-white",
+        ProgressStatus.NotStarted => "bg-secondary text-white",
         _ => ""
     };
 }
@@ -90,7 +90,14 @@
                     foreach (var item in Model.Items)
                     {
                         <tr>
-                            <td>@item.SerieNumber</td>
+                            <td>
+                                <span class="d-inline-flex align-items-center gap-1">
+                                    @item.SerieNumber
+                                    <a href="#" class="print-icon" title="Print">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                </span>
+                            </td>
 
                             @foreach (var step in new[]
                          {
@@ -113,7 +120,12 @@
                                             @:OK
                                             break;
                                         case ProgressStatus.InProgress:
-                                            @:In Progress
+                                    <span class="d-inline-flex align-items-center gap-1">
+                                        In Progress
+                                        <a href="#" class="print-icon" title="Print">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
+                                    </span>
                                             break;
                                         case ProgressStatus.HasIssue:
                                             <span>Has Issue</span>

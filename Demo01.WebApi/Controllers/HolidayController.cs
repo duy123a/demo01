@@ -60,11 +60,12 @@ namespace Demo01.WebApi.Controllers
 
         // POST: /Holiday/Delete/{id}
         [HttpPost]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id, int year)
         {
             await _unitOfWork.Holidays.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new { year = DateTime.UtcNow.Year });
+            return RedirectToAction(nameof(Index), new { year });
         }
 
         // GET: /Holiday/ImportFromGoogle?year=2025

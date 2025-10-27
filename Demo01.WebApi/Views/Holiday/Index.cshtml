@@ -63,6 +63,7 @@
                         <td>@item.Description</td>
                         <td class="text-center">
                             <form asp-action="Delete" method="post" asp-route-id="@item.Id" onsubmit="return confirm('Delete this holiday?');">
+                                <input type="hidden" name="year" value="@year" />
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </td>
