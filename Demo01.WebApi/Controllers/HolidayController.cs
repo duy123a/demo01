@@ -62,12 +62,7 @@ namespace Demo01.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var holiday = await _unitOfWork.Holidays.GetByIdAsync(id);
-            if (holiday != null)
-            {
-                await _unitOfWork.Holidays.DeleteAsync(holiday);
-                await _unitOfWork.SaveChangesAsync();
-            }
+            await _unitOfWork.Holidays.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index), new { year = DateTime.UtcNow.Year });
         }

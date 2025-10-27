@@ -1,6 +1,6 @@
+using Demo01.Shared.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Demo01.Shared.Resources;
 
 namespace Demo01.WebApi.Controllers
 {
