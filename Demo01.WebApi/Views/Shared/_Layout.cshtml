@@ -14,6 +14,7 @@
     <title>@ViewData["Title"] - ASAKA01.Web.Admin</title>
     <script type="importmap"></script>
     <link rel="stylesheet" vite-href="~/js/main.js" />
+    @await RenderSectionAsync("Styles", required: false)
     
     <style>
         .submenu-container {
@@ -36,6 +37,11 @@
             background: #f1f3f5;
             color: #007bff;
             text-decoration: none;
+        }
+        .submenu-container .sidebar-link.active {
+            background: #e3f2fd;
+            color: #007bff;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -116,26 +122,26 @@
                             </a>
                             <a href="/ProductionReport" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ProductionReport"
             && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                                Báo cáo sản xuất
+                                Production Report
                             </a>
 
                             <!-- Quản lý bảo trì - Bảo dưỡng -->
                             <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
                                href="javascript:void(0);" id="maintenanceMenuToggle">
-                                Quản lý bảo trì - Bảo dưỡng
+                                Maintenance Management
                                 <i id="maintenanceMenuIcon" class="bi bi-chevron-down"></i>
                             </a>
                             <div id="maintenanceSubmenu" class="submenu-container d-none">
-                                <a href="/MaintenanceDashboard" class="sidebar-link">Dashboard</a>
-                                <a href="/Devices" class="sidebar-link">Thiết bị</a>
-                                <a href="/MaintenanceTickets" class="sidebar-link">Phiếu bảo trì</a>
-                                <a href="/MaintenanceRequests" class="sidebar-link">Yêu cầu bảo trì</a>
-                                <a href="/SpareParts" class="sidebar-link">Linh kiện</a>
-                                <a href="/PurchasePlans" class="sidebar-link">Kế hoạch mua hàng</a>
-                                <a href="/MaintenanceSchedule" class="sidebar-link">Lịch bảo trì</a>
+                                <a href="/MaintenanceDashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceDashboard" ? "sidebar-link active" : "sidebar-link")">Dashboard</a>
+                                <a href="/Devices" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Devices" ? "sidebar-link active" : "sidebar-link")">Devices</a>
+                                <a href="/MaintenanceTickets" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceTickets" ? "sidebar-link active" : "sidebar-link")">Maintenance Tickets</a>
+                                <a href="/MaintenanceRequests" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceRequests" ? "sidebar-link active" : "sidebar-link")">Maintenance Requests</a>
+                                <a href="/SpareParts" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SpareParts" ? "sidebar-link active" : "sidebar-link")">Spare Parts</a>
+                                <a href="/PurchasePlans" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchasePlans" ? "sidebar-link active" : "sidebar-link")">Purchase Plans</a>
+                                <a href="/MaintenanceSchedule" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceSchedule" ? "sidebar-link active" : "sidebar-link")">Maintenance Schedule</a>
                             </div>
-                            <a class="sidebar-link d-flex align-items-center justify-content-between mt-3" href="/Traceability">
-                                Truy xuất nguồn gốc
+                            <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Traceability" ? "sidebar-link active" : "sidebar-link") d-flex align-items-center justify-content-between mt-3" href="/Traceability">
+                                Traceability
                             </a>
                             <!-- IQC -->
                             <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
@@ -144,8 +150,9 @@
                                 <i id="iqcMenuIcon" class="bi bi-chevron-down"></i>
                             </a>
                             <div id="iqcSubmenu" class="submenu-container d-none">
-                                <a href="/IQC" class="sidebar-link">IQC Đầu vào</a>
-                                <a href="/IQC/DashBoard" class="sidebar-link">IQC Đầu vào Tổng quan</a>
+                                <a href="/IQC" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">IQC Input</a>
+                                <a href="/IQC/Dashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "sidebar-link active" : "sidebar-link")">IQC Overview</a>
+                                <a href="/IQC/QCDashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "QCDashboard" ? "sidebar-link active" : "sidebar-link")">QC Dashboard</a>
                             </div>
                         </nav>
                     </div>
@@ -158,13 +165,46 @@
                         </div>
                         <div class="offcanvas-body p-0">
                             <nav class="nav flex-column nav-pills p-2">
-                                <a href="/" class="sidebar-link">Dashboard</a>
-                                <a href="/ForecastDetail" class="sidebar-link">Forecast Detail</a>
-                                <a href="/ForecastCreate" class="sidebar-link">Forecast Create</a>
-                                <a href="/ForecastPlanning" class="sidebar-link">Forecast Planning</a>
-                                <a href="/ForecastProgress" class="sidebar-link">Forecast Progress</a>
-                                <a href="/QrGenerate" class="sidebar-link">Qr Generate</a>
-                                <a href="/ProductionReport" class="sidebar-link">Báo cáo sản xuất</a>
+                                <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Dashboard</a>
+                                <a href="/ForecastDetail" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastDetail" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Forecast Detail</a>
+                                <a href="/ForecastCreate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastCreate" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Forecast Create</a>
+                                <a href="/ForecastPlanning" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastPlanning" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Forecast Planning</a>
+                                <a href="/ForecastProgress" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ForecastProgress" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Forecast Progress</a>
+                                <a href="/Holiday" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Holiday" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Holiday</a>
+                                <a href="/QrGenerate" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "QrGenerate" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Qr Generate</a>
+                                <a href="/ProductionReport" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "ProductionReport" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">Production Report</a>
+
+                                <!-- Quản lý bảo trì - Bảo dưỡng -->
+                                <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
+                                   href="javascript:void(0);" id="maintenanceMenuToggleMobile">
+                                    Maintenance Management
+                                    <i id="maintenanceMenuIconMobile" class="bi bi-chevron-down"></i>
+                                </a>
+                                <div id="maintenanceSubmenuMobile" class="submenu-container d-none">
+                                    <a href="/MaintenanceDashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceDashboard" ? "sidebar-link active" : "sidebar-link")">Dashboard</a>
+                                    <a href="/Devices" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Devices" ? "sidebar-link active" : "sidebar-link")">Devices</a>
+                                    <a href="/MaintenanceTickets" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceTickets" ? "sidebar-link active" : "sidebar-link")">Maintenance Tickets</a>
+                                    <a href="/MaintenanceRequests" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceRequests" ? "sidebar-link active" : "sidebar-link")">Maintenance Requests</a>
+                                    <a href="/SpareParts" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "SpareParts" ? "sidebar-link active" : "sidebar-link")">Spare Parts</a>
+                                    <a href="/PurchasePlans" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "PurchasePlans" ? "sidebar-link active" : "sidebar-link")">Purchase Plans</a>
+                                    <a href="/MaintenanceSchedule" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "MaintenanceSchedule" ? "sidebar-link active" : "sidebar-link")">Maintenance Schedule</a>
+                                </div>
+
+                                <a class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Traceability" ? "sidebar-link active" : "sidebar-link") d-flex align-items-center justify-content-between mt-3" href="/Traceability">
+                                    Traceability
+                                </a>
+
+                                <!-- IQC -->
+                                <a class="sidebar-link d-flex align-items-center justify-content-between mt-3"
+                                   href="javascript:void(0);" id="iqcMenuToggleMobile">
+                                    QC
+                                    <i id="iqcMenuIconMobile" class="bi bi-chevron-down"></i>
+                                </a>
+                                <div id="iqcSubmenuMobile" class="submenu-container d-none">
+                                    <a href="/IQC" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">IQC Input</a>
+                                    <a href="/IQC/Dashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "sidebar-link active" : "sidebar-link")">IQC Overview</a>
+                                    <a href="/IQC/QCDashboard" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "IQC" && ViewContext.RouteData.Values["action"]?.ToString() == "QCDashboard" ? "sidebar-link active" : "sidebar-link")">QC Dashboard</a>
+                                </div>
                             </nav>
                         </div>
                     </div>
@@ -223,7 +263,7 @@
                             {
                                 <span class="mx-1 text-muted">/</span>
                                 <span class="text-demo-primary">
-                                    Báo cáo sản xuất
+                                    Production Report
                                 </span>
                             }
                         </div>
@@ -333,29 +373,6 @@
     @await Html.PartialAsync("_LoadingOverlay")
     @await Html.PartialAsync("_ToastNotification")
     <script src="https://unpkg.com/html5-qrcode"></script>
-    <script>
-        const maintenanceMenuToggle = document.getElementById('maintenanceMenuToggle');
-        const maintenanceSubmenu = document.getElementById('maintenanceSubmenu');
-        const maintenanceMenuIcon = document.getElementById('maintenanceMenuIcon');
-        if (maintenanceMenuToggle && maintenanceSubmenu && maintenanceMenuIcon) {
-            maintenanceMenuToggle.addEventListener('click', function() {
-                maintenanceSubmenu.classList.toggle('d-none');
-                maintenanceMenuIcon.classList.toggle('bi-chevron-down');
-                maintenanceMenuIcon.classList.toggle('bi-chevron-up');
-            });
-        }
-
-        const iqcMenuToggle = document.getElementById('iqcMenuToggle');
-        const iqcSubmenu = document.getElementById('iqcSubmenu');
-        const iqcMenuIcon = document.getElementById('iqcMenuIcon');
-        if (iqcMenuToggle && iqcSubmenu && iqcMenuIcon) {
-            iqcMenuToggle.addEventListener('click', function() {
-                iqcSubmenu.classList.toggle('d-none');
-                iqcMenuIcon.classList.toggle('bi-chevron-down');
-                iqcMenuIcon.classList.toggle('bi-chevron-up');
-            });
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
 </body>
 </html>

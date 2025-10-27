@@ -708,6 +708,23 @@ function renderPurchasingChart() {
     // Calculate data from actual purchasing data
     const chartData = calculateChartData();
     
+    // Destroy existing chart if it exists
+    if (window.purchasingChart) {
+        window.purchasingChart.destroy();
+    }
+    
+    // Create actual gradient for better visual effect
+    const canvas = ctx.getContext('2d');
+    const height = 400;
+    
+    const plannedGradient = canvas.createLinearGradient(0, 0, 0, height);
+    plannedGradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+    plannedGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+    
+    const actualGradient = canvas.createLinearGradient(0, 0, 0, height);
+    actualGradient.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
+    actualGradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+    
     // Debug: Log chart data
     console.log('Rendering chart with data:', chartData);
     
@@ -719,32 +736,16 @@ function renderPurchasingChart() {
                 {
                     label: 'Kế hoạch',
                     data: chartData.plannedData,
-                    borderColor: '#0066ff',
-                    backgroundColor: 'rgba(0, 102, 255, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#0066ff',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    tension: 0.4,
-                    fill: false,
-                    pointStyle: 'circle'
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.4
                 },
                 {
                     label: 'Thực tế',
                     data: chartData.actualData,
-                    borderColor: '#00c853',
-                    backgroundColor: 'rgba(0, 200, 83, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#00c853',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    tension: 0.4,
-                    fill: false,
-                    pointStyle: 'circle'
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.4
                 }
             ]
         },
@@ -753,10 +754,10 @@ function renderPurchasingChart() {
             maintainAspectRatio: false,
             layout: {
                 padding: {
-                    top: 20,
-                    right: 20,
-                    bottom: 20,
-                    left: 20
+                    top: 30,
+                    right: 30,
+                    bottom: 30,
+                    left: 30
                 }
             },
             interaction: {
@@ -766,42 +767,63 @@ function renderPurchasingChart() {
             plugins: {
                 legend: {
                     position: 'top',
+                    align: 'end',
                     labels: {
                         usePointStyle: true,
-                        padding: 20,
+                        padding: 25,
                         font: {
                             size: 14,
-                            weight: 'bold'
-                        }
+                            weight: '600'
+                        },
+                        color: '#374151',
+                        boxWidth: 12,
+                        boxHeight: 12
                     }
                 },
                 title: {
-                    display: true,
-                    text: 'Xu hướng mua hàng theo tháng',
-                    font: {
-                        size: 16,
-                        weight: 'bold'
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
-                    }
+                    display: false
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    enabled: true,
+                    backgroundColor: 'rgba(17, 24, 39, 0.95)',
                     titleColor: '#ffffff',
                     bodyColor: '#ffffff',
-                    borderColor: '#0066ff',
-                    borderWidth: 1,
-                    cornerRadius: 8,
+                    borderColor: 'rgba(99, 102, 241, 0.8)',
+                    borderWidth: 2,
+                    cornerRadius: 12,
                     displayColors: true,
+                    padding: 16,
+                    titleFont: {
+                        size: 15,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 14,
+                        weight: '500'
+                    },
                     callbacks: {
                         label: function(context) {
                             const value = context.parsed.y;
                             return `${context.dataset.label}: ${formatCurrency(value)}`;
                         },
                         title: function(context) {
-                            return `Tháng ${context[0].label} 2025`;
+                            return `📅 Tháng ${context[0].label} 2025`;
+                        },
+                        afterBody: function(context) {
+                            if (context.length === 2) {
+                                const planned = context[0].parsed.y;
+                                const actual = context[1].parsed.y;
+                                const variance = ((actual - planned) / planned * 100).toFixed(1);
+                                const diff = actual - planned;
+                                const diffFormatted = formatCurrency(Math.abs(diff));
+                                const varianceClass = variance >= 0 ? '✓' : '✗';
+                                return [
+                                    '',
+                                    `${varianceClass} Chênh lệch: ${diff >= 0 ? '+' : '-'}${diffFormatted}`,
+                                    `${varianceClass} Tỷ lệ: ${variance >= 0 ? '+' : ''}${variance}%`
+                                ];
+                            }
+                            return '';
                         }
                     }
                 }
@@ -810,34 +832,38 @@ function renderPurchasingChart() {
                 x: {
                     grid: {
                         display: true,
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        drawBorder: false,
+                        color: 'rgba(0, 0, 0, 0.05)'
                     },
                     ticks: {
                         font: {
-                            size: 12,
-                            weight: 'bold'
+                            size: 13,
+                            weight: '600'
                         },
-                        color: '#495057',
-                        padding: 10
+                        color: '#6b7280',
+                        padding: 15
                     }
                 },
                 y: {
                     beginAtZero: true,
-                    max: 100000000,
                     grid: {
                         display: true,
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: 'rgba(229, 231, 235, 0.5)',
+                        drawBorder: false,
+                        lineWidth: 1.5
                     },
                     ticks: {
                         font: {
                             size: 12,
-                            weight: 'bold'
+                            weight: '600'
                         },
-                        color: '#495057',
-                        stepSize: 10000000,
+                        color: '#6b7280',
                         padding: 15,
-                        maxTicksLimit: 11,
+                        maxTicksLimit: 8,
                         callback: function(value) {
+                            if (value >= 1000000000) {
+                                return (value / 1000000000).toFixed(1) + 'B VND';
+                            }
                             return (value / 1000000).toFixed(0) + 'M VND';
                         }
                     }
@@ -846,8 +872,19 @@ function renderPurchasingChart() {
             elements: {
                 point: {
                     hoverBackgroundColor: '#ffffff',
-                    hoverBorderColor: '#0066ff',
-                    hoverBorderWidth: 3
+                    hoverBorderColor: '#6366f1',
+                    hoverBorderWidth: 4,
+                    radius: 6,
+                    hoverRadius: 10
+                },
+                line: {
+                    borderCapStyle: 'round',
+                    borderJoinStyle: 'round'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
         }

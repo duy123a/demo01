@@ -29,6 +29,14 @@ namespace Demo01.WebApi.Controllers
             return View();
         }
 
+        // GET: IQC/QCDashboard
+        public IActionResult QCDashboard()
+        {
+            ViewData["Title"] = "Inuit QC Dashboard - Tổng quan chất lượng";
+            ViewData["Page"] = "qc-dashboard";
+            return View();
+        }
+
         // POST: IQC/SaveInspection
         [HttpPost]
         public IActionResult SaveInspection([FromBody] object inspectionData)

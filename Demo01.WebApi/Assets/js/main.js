@@ -99,7 +99,69 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/Account/Logout';
         });
     }
+
+    // Handle menu toggles for desktop and mobile
+    initMenuToggles();
 });
+
+// Menu toggle functionality
+function initMenuToggles() {
+    // Desktop menu toggles
+    setupMenuToggle('maintenanceMenuToggle', 'maintenanceSubmenu', 'maintenanceMenuIcon');
+    setupMenuToggle('iqcMenuToggle', 'iqcSubmenu', 'iqcMenuIcon');
+    
+    // Mobile menu toggles
+    setupMenuToggle('maintenanceMenuToggleMobile', 'maintenanceSubmenuMobile', 'maintenanceMenuIconMobile');
+    setupMenuToggle('iqcMenuToggleMobile', 'iqcSubmenuMobile', 'iqcMenuIconMobile');
+    
+    // Auto-expand submenus if any submenu item is active
+    autoExpandActiveSubmenus();
+}
+
+// Function to automatically expand submenus containing active items
+function autoExpandActiveSubmenus() {
+    // Desktop submenus
+    const desktopSubmenus = [
+        { menuId: 'maintenanceSubmenu', iconId: 'maintenanceMenuIcon' },
+        { menuId: 'iqcSubmenu', iconId: 'iqcMenuIcon' }
+    ];
+    
+    // Mobile submenus
+    const mobileSubmenus = [
+        { menuId: 'maintenanceSubmenuMobile', iconId: 'maintenanceMenuIconMobile' },
+        { menuId: 'iqcSubmenuMobile', iconId: 'iqcMenuIconMobile' }
+    ];
+    
+    [...desktopSubmenus, ...mobileSubmenus].forEach(({ menuId, iconId }) => {
+        const submenu = document.getElementById(menuId);
+        const icon = document.getElementById(iconId);
+        
+        if (submenu && icon) {
+            // Check if any link in this submenu has the 'active' class
+            const hasActiveLink = submenu.querySelector('.sidebar-link.active') !== null;
+            
+            if (hasActiveLink) {
+                submenu.classList.remove('d-none');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            }
+        }
+    });
+}
+
+function setupMenuToggle(toggleId, submenuId, iconId) {
+    const toggle = document.getElementById(toggleId);
+    const submenu = document.getElementById(submenuId);
+    const icon = document.getElementById(iconId);
+    
+    if (toggle && submenu && icon) {
+        toggle.addEventListener('click', function() {
+            submenu.classList.toggle('d-none');
+            icon.classList.toggle('bi-chevron-down');
+            icon.classList.toggle('bi-chevron-up');
+        });
+    }
+}
 
 // Dashboard is now loaded directly in the CSHTML file
 

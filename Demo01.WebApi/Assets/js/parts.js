@@ -327,26 +327,26 @@ function renderPartsTable(parts) {
     
     partsTable.innerHTML = parts.map(part => `
         <tr>
-            <td><strong>${part.id}</strong></td>
-            <td>${part.name}</td>
-            <td>${part.quantity}</td>
-            <td>${part.unit}</td>
-            <td>${part.location}</td>
-            <td>${part.minQuantity}</td>
-            <td>
-                <span class="status-badge status-${part.status}">
+            <td class="px-3 py-2"><strong>${part.id}</strong></td>
+            <td class="px-3 py-2">${part.name}</td>
+            <td class="px-3 py-2 text-center">${part.quantity}</td>
+            <td class="px-3 py-2">${part.unit}</td>
+            <td class="px-3 py-2">${part.location}</td>
+            <td class="px-3 py-2 text-center">${part.minQuantity}</td>
+            <td class="px-3 py-2 text-center">
+                <span class="badge ${part.status === 'sufficient' ? 'bg-success' : part.status === 'low' ? 'bg-warning' : 'bg-danger'}">
                     ${getStatusText(part.status)}
                 </span>
             </td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-action btn-add" onclick="addStock('${part.id}')" title="Nhập thêm">
+            <td class="px-3 py-2">
+                <div class="d-flex gap-1 justify-content-end">
+                    <button class="btn btn-sm btn-success" onclick="addStock('${part.id}')" title="Nhập thêm">
                         <i class="bi bi-plus-circle"></i>
                     </button>
-                    <button class="btn-action btn-edit" onclick="editPart('${part.id}')" title="Chỉnh sửa">
+                    <button class="btn btn-sm btn-warning" onclick="editPart('${part.id}')" title="Chỉnh sửa">
                         <i class="bi bi-pencil"></i>
                     </button>
-                    <button class="btn-action btn-delete" onclick="deletePart('${part.id}')" title="Xóa">
+                    <button class="btn btn-sm btn-danger" onclick="deletePart('${part.id}')" title="Xóa">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>

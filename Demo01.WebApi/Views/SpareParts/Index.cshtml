@@ -6,38 +6,96 @@
     ViewData["Page"] = "spare-parts";
 }
 
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5><i class="bi bi-box-seam"></i> @Localizer["Parts_List_Title"]</h5>
-        <div class="d-flex gap-2">
+<style>
+    .search-icon {
+        left: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.875rem;
+    }
+    
+    .compact-header {
+        padding: 0.5rem 1rem !important;
+        min-height: auto;
+    }
+    
+    #addPartBtn {
+        padding: 0.375rem 0.65rem !important;
+        font-size: 0.8125rem !important;
+        font-weight: 500;
+        border-radius: 0.375rem;
+    }
+    
+    #addPartBtn i {
+        font-size: 0.875rem;
+    }
+    
+    .parts-table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .parts-table tbody tr:hover {
+        transform: scale(1.01);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light border-bottom compact-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="mb-0 d-flex align-items-center gap-2">
+            <i class="bi bi-box-seam text-primary"></i>
+            <span class="fw-semibold">@Localizer["Parts_List_Title"]</span>
+        </h6>
+        <div class="d-flex align-items-center gap-2">
             <button class="btn btn-primary btn-sm" id="addPartBtn">
-                <i class="bi bi-plus-circle"></i> @Localizer["Parts_Add_New"]
+                <i class="bi bi-plus-circle me-1"></i>
+                @Localizer["Parts_Add_New"]
             </button>
-            <select class="form-select form-select-sm" id="partsFilter">
+            <select class="form-select form-select-sm" id="partsFilter" style="width: 100px;">
                 <option value="all">@Localizer["Parts_Filter_All"]</option>
                 <option value="low">@Localizer["Parts_Filter_Low"]</option>
                 <option value="out">@Localizer["Parts_Filter_Out"]</option>
                 <option value="sufficient">@Localizer["Parts_Filter_Sufficient"]</option>
             </select>
-            <input type="text" class="form-control form-control-sm" placeholder="@Localizer["Parts_Search_Placeholder"]" id="partsSearch">
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute search-icon text-muted"></i>
+                <input type="text" class="form-control form-control-sm" placeholder="@Localizer["Parts_Search_Placeholder"]" id="partsSearch" style="width: 180px; padding-left: 1.75rem;">
+            </div>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body p-0">
+        <style>
+            .parts-table tbody tr {
+                transition: all 0.2s ease;
+            }
+            
+            .parts-table tbody tr:hover {
+                transform: scale(1.01);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+            
+            .status-badge {
+                font-size: 0.75rem;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+        </style>
+        
         <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-hover align-middle mb-0 parts-table">
+                <thead class="table-light">
                     <tr>
-                        <th>@Localizer["Parts_Table_Code"]</th>
-                        <th>@Localizer["Parts_Table_Name"]</th>
-                        <th>@Localizer["Parts_Table_Quantity"]</th>
-                        <th>@Localizer["Parts_Table_Unit"]</th>
-                        <th>@Localizer["Parts_Table_Location"]</th>
-                        <th>@Localizer["Parts_Table_Min_Quantity"]</th>
-                        <th>@Localizer["Parts_Table_Status"]</th>
-                        <th>@Localizer["Parts_Table_Actions"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2">@Localizer["Parts_Table_Code"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2">@Localizer["Parts_Table_Name"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2 text-center">@Localizer["Parts_Table_Quantity"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2">@Localizer["Parts_Table_Unit"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2">@Localizer["Parts_Table_Location"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2 text-center">@Localizer["Parts_Table_Min_Quantity"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2 text-center">@Localizer["Parts_Table_Status"]</th>
+                        <th class="text-uppercase small fw-semibold px-3 py-2 text-end">@Localizer["Parts_Table_Actions"]</th>
                     </tr>
                 </thead>
-                <tbody id="partsTable">
+                <tbody id="partsTable" class="table-group-divider">
                     <!-- Populated by JS -->
                 </tbody>
             </table>

@@ -1,0 +1,884 @@
+@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = "Inuit QC Dashboard - Tổng quan chất lượng";
+    ViewData["Page"] = "qc-dashboard";
+}
+
+@section Styles {
+<style>
+  :root {
+    --card-bg: #ffffff;
+    --muted: #6c757d;
+  }
+  body {
+    background: #f4f6f9;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  .kpi-card {
+    border-radius: 12px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 20px 18px;
+    border-left: 4px solid #0d6efd;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+  .filter-bar {
+    background: var(--card-bg);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  .chart-box {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    min-height: 250px;
+  }
+  .small-muted {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  table.data-table tbody tr td {
+    vertical-align: middle;
+  }
+  .badge-section {
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+  .controls-row .form-control, 
+  .controls-row .form-select {
+    height: 44px;
+  }
+  .legend-inline {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    background: #eef3ff;
+    color: #0d6efd;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  footer {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 20px 0;
+  }
+  .scroll-table {
+    max-height: 420px;
+    overflow: auto;
+    overflow-x: auto;
+  }
+  #dataTable thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+  }
+  #dataTable thead th {
+    background-color: #f8f9fa !important;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+  }
+  #dataTable {
+    width: 100%;
+    min-width: 100%;
+  }
+  #alertInfo {
+    display: none;
+  }
+  .kpi-card h3 {
+    color: #0d6efd;
+    font-weight: 700;
+    margin: 8px 0;
+  }
+  .chart-box {
+    transition: box-shadow 0.3s ease;
+  }
+  .chart-box:hover {
+    box-shadow: 0 6px 20px rgba(36, 59, 85, 0.08);
+  }
+  .filter-bar {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+  .container-fluid {
+    max-width: 1400px;
+  }
+  section {
+    margin-bottom: 2rem;
+  }
+  @@media (max-width: 768px) {
+
+    .kpi-card {
+      margin-bottom: 1rem;
+    }
+    .chart-box {
+      min-height: auto;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+}
+
+<div class="container-fluid p-4">
+  <div class="d-flex flex-column flex-md-row align-items-start justify-content-between mb-3 gap-2">
+    <div>
+      <h2 class="mb-2 h3">📊 Inuit QC Dashboard</h2>
+      <div class="small-muted">Tổng quan chất lượng QC theo tuần</div>
+    </div>
+    <div class="text-start text-md-end">
+      <div class="small-muted mb-1">🕐 Cập nhật lần cuối</div>
+      <div id="lastUpdated" class="fw-bold">--</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar mb-3">
+    <div class="row g-2 align-items-end controls-row">
+      <div class="col-12 col-sm-6 col-md-3">
+        <label class="form-label small-muted mb-1">Khoảng thời gian</label>
+        <div class="d-flex gap-2">
+          <input id="dateFrom" type="date" class="form-control" />
+          <input id="dateTo" type="date" class="form-control" />
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <label class="form-label small-muted mb-1">Công đoạn QC</label>
+        <select id="qcSection" class="form-select">
+          <option value="All">Tất cả</option>
+          <option>GHÉP VẢI QC</option>
+          <option>Bottom QC</option>
+          <option>Zigzag QC</option>
+          <option>Stabilo QC</option>
+          <option>Top QC</option>
+          <option>Final QC</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <label class="form-label small-muted mb-1">Model</label>
+        <select id="modelFilter" class="form-select">
+          <option value="All">Tất cả</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-3">
+        <label class="form-label small-muted mb-1">Kết quả</label>
+        <select id="resultFilter" class="form-select">
+          <option value="All">Tất cả</option>
+          <option value="Pass">Pass</option>
+          <option value="Fail">Fail</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button id="applyFilters" class="btn btn-primary px-4">Áp dụng lọc</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Tổng số phiếu kiểm (lần kiểm)</div>
+        <h3 id="kpiTotal">0</h3>
+        <div class="small-muted">Tổng số lượt kiểm trong phạm vi chọn</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Số phiếu đạt</div>
+        <h3 id="kpiPass">0</h3>
+        <div class="small-muted">Số phiếu kết quả Pass</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Số phiếu lỗi</div>
+        <h3 id="kpiFail">0</h3>
+        <div class="small-muted">Số phiếu kết quả Fail</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Pass Rate</div>
+        <h3 id="kpiPassRate">0%</h3>
+        <div class="small-muted">Tỉ lệ đạt trên tổng</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI cards row 2 -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="alert alert-info d-flex justify-content-between align-items-center mb-0" id="alertInfo">
+        <div id="alertMessage"></div>
+        <button type="button" class="btn-close" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Tổng số lượng đã kiểm</div>
+        <h3 id="kpiTotalInspected">0</h3>
+        <div class="small-muted">Tổng số sản phẩm</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Defect Rate</div>
+        <h3 id="kpiDefectRate">0%</h3>
+        <div class="small-muted">Tỉ lệ lỗi</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">Rework Rate</div>
+        <h3 id="kpiReworkRate">0%</h3>
+        <div class="small-muted">Tỉ lệ cần sửa chữa</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3">
+      <div class="kpi-card text-center">
+        <div class="small-muted">TB kiểm mỗi tuần</div>
+        <h3 id="kpiAvgPerDay">0</h3>
+        <div class="small-muted">Sản phẩm/tuần</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row 1 -->
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-lg-8">
+      <div class="chart-box">
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-2 gap-2">
+            <div><strong>Xu hướng lỗi theo tuần</strong> <div class="small-muted">% lỗi trong từng tuần</div></div>
+          </div>
+        <canvas id="trendChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="chart-box">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-2 gap-2">
+          <div><strong>Top 5 lỗi phổ biến</strong><div class="small-muted">Tổng số đếm lỗi</div></div>
+          <div><button id="showDefectTable" class="btn btn-sm btn-outline-primary">Xem chi tiết</button></div>
+        </div>
+        <canvas id="topDefectChart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row 2 -->
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-md-6">
+      <div class="chart-box">
+        <strong>Phân loại lỗi theo vị trí</strong>
+        <canvas id="defectCategoryChart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div class="chart-box">
+        <strong>Phân tích lỗi theo màu sắc</strong>
+        <canvas id="colorAnalysisChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row 3 -->
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-lg-6">
+      <div class="chart-box">
+        <strong>Tỷ lệ lỗi theo Model</strong>
+        <canvas id="modelDefectChart" height="180"></canvas>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div class="chart-box">
+        <strong>So sánh lỗi theo công đoạn (stacked)</strong>
+        <canvas id="stackedChart" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Defect Summary Table -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div class="chart-box">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <strong>Thống kê lỗi chi tiết (Top Defects)</strong>
+        </div>
+        <div class="table-responsive">
+          <table id="defectTable" class="table table-sm table-hover table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>STT</th>
+                <th>Loại lỗi</th>
+                <th>Số lượng</th>
+                <th>Tỷ lệ</th>
+                <th>Công đoạn QC</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent table and export -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="chart-box">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-2 gap-2">
+          <div><strong>Danh sách kiểm gần đây</strong><div class="small-muted">Bảng chi tiết — tìm, lọc, xuất CSV</div></div>
+          <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-lg-auto">
+            <input id="searchInput" class="form-control form-control-sm flex-fill" placeholder="Tìm (model, QC, lỗi)">
+            <button id="exportCSV" class="btn btn-sm btn-outline-success">Xuất CSV</button>
+            <button id="resetView" class="btn btn-sm btn-outline-secondary">Reset bảng</button>
+          </div>
+        </div>
+        <div class="scroll-table">
+            <table id="dataTable" class="table table-hover table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Ngày</th><th>QC</th><th>Model - Size</th><th>Serial</th><th>Người may</th><th>Inspector</th><th>Inspected</th><th>Passed</th><th>Failed</th><th>Top Defects</th><th>Remark</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center">
+    Dữ liệu từ báo cáo Inuit QC • <span id="footerTime"></span>
+  </footer>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+/* -------------------- Dataset -------------------- */
+const mockQC = (() => {
+  const sections = ["GHÉP VẢI QC", "Bottom QC", "Zigzag QC", "Stabilo QC", "Top QC", "Final QC"];
+  const models = [
+    "Hook6P 24 Amber", "Hook6P 24 Breeze", "Hook6P 24 Diskus",
+    "KodeP 14 Acid", "KodeP 14 Bitter",
+    "Takoo6 41 Cinnamon", "Takoo6 41 Drop", "Takoo6 41 Shaggy",
+    "Artik7P 26 Earth", "Artik7P 26 Mint",
+    "Ikuma3 28 Fuchsia", "Ikuma3 28 Mars", "Ikuma3 28 Nimbus", "Ikuma3 28 Unakit",
+    "Ikuma3 22 Fuchsia", "Ikuma3 22 Mars"
+  ];
+  const operators = ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C", "Lê Thị D", "Hoàng Văn E"];
+  const inspectors = ["QC Nguyễn A", "QC Trần B", "QC Phạm C", "QC Lê D", "QC Hoàng E", "QC Phan F"];
+  
+  // SAP Order mapping
+  const sapOrderMap = {
+    "Hook6P 24": "2411017",
+    "KodeP 14": "2411019",
+    "Takoo6 41": "2411046",
+    "Artik7P 26": "2411047",
+    "Ikuma3 28": "2411025",
+    "Ikuma3 22": "2411026"
+  };
+  
+  // Helper function to generate realistic serial numbers based on model
+  function generateSerial(model, index) {
+    const modelPrefix = {
+      "Hook6P 24": "TGHOP24",
+      "KodeP 14": "TGKDE14",
+      "Takoo6 41": "UGTAK41",
+      "Artik7P 26": "UGAKP26",
+      "Ikuma3 28": "TGIKX28",
+      "Ikuma3 22": "TGIKX22"
+    };
+    
+    const prefixes = Object.keys(modelPrefix);
+    const prefix = prefixes.find(p => model.startsWith(p)) || "TGHOP24";
+    const basePrefix = modelPrefix[prefix];
+    
+    const color = model.split(' ')[2] || 'A';
+    const colorCode = color.charAt(0);
+    const serialNum = (index + Math.floor(Math.random() * 100)).toString().padStart(5, '0');
+    
+    return `${basePrefix}${colorCode}${serialNum}`;
+  }
+  
+  // Get SAP order for model
+  function getSAPOrder(model) {
+    for (const [key, order] of Object.entries(sapOrderMap)) {
+      if (model.startsWith(key)) {
+        return order;
+      }
+    }
+    return "2411017"; // default
+  }
+  const defectPool = {
+    "GHÉP VẢI QC": ["Đứt chỉ, bung chỉ", "Đường may nhăn", "Không lại mũi", "May sai cự ly", "Vải dơ"],
+    "Bottom QC": ["Viền bọng, nhăn", "Thiếu may viền", "Ống xỏ kẽm đứt", "Lỗi in logo", "Sai kích thước"],
+    "Zigzag QC": ["Không may zigzag", "Zigzag sụp mí", "Zigzag bung chỉ", "Zigzag dính thân", "Thiếu may dằn"],
+    "Stabilo QC": ["So le ngã tư", "Thiếu nơ", "Thiếu may dằn", "Đầu dù nhăn", "Bung chỉ"],
+    "Top QC": ["Lỗi đầu dù", "Lỗi thân dù", "Minirib lỗi", "Lỗi đuôi dù", "Thiếu miếng dán"],
+    "Final QC": ["Viền sụp mí", "Bấm đầu bung", "Thiếu lỗ ống xỏ", "Lỗi in logo", "Dính dơ"]
+  };
+
+  // Generate data by week (8 weeks) - Human QC
+  const start = new Date("2025-09-01");
+  const weeks = 8;
+  const rows = [];
+  
+  for (let w = 0; w < weeks; w++) {
+    // Calculate week start date
+    const weekStart = new Date(start);
+    weekStart.setDate(start.getDate() + (w * 7));
+    
+    // Week label: "Tuan 01 (01/09/2025)" format - dd/mm/yyyy
+    const weekLabel = `Tuan ${(w + 1).toString().padStart(2, '0')} (${weekStart.getDate().toString().padStart(2, '0')}/${(weekStart.getMonth() + 1).toString().padStart(2, '0')}/${weekStart.getFullYear()})`;
+    
+    // Per week, generate checks for each section
+    sections.forEach(sec => {
+      // More checks per week (6-15 checks per section per week)
+      const nchecks = 6 + Math.floor(Math.random() * 10);
+      for (let k = 0; k < nchecks; k++) {
+        const model = models[Math.floor(Math.random() * models.length)];
+        const serial = generateSerial(model, w * 100 + k);
+        const operator = operators[Math.floor(Math.random() * operators.length)];
+        const inspector = inspectors[Math.floor(Math.random() * inspectors.length)];
+        // inspected quantities per check (higher for weekly aggregate - human QC)
+        // 150-500 units per check
+        const inspected = 150 + Math.floor(Math.random() * 350);
+        // fail rate average ~5% (human QC with natural variation)
+        const failRate = Math.max(0, Math.min(0.15, (Math.random() * 0.10 + 0.03)));
+        const failed = Math.round(inspected * failRate);
+        const passed = inspected - failed;
+        // pick defects distribution
+        const defectTypes = defectPool[sec];
+        const defects = {};
+        let remaining = failed;
+        for (let i = 0; i < Math.min(defectTypes.length, Math.max(1, Math.ceil(Math.random() * 3))); i++) {
+          if (remaining <= 0) break;
+          const pick = defectTypes[Math.floor(Math.random() * defectTypes.length)];
+          const cnt = Math.min(remaining, 1 + Math.floor(Math.random() * Math.max(1, Math.round(failed / 2))));
+          defects[pick] = (defects[pick] || 0) + cnt;
+          remaining -= cnt;
+        }
+        // if still remaining, add to random defect
+        if (remaining > 0) {
+          const pick = defectTypes[Math.floor(Math.random() * defectTypes.length)];
+          defects[pick] = (defects[pick] || 0) + remaining;
+        }
+        const remark = Math.random() < 0.06 ? "Yeu cau rework" : "";
+        const sapOrder = getSAPOrder(model);
+        rows.push({
+          date: weekLabel,
+          qcSection: sec,
+          model: model,
+          serial: serial,
+          sapOrder: sapOrder,
+          operator: operator,
+          inspector: inspector,
+          inspected: inspected,
+          passed: passed,
+          failed: failed,
+          defects: defects,
+          remark: remark
+        });
+      }
+    });
+  }
+  return rows;
+})();
+
+// Utility functions
+function formatNum(n) { return n.toLocaleString('en-US'); }
+function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
+function formatDateDDMMYYYY(date) {
+  if (!date) return '';
+  const d = new Date(date);
+  const day = d.getDate().toString().padStart(2, '0');
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Build index for filters
+function populateFilterOptions(data) {
+  const models = Array.from(new Set(data.map(r => r.model))).sort();
+  const modelSelect = document.getElementById('modelFilter');
+  models.forEach(m => modelSelect.insertAdjacentHTML('beforeend', `<option>${m}</option>`));
+}
+
+// Aggregation helpers
+function aggregate(data) {
+  const totalChecks = data.length;
+  const totalInspected = sum(data.map(r => r.inspected));
+  const totalPassed = sum(data.map(r => r.passed));
+  const totalFailed = sum(data.map(r => r.failed));
+  const passRate = totalInspected > 0 ? (totalPassed / totalInspected * 100).toFixed(1) : "0.0";
+  // defects flatten count
+  const defectCounts = {};
+  data.forEach(r => {
+    const d = r.defects || {};
+    Object.keys(d).forEach(k => defectCounts[k] = (defectCounts[k] || 0) + d[k]);
+  });
+  // by qcSection
+  const bySection = {};
+  data.forEach(r => {
+    bySection[r.qcSection] = bySection[r.qcSection] || { inspected: 0, passed: 0, failed: 0 };
+    bySection[r.qcSection].inspected += r.inspected;
+    bySection[r.qcSection].passed += r.passed;
+    bySection[r.qcSection].failed += r.failed;
+  });
+  // by inspector
+  const byInspector = {};
+  data.forEach(r => {
+    byInspector[r.inspector] = byInspector[r.inspector] || { inspected: 0, passed: 0, failed: 0 };
+    byInspector[r.inspector].inspected += r.inspected;
+    byInspector[r.inspector].passed += r.passed;
+    byInspector[r.inspector].failed += r.failed;
+  });
+  Object.keys(byInspector).forEach(k => {
+    const obj = byInspector[k];
+    obj.passRate = obj.inspected > 0 ? (obj.passed / obj.inspected * 100) : 0;
+  });
+
+  // by operator
+  const byOperator = {};
+  data.forEach(r => {
+    byOperator[r.operator] = byOperator[r.operator] || { inspected: 0, failed: 0 };
+    byOperator[r.operator].inspected += r.inspected;
+    byOperator[r.operator].failed += r.failed;
+  });
+  Object.keys(byOperator).forEach(k => {
+    const obj = byOperator[k];
+    obj.defectRate = obj.inspected > 0 ? (obj.failed / obj.inspected * 100) : 0;
+  });
+
+  // by model with defect rate
+  const byModel = {};
+  data.forEach(r => {
+    byModel[r.model] = byModel[r.model] || { inspected: 0, failed: 0 };
+    byModel[r.model].inspected += r.inspected;
+    byModel[r.model].failed += r.failed;
+  });
+  Object.keys(byModel).forEach(k => {
+    const obj = byModel[k];
+    obj.defectRate = obj.inspected > 0 ? (obj.failed / obj.inspected * 100) : 0;
+  });
+
+  // defect category breakdown
+  const defectCategories = { "Đầu dù": 0, "Thân dù": 0, "Đuôi dù": 0, "Nguyên vật liệu": 0, "Khác": 0 };
+  Object.entries(defectCounts).forEach(([defect, count]) => {
+    if (defect.includes("đầu") || defect.includes("bung đầu") || defect.includes("viền") || defect.includes("bấm")) {
+      defectCategories["Đầu dù"] += count;
+    } else if (defect.includes("đường may") || defect.includes("may dính") || defect.includes("nhăn") || defect.includes("thân")) {
+      defectCategories["Thân dù"] += count;
+    } else if (defect.includes("đuôi") || defect.includes("minirib") || defect.includes("tam giác") || defect.includes("thanh ngang")) {
+      defectCategories["Đuôi dù"] += count;
+    } else if (defect.includes("nguyên vật liệu") || defect.includes("vải rách") || defect.includes("tưa") || defect.includes("Vải")) {
+      defectCategories["Nguyên vật liệu"] += count;
+    } else {
+      defectCategories["Khác"] += count;
+    }
+  });
+
+  return { totalChecks, totalInspected, totalPassed, totalFailed, passRate, defectCounts, bySection, byInspector, byModel, byOperator, defectCategories };
+}
+
+// Render charts and table
+let charts = {};
+function renderAll(data) {
+  const agg = aggregate(data);
+  document.getElementById('kpiTotal').innerText = agg.totalChecks;
+  document.getElementById('kpiPass').innerText = formatNum(agg.totalPassed);
+  document.getElementById('kpiFail').innerText = formatNum(agg.totalFailed);
+  document.getElementById('kpiPassRate').innerText = agg.passRate + "%";
+  document.getElementById('kpiTotalInspected').innerText = formatNum(agg.totalInspected);
+  document.getElementById('kpiDefectRate').innerText = (100 - parseFloat(agg.passRate)).toFixed(1) + "%";
+  
+  // Calculate rework rate
+  const totalRework = data.filter(r => r.remark && r.remark.includes("rework")).length;
+  const reworkRate = agg.totalChecks > 0 ? (totalRework / agg.totalChecks * 100).toFixed(1) : "0.0";
+  document.getElementById('kpiReworkRate').innerText = reworkRate + "%";
+  
+  // Calculate avg per week
+  const uniqueDates = new Set(data.map(r => r.date)).size;
+  const avgPerWeek = uniqueDates > 0 ? Math.round(agg.totalInspected / uniqueDates) : 0;
+  document.getElementById('kpiAvgPerDay').innerText = formatNum(avgPerWeek);
+  
+  document.getElementById('lastUpdated').innerText = new Date().toLocaleString();
+  document.getElementById('footerTime').innerText = new Date().toLocaleString();
+  populateFilterOptions(data);
+
+  // Trend Chart: date series %fail per day
+  const byDate = {};
+  data.forEach(r => {
+    byDate[r.date] = byDate[r.date] || { inspected: 0, failed: 0 };
+    byDate[r.date].inspected += r.inspected;
+    byDate[r.date].failed += r.failed;
+  });
+  const dates = Object.keys(byDate).sort();
+  
+  // Update alert message after dates is defined
+  const alertMessage = document.getElementById('alertMessage');
+  const alertInfo = document.getElementById('alertInfo');
+  let alerts = [];
+  
+  // Check for high defect rate
+  if (parseFloat(agg.passRate) < 90) {
+    alerts.push(`⚠️ Pass Rate thấp: ${agg.passRate}% (dưới mục tiêu 90%)`);
+  }
+  
+  // Check for high rework rate
+  if (parseFloat(reworkRate) > 5) {
+    alerts.push(`⚠️ Tỷ lệ Rework cao: ${reworkRate}%`);
+  }
+  
+  // Find worst day
+  const worstDay = dates.reduce((worst, d) => {
+    const todayRate = byDate[d].inspected ? (byDate[d].failed / byDate[d].inspected * 100) : 0;
+    return todayRate > worst.rate ? { date: d, rate: todayRate } : worst;
+  }, { date: '', rate: 0 });
+  
+  if (worstDay.rate > 15) {
+    alerts.push(`⚠️ Tuần nhiều lỗi nhất: ${worstDay.date} (${worstDay.rate.toFixed(1)}%)`);
+  }
+  
+  if (alerts.length > 0) {
+    alertMessage.innerHTML = alerts.join('<br>');
+    alertInfo.classList.remove('d-none');
+  } else {
+    alertInfo.classList.add('d-none');
+  }
+  const failPercents = dates.map(d => byDate[d].inspected ? (byDate[d].failed / byDate[d].inspected * 100).toFixed(2) : 0);
+
+  if (charts.trend) charts.trend.destroy();
+  charts.trend = new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: {
+      labels: dates, 
+      datasets: [{ label: '% lỗi', data: failPercents, borderColor: '#dc3545', tension: 0.2, pointRadius: 2, fill: true, backgroundColor: (ctx) => { return 'rgba(220,53,69,0.08)' } }]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } } }
+  });
+
+  // Top defects
+  const defectEntries = Object.entries(agg.defectCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const defectLabels = defectEntries.map(e => e[0]);
+  const defectValues = defectEntries.map(e => e[1]);
+  if (charts.topDefect) charts.topDefect.destroy();
+  charts.topDefect = new Chart(document.getElementById('topDefectChart'), {
+    type: 'bar', 
+    data: { labels: defectLabels, datasets: [{ label: 'Số lần', data: defectValues, backgroundColor: '#0d6efd' }] },
+    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } } }
+  });
+
+
+
+
+  // Defect category breakdown
+  if (charts.defectCategory) charts.defectCategory.destroy();
+  charts.defectCategory = new Chart(document.getElementById('defectCategoryChart'), {
+    type: 'pie', 
+    data: { labels: Object.keys(agg.defectCategories), datasets: [{ data: Object.values(agg.defectCategories) }] }, 
+    options: { responsive: true }
+  });
+
+  // Model defect rate
+  const modelSorted = Object.entries(agg.byModel).sort((a, b) => b[1].defectRate - a[1].defectRate).slice(0, 5);
+  const modelLabels = modelSorted.map(e => e[0]);
+  const modelValues = modelSorted.map(e => e[1].defectRate.toFixed(2));
+  if (charts.modelDefect) charts.modelDefect.destroy();
+  charts.modelDefect = new Chart(document.getElementById('modelDefectChart'), {
+    type: 'bar', 
+    data: { labels: modelLabels, datasets: [{ label: 'Tỷ lệ lỗi %', data: modelValues, backgroundColor: '#dc3545' }] }, 
+    options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }, plugins: { legend: { display: false } } }
+  });
+
+  // Stacked: defects per section for top defect types
+  const topDefectKeys = defectEntries.map(e => e[0]);
+  const datasets = Object.keys(agg.bySection).map((sec, idx) => {
+    const arr = topDefectKeys.map(k => {
+      // compute total count of defect k in section sec
+      return data.filter(r => r.qcSection === sec).reduce((s, rec) => s + (rec.defects[k] || 0), 0);
+    });
+    const colors = ['#0d6efd', '#6f42c1', '#198754', '#dc3545', '#fd7e14', '#0dcaf0'];
+    return { label: sec, data: arr, backgroundColor: colors[idx % colors.length] };
+  });
+  if (charts.stacked) charts.stacked.destroy();
+  charts.stacked = new Chart(document.getElementById('stackedChart'), {
+    type: 'bar', 
+    data: { labels: topDefectKeys, datasets: datasets }, 
+    options: { responsive: true, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } }
+  });
+
+  // Color Analysis: extract color from model and calculate defect rate
+  const byColor = {};
+  data.forEach(r => {
+    // Extract color from model (e.g., "Hook6P 24 Amber" -> "Amber")
+    const parts = r.model.split(' ');
+    const color = parts[parts.length - 1];
+    
+    if (!byColor[color]) {
+      byColor[color] = { inspected: 0, failed: 0 };
+    }
+    byColor[color].inspected += r.inspected;
+    byColor[color].failed += r.failed;
+  });
+  
+  // Calculate defect rate for each color
+  const colorStats = Object.entries(byColor).map(([color, stats]) => ({
+    color,
+    defectRate: stats.inspected > 0 ? (stats.failed / stats.inspected * 100) : 0,
+    inspected: stats.inspected
+  })).sort((a, b) => b.defectRate - a.defectRate);
+  
+  const colorLabels = colorStats.map(c => c.color);
+  const colorValues = colorStats.map(c => c.defectRate.toFixed(2));
+  
+  if (charts.colorAnalysis) charts.colorAnalysis.destroy();
+  charts.colorAnalysis = new Chart(document.getElementById('colorAnalysisChart'), {
+    type: 'bar', 
+    data: { labels: colorLabels, datasets: [{ label: 'Defect Rate %', data: colorValues, backgroundColor: '#17a2b8' }] }, 
+    options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { callback: v => v + '%' } } }, plugins: { legend: { display: false } } }
+  });
+
+  // Build defect summary table
+  const defectTbody = document.querySelector('#defectTable tbody');
+  defectTbody.innerHTML = '';
+  defectEntries.slice(0, 10).forEach(([defect, count], idx) => {
+    // Find which QC section has this defect most
+    let mainSection = '';
+    let maxCount = 0;
+    Object.keys(agg.bySection).forEach(section => {
+      const sectionCount = data.filter(r => r.qcSection === section)
+        .reduce((sum, rec) => sum + (rec.defects[defect] || 0), 0);
+      if (sectionCount > maxCount) {
+        maxCount = sectionCount;
+        mainSection = section;
+      }
+    });
+    const percentage = (count / agg.totalFailed * 100).toFixed(1);
+    defectTbody.insertAdjacentHTML('beforeend', `<tr>
+      <td>${idx + 1}</td>
+      <td><strong>${defect}</strong></td>
+      <td class="text-end">${formatNum(count)}</td>
+      <td class="text-end">${percentage}%</td>
+      <td>${mainSection}</td>
+    </tr>`);
+  });
+
+  // Build table
+  const tbody = document.querySelector('#dataTable tbody');
+  tbody.innerHTML = '';
+  data.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(r => {
+    const topDef = Object.entries(r.defects).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => `${e[0]}(${e[1]})`).join('; ');
+    tbody.insertAdjacentHTML('beforeend', `<tr>
+      <td>${r.date}</td>
+      <td>${r.qcSection}</td>
+      <td>${r.model}</td>
+      <td>${r.serial}</td>
+      <td>${r.operator}</td>
+      <td>${r.inspector}</td>
+      <td>${formatNum(r.inspected)}</td>
+      <td>${formatNum(r.passed)}</td>
+      <td>${formatNum(r.failed)}</td>
+      <td>${topDef || '-'}</td>
+      <td>${r.remark || ''}</td>
+    </tr>`);
+  });
+}
+
+// Filtering logic
+function applyFilters() {
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  const qc = document.getElementById('qcSection').value;
+  const model = document.getElementById('modelFilter').value;
+  const res = document.getElementById('resultFilter').value;
+
+  let filtered = mockQC.slice();
+  if (from) filtered = filtered.filter(r => r.date >= from);
+  if (to) filtered = filtered.filter(r => r.date <= to);
+  if (qc && qc !== 'All') filtered = filtered.filter(r => r.qcSection === qc);
+  if (model && model !== 'All') filtered = filtered.filter(r => r.model === model);
+  if (res && res !== 'All') {
+    if (res === 'Pass') filtered = filtered.filter(r => r.failed === 0);
+    else filtered = filtered.filter(r => r.failed > 0);
+  }
+  renderAll(filtered);
+  return filtered;
+}
+
+// Search table
+function applySearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#dataTable tbody tr');
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// Export CSV
+function exportCSV(data) {
+  const header = ["date", "qcSection", "model", "serial", "operator", "inspector", "inspected", "passed", "failed", "defects", "remark"];
+  const lines = [header.join(",")];
+  data.forEach(r => {
+    const defects = Object.entries(r.defects).map(e => `${e[0]}:${e[1]}`).join("|");
+    const row = [r.date, r.qcSection, `"${r.model}"`, r.serial, r.operator, r.inspector, r.inspected, r.passed, r.failed, `"${defects}"`, `"${r.remark}"`];
+    lines.push(row.join(","));
+  });
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'qc_data_export.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// init
+document.addEventListener('DOMContentLoaded', () => {
+  renderAll(mockQC);
+  document.getElementById('applyFilters').addEventListener('click', () => applyFilters());
+  document.getElementById('searchInput').addEventListener('input', applySearch);
+  document.getElementById('exportCSV').addEventListener('click', () => {
+    // export currently filtered view
+    const filtered = applyFilters();
+    exportCSV(filtered);
+  });
+  document.getElementById('resetView').addEventListener('click', () => renderAll(mockQC));
+  document.getElementById('showDefectTable').addEventListener('click', () => {
+    // scroll to table
+    document.querySelector('#dataTable').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  
+  // Close alert button
+  const closeBtn = document.querySelector('#alertInfo .btn-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      document.getElementById('alertInfo').classList.add('d-none');
+    });
+  }
+});
+</script>
+}

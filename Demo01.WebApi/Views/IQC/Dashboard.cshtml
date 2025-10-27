@@ -6,10 +6,6 @@
     ViewData["Page"] = "iqc-dashboard";
 }
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -318,30 +314,7 @@
         color: #1e40af;
     }
     
-    /* Buttons */
-    .btn {
-        border-radius: 8px;
-        font-weight: 500;
-        padding: 8px 16px;
-        font-size: 14px;
-        transition: all 0.2s ease;
-    }
-    
-    .btn-sm {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-    
-    .btn-outline-primary {
-        border-color: #d1d5db;
-        color: #374151;
-    }
-    
-    .btn-outline-primary:hover {
-        background: #f9fafb;
-        border-color: #9ca3af;
-    }
-    
+   
     /* Animations */
     .fade-in-up {
         animation: fadeInUp 0.6s ease-out;
@@ -358,38 +331,170 @@
         }
     }
     
-    /* Responsive */
+    /* Responsive - Mobile */
     @@media (max-width: 768px) {
         .dashboard-container {
-            padding: 16px;
+            padding: 12px;
             margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-header {
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 20px;
+            line-height: 1.3;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 13px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            padding: 16px;
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
         }
         
         .charts-grid {
             grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .chart-container {
+            padding: 16px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .filters-container {
+            padding: 16px;
         }
         
         .filters-row {
-            flex-direction: column;
-            align-items: stretch;
+            grid-template-columns: 1fr !important;
+            gap: 12px;
         }
         
         .filter-group {
             min-width: auto;
         }
         
-        .stats-grid {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        .table-container {
+            padding: 16px;
+            overflow-x: auto;
         }
         
         .table-title {
             flex-direction: column;
             align-items: flex-start;
             gap: 12px;
+            font-size: 16px;
+        }
+        
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table {
+            font-size: 12px;
+            white-space: nowrap;
+            min-width: 800px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 8px;
+            font-size: 12px;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+        
+        .btn-filter {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .progress-container {
+            padding: 16px;
+        }
+    }
+    
+    @@media (max-width: 576px) {
+        .dashboard-container {
+            padding: 8px;
         }
         
         .dashboard-title {
-            font-size: 24px;
+            font-size: 18px;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 12px;
+        }
+        
+        .stat-card {
+            padding: 12px;
+        }
+        
+        .stat-icon {
+            font-size: 20px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+        }
+        
+        .chart-container {
+            padding: 12px;
+        }
+        
+        .chart-title {
+            font-size: 14px;
+        }
+        
+        .table {
+            font-size: 11px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 6px;
+            font-size: 11px;
+        }
+        
+        .status-badge {
+            padding: 3px 6px;
+            font-size: 10px;
         }
     }
     
@@ -583,30 +688,81 @@
         background: #0056b3;
     }
     
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .dashboard-container {
-            padding: 10px;
-        }
-        
+    /* Responsive - Tablet and below */
+    @@media (max-width: 1200px) {
         .charts-grid {
             grid-template-columns: 1fr;
+            gap: 20px;
+        }
+    }
+    
+    @@media (max-width: 1024px) {
+        .dashboard-container {
+            padding: 16px;
         }
         
         .stats-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .filters-row {
-            grid-template-columns: 1fr;
-        }
-        
-        .dashboard-header {
-            padding: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
         }
         
         .dashboard-title {
+            font-size: 26px;
+        }
+        
+        .chart-container {
+            padding: 20px;
+        }
+        
+        .table-container {
+            padding: 20px;
+        }
+        
+        .filters-row {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .filter-group:last-child {
+            grid-column: 1 / -1;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
+            min-width: 700px;
+            font-size: 13px;
+        }
+    }
+    
+    @@media (max-width: 992px) {
+        .dashboard-title {
             font-size: 24px;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+        }
+    }
+    
+    @@media (min-width: 769px) and (max-width: 1024px) {
+        .table {
+            font-size: 13px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 10px;
+        }
+        
+        .chart-title {
+            font-size: 17px;
         }
     }
     
@@ -673,21 +829,91 @@
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
+    
+    /* Canvas responsiveness */
+    canvas {
+        max-width: 100%;
+        height: auto !important;
+    }
+    
+    /* Prevent horizontal scroll on mobile */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Additional mobile fixes */
+    @@media (max-width: 768px) {
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+        
+        .modal-content {
+            max-height: calc(100vh - 1rem);
+        }
+        
+        .chart-container canvas {
+            max-width: 100%;
+        }
+        
+        .table-responsive {
+            border: none;
+        }
+    }
+    
+    @@media (max-width: 480px) {
+        .dashboard-subtitle {
+            font-size: 11px;
+        }
+        
+        .stat-change {
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+    }
+    
+    /* iPad specific fixes */
+    @@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+        .dashboard-container {
+            max-width: 100%;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .charts-grid {
+            grid-template-columns: 2fr 1fr;
+        }
+    }
+    
+    /* Ensure proper max-width on all screen sizes */
+    @@media (min-width: 1400px) {
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+    }
 </style>
 
-<div class="dashboard-container">
+<div class="container-fluid py-3 px-md-4">
     <!-- Header -->
-    <div class="dashboard-header fade-in-up">
-        <h1 class="dashboard-title">📊 IQC Đầu vào Tổng quan - Kiểm soát chất lượng vải đầu vào</h1>
-        <p class="dashboard-subtitle">Tổng quan chất lượng vải đầu vào cho sản xuất dù lượn - Cập nhật lần cuối: <span id="lastUpdate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
+    <div class="text-center mb-4 border-bottom pb-3">
+        <h1 class="h2 fw-bold mb-2">📊 IQC Đầu vào Tổng quan - Kiểm soát chất lượng vải đầu vào</h1>
+        <p class="text-muted mb-0">Tổng quan chất lượng vải đầu vào cho sản xuất dù lượn - Cập nhật lần cuối: <span id="lastUpdate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
     </div>
 
     <!-- Filters -->
-    <div class="filters-container fade-in-up">
-        <div class="filters-row">
-            <div class="filter-group">
-                <label class="filter-label">Khoảng thời gian</label>
-                <select class="filter-control" id="timeRange">
+    <div class="bg-light rounded p-3 mb-4 shadow-sm">
+        <div class="row g-3 align-items-end">
+            <div class="col-12 col-md-6 col-lg">
+                <label class="form-label small fw-bold text-uppercase text-muted">Khoảng thời gian</label>
+                <select class="form-select" id="timeRange">
                     <option value="today">Hôm nay</option>
                     <option value="week" selected>Tuần này</option>
                     <option value="month">Tháng này</option>
@@ -695,17 +921,17 @@
                     <option value="year">Năm nay</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">Nhà cung cấp</label>
-                <select class="filter-control" id="supplierFilter">
+            <div class="col-12 col-md-6 col-lg">
+                <label class="form-label small fw-bold text-uppercase text-muted">Nhà cung cấp</label>
+                <select class="form-select" id="supplierFilter">
                     <option value="">Tất cả</option>
                     <option value="Dominico">Dominico</option>
                     <option value="Porcher">Porcher</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">Loại vải</label>
-                <select class="filter-control" id="materialFilter">
+            <div class="col-12 col-md-6 col-lg">
+                <label class="form-label small fw-bold text-uppercase text-muted">Loại vải</label>
+                <select class="form-select" id="materialFilter">
                     <option value="">Tất cả</option>
                     <option value="polyester">Vải Polyester</option>
                     <option value="nylon">Vải Nylon</option>
@@ -714,9 +940,9 @@
                     <option value="oxford">Vải Oxford</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <label class="filter-label">Trạng thái</label>
-                <select class="filter-control" id="statusFilter">
+            <div class="col-12 col-md-6 col-lg">
+                <label class="form-label small fw-bold text-uppercase text-muted">Trạng thái</label>
+                <select class="form-select" id="statusFilter">
                     <option value="">Tất cả</option>
                     <option value="passed">Đạt</option>
                     <option value="failed">Không đạt</option>
@@ -724,72 +950,97 @@
                     <option value="hold">Tạm giữ</option>
                 </select>
             </div>
-            <div class="filter-group">
-                <button class="btn-filter" onclick="applyFilters()">🔍 Áp dụng</button>
+            <div class="col-12 col-md-6 col-lg-auto">
+                <button class="btn btn-primary w-100" onclick="applyFilters()">🔍 Áp dụng</button>
             </div>
         </div>
     </div>
 
     <!-- Stats Cards -->
-    <div class="stats-grid fade-in-up">
-        <div class="stat-card success">
-            <div class="stat-icon">✅</div>
-            <h3 class="stat-value" id="totalPassed">0</h3>
-            <p class="stat-label">Phiếu đạt chuẩn</p>
-            <span class="stat-change positive" id="passedChange">+0%</span>
+    <div class="row g-3 g-md-4 mb-4">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-success text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="fs-3 mb-2">✅</div>
+                    <h3 class="fw-bold mb-1" id="totalPassed">0</h3>
+                    <p class="text-muted small mb-2">Phiếu đạt chuẩn</p>
+                    <span class="badge bg-success" id="passedChange">+0%</span>
+                </div>
+            </div>
         </div>
         
-        <div class="stat-card danger">
-            <div class="stat-icon">❌</div>
-            <h3 class="stat-value" id="totalFailed">0</h3>
-            <p class="stat-label">Phiếu không đạt</p>
-            <span class="stat-change negative" id="failedChange">+0%</span>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-danger text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="fs-3 mb-2">❌</div>
+                    <h3 class="fw-bold mb-1" id="totalFailed">0</h3>
+                    <p class="text-muted small mb-2">Phiếu không đạt</p>
+                    <span class="badge bg-danger" id="failedChange">+0%</span>
+                </div>
+            </div>
         </div>
         
-        <div class="stat-card warning">
-            <div class="stat-icon">⏳</div>
-            <h3 class="stat-value" id="totalPending">0</h3>
-            <p class="stat-label">Đang chờ kiểm</p>
-            <span class="stat-change" id="pendingChange">+0%</span>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-warning text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="fs-3 mb-2">⏳</div>
+                    <h3 class="fw-bold mb-1" id="totalPending">0</h3>
+                    <p class="text-muted small mb-2">Đang chờ kiểm</p>
+                    <span class="badge bg-warning text-dark" id="pendingChange">+0%</span>
+                </div>
+            </div>
         </div>
         
-        <div class="stat-card info">
-            <div class="stat-icon">📈</div>
-            <h3 class="stat-value" id="passRate">0%</h3>
-            <p class="stat-label">Tỷ lệ đạt chuẩn</p>
-            <span class="stat-change positive" id="rateChange">+0%</span>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-primary text-center h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="fs-3 mb-2">📈</div>
+                    <h3 class="fw-bold mb-1" id="passRate">0%</h3>
+                    <p class="text-muted small mb-2">Tỷ lệ đạt chuẩn</p>
+                    <span class="badge bg-primary" id="rateChange">+0%</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Charts Row -->
-    <div class="charts-grid fade-in-up">
+    <div class="row g-4 mb-4">
         <!-- Main Chart -->
-        <div class="chart-container">
-            <h3 class="chart-title">
-                <span class="chart-icon">📊</span>
-                Xu hướng chất lượng theo thời gian
-            </h3>
-            <canvas id="trendChart" width="400" height="200"></canvas>
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center mb-3">
+                        <span class="me-2">📊</span>
+                        Xu hướng chất lượng theo thời gian
+                    </h5>
+                    <canvas id="trendChart" width="400" height="200"></canvas>
+                </div>
+            </div>
         </div>
         
         <!-- Side Chart -->
-        <div class="chart-container">
-            <h3 class="chart-title">
-                <span class="chart-icon">🥧</span>
-                Phân bố theo nhà cung cấp (Dominico vs Porcher)
-            </h3>
-            <canvas id="supplierChart" width="300" height="200"></canvas>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center mb-3">
+                        <span class="me-2">🥧</span>
+                        Phân bố theo nhà cung cấp (Dominico vs Porcher)
+                    </h5>
+                    <canvas id="supplierChart" width="300" height="200"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Batch Status Table -->
-    <div class="table-container fade-in-up">
-        <h3 class="table-title">
-            <span>📦 Tình trạng các lô đang kiểm tra</span>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">📦 Tình trạng các lô đang kiểm tra</h5>
             <button class="btn btn-outline-primary btn-sm" onclick="refreshData()">🔄 Làm mới</button>
-        </h3>
-        <div class="table-responsive">
-            <table class="table">
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Mã lô</th>
@@ -807,17 +1058,19 @@
                     <!-- Data will be populated by JavaScript -->
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
     <!-- Recent Inspections Table -->
-    <div class="table-container fade-in-up">
-        <h3 class="table-title">
-            <span>📋 Phiếu kiểm gần đây</span>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">📋 Phiếu kiểm gần đây</h5>
             <button class="btn btn-outline-primary btn-sm" onclick="refreshData()">🔄 Làm mới</button>
-        </h3>
-        <div class="table-responsive">
-            <table class="table">
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
                 <thead>
                     <tr>
                         <th>Mã phiếu</th>
@@ -834,25 +1087,34 @@
                     <!-- Data will be populated by JavaScript -->
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
     <!-- Top Defects Section -->
-    <div class="charts-grid fade-in-up">
-        <div class="chart-container">
-            <h3 class="chart-title">
-                <span class="chart-icon">🔍</span>
-                Các lỗi hay xuất hiện nhất
-            </h3>
-            <canvas id="topDefectsChart" width="400" height="200"></canvas>
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center mb-3">
+                        <span class="me-2">🔍</span>
+                        Các lỗi hay xuất hiện nhất
+                    </h5>
+                    <canvas id="topDefectsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
         </div>
         
-        <div class="chart-container">
-            <h3 class="chart-title">
-                <span class="chart-icon">📈</span>
-                Loại vải được IQC nhiều nhất
-            </h3>
-            <canvas id="fabricTypeChart" width="300" height="200"></canvas>
+        <div class="col-12 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title d-flex align-items-center mb-3">
+                        <span class="me-2">📈</span>
+                        Loại vải được IQC nhiều nhất
+                    </h5>
+                    <canvas id="fabricTypeChart" width="300" height="200"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1347,6 +1609,8 @@ function createTrendChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
             plugins: {
                 legend: {
                     position: 'top',
@@ -1385,6 +1649,8 @@ function createSupplierChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1.5,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -1427,6 +1693,8 @@ function createTopDefectsChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 2,
             plugins: {
                 legend: {
                     display: false
@@ -1472,6 +1740,8 @@ function createFabricTypeChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 1.5,
             plugins: {
                 legend: {
                     display: false

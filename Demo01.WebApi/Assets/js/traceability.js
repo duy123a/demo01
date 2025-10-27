@@ -14,10 +14,11 @@ class TraceabilitySystem {
         // Mock data for dropdown
         this.mockData = {
             paraglider: [
-                { code: 'PG-2025-0089-001', name: 'NIVIUK HOOK 6 - Size M', status: 'Hoàn thành' },
-                { code: 'PG-2025-0091-002', name: 'NIVIUK PEAK 5 - Size L', status: 'Đang sản xuất' },
-                { code: 'PG-2025-0095-003', name: 'NIVIUK IKUMA 2 - Size S', status: 'Hoàn thành' },
-                { code: 'PG-2025-0101-004', name: 'NIVIUK HOOK 6 - Size XL', status: 'Chờ nguyên liệu' }
+                { code: 'TGHOP24A00362', name: 'Hook6P 24 Amber', status: 'Hoàn thành' },
+                { code: 'TGKDE14A01039', name: 'KodeP 14 Acid', status: 'Đang sản xuất' },
+                { code: 'UGTAK41C01024', name: 'Takoo6 41 Cinnamon', status: 'Hoàn thành' },
+                { code: 'UGAKP26E00204', name: 'Artik7P 26 Earth', status: 'Chờ nguyên liệu' },
+                { code: 'TGIKX28F00927', name: 'Ikuma3 28 Fuchsia', status: 'Hoàn thành' }
             ],
             harness: [
                 { code: 'HN-2025-0067-015', name: 'NIVIUK DRIFTER - Size L', status: 'Hoàn thành' },
@@ -240,13 +241,13 @@ class TraceabilitySystem {
                 type: 'Dù lượn',
                 serial: this.searchValue,
                 orderInfo: {
-                    orderCode: 'ORD-2025-0089',
+                    orderCode: '2411017',
                     orderDate: '20/05/2025',
                     customer: 'Customer ABC - France',
                     quantity: 2,
-                    model: 'NIVIUK HOOK 6',
-                    size: 'M (85-105kg)',
-                    color: 'Blue/White',
+                    model: 'Hook6P 24',
+                    size: '24',
+                    color: 'Amber',
                     priority: 'High',
                     shipDate: '30/07/2025',
                     actualShipDate: '30/07/2025',
@@ -433,11 +434,11 @@ class TraceabilitySystem {
                 type: 'Ghế bay',
                 serial: this.searchValue,
                 orderInfo: {
-                    orderCode: 'ORD-2025-0067',
+                    orderCode: '2411018',
                     orderDate: '15/04/2025',
                     customer: 'Customer XYZ - Germany',
                     quantity: 1,
-                    model: 'NIVIUK DRIFTER',
+                    model: 'Harness DRIFTER',
                     size: 'L',
                     color: 'Black/Red',
                     priority: 'Normal',

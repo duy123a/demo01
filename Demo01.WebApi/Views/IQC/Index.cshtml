@@ -7,510 +7,72 @@
 }
 
 <style>
-    /* Reset và Base Styles */
-    * {
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: #f8f9fa;
-        margin: 0;
-        padding: 0;
-        line-height: 1.6;
-        color: #333;
-    }
-    
-    /* Container */
-    .iqc-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    
-    /* Header */
-    .iqc-header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #dee2e6;
-    }
-    
-    .iqc-title {
-        font-size: 24px;
-        font-weight: 600;
-        color: #333;
-        margin: 0 0 8px 0;
-    }
-    
-    .iqc-subtitle {
-        font-size: 14px;
-        color: #666;
-        margin: 0;
-    }
-    
-    /* Section Styles */
-    .iqc-section {
-        margin-bottom: 25px;
-        background: white;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-    }
-    
-    .section-header {
-        background: #f8f9fa;
-        color: #333;
-        padding: 12px 20px;
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .section-content {
-        padding: 20px;
-    }
-    
-    /* Form Grid */
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .form-label {
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 6px;
-        font-size: 14px;
-    }
-    
-    .form-control {
-        padding: 10px 12px;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-size: 14px;
-        transition: border-color 0.2s ease;
-        background: white;
-    }
-    
-    .form-control:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-    }
-    
-    .form-control::placeholder {
-        color: #6c757d;
-    }
-    
-    /* Radio Groups */
-    .radio-group {
-        display: flex;
-        gap: 15px;
-        margin-top: 8px;
-    }
-    
-    .radio-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-    }
-    
-    .radio-item input[type="radio"] {
-        width: 16px;
-        height: 16px;
-        accent-color: #007bff;
-        cursor: pointer;
-    }
-    
-    .radio-item label {
-        font-weight: 400;
-        color: #333;
-        margin: 0;
-        cursor: pointer;
-        font-size: 14px;
-    }
-    
-    /* Checklist Items */
-    .checklist-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .checklist-item {
-        background: white;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 15px;
-        transition: border-color 0.2s ease;
-    }
-    
-    .checklist-item:hover {
-        border-color: #ced4da;
-    }
-    
-    .checklist-label {
-        font-weight: 500;
-        color: #333;
-        margin-bottom: 12px;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-    
-    .sub-items {
-        margin-left: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .sub-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 15px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border-left: 4px solid #3498db;
-    }
-    
-    .sub-item-label {
-        font-weight: 500;
-        color: #34495e;
-        font-size: 14px;
-    }
-    
-    .sub-item-input {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .inline-input {
-        width: 200px;
-        padding: 8px 12px;
-        border: 1px solid #bdc3c7;
-        border-radius: 6px;
-        font-size: 13px;
-    }
-    
-    .inline-input:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-    }
-    
-    /* Defect List Styles */
-    .defect-list-container {
-        margin-top: 15px;
-        background: white;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-        overflow: hidden;
-    }
-    
-    .defect-table-header {
-        padding: 12px 15px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-    
-    .defect-table-header h4 {
-        margin: 0;
-        font-size: 14px;
-        font-weight: 500;
-        color: #333;
-    }
-    
-    .defect-table-footer {
-        padding: 12px 15px;
-        background: #f8f9fa;
-        border-top: 1px solid #dee2e6;
-        text-align: right;
-    }
-    
-    .btn-sm {
-        padding: 6px 12px;
-        font-size: 12px;
-        border-radius: 4px;
-    }
-    
-    .defect-table {
-        padding: 0;
-    }
-    
-    .defect-table .table {
-        margin: 0;
-        border: none;
-    }
-    
-    .defect-table .table thead th {
-        background: #e9ecef;
-        border: none;
-        font-weight: 600;
-        color: #495057;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 12px 15px;
-    }
-    
-    .defect-table .table tbody td {
-        border: none;
-        padding: 12px 15px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f1f3f4;
-    }
-    
-    .defect-table .table tbody tr:hover {
-        background: #f8f9fa;
-    }
-    
-    .defect-input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        font-size: 14px;
-        transition: all 0.2s ease;
-    }
-    
-    .defect-input:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
-    }
-    
-    .btn-delete {
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-size: 12px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .btn-delete:hover {
-        background: #c0392b;
-        transform: scale(1.05);
-    }
-    
-    .defect-counter {
-        font-size: 12px;
-        color: #6c757d;
-        font-style: italic;
-        margin-top: 10px;
-        text-align: right;
-    }
-    
-    /* Action Buttons */
-    .action-section {
-        background: white;
-        border-radius: 12px;
-        padding: 25px;
-        margin-top: 20px;
-        border: 1px solid #e9ecef;
-    }
-    
-    .action-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    
-    .action-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-    
-    .action-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-    
-    .btn {
-        padding: 8px 16px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        font-weight: 500;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .btn-primary {
-        background: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
-    
-    .btn-primary:hover {
-        background: #0056b3;
-        border-color: #0056b3;
-    }
-    
-    .btn-warning {
-        background: #ffc107;
-        color: #212529;
-        border-color: #ffc107;
-    }
-    
-    .btn-warning:hover {
-        background: #e0a800;
-        border-color: #d39e00;
-    }
-    
-    .btn-outline {
-        background: transparent;
-        border: 1px solid #6c757d;
-        color: #6c757d;
-    }
-    
-    .btn-outline:hover {
-        background: #6c757d;
-        color: white;
-    }
-    
-    /* Responsive Design */
-    @@media (max-width: 768px) {
-        .iqc-container {
-            margin: 10px;
-            padding: 15px;
-        }
-        
-        .iqc-title {
-            font-size: 24px;
-        }
-        
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .action-form {
-            grid-template-columns: 1fr;
-        }
-        
-        .radio-group {
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .action-buttons {
-            flex-direction: column;
-        }
-        
-        .sub-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        
-        .sub-item-input {
-            width: 100%;
-            justify-content: flex-start;
-        }
-        
-        .inline-input {
-            width: 100%;
-        }
-    }
-    
-    /* Print Styles */
     @@media print {
-        body {
-            background: white;
-        }
-        
-        .iqc-container {
-            box-shadow: none;
-            margin: 0;
-            padding: 0;
-        }
-        
         .action-buttons {
-            display: none;
+            display: none !important;
         }
         
-        .checklist-item {
+        .card {
             break-inside: avoid;
         }
     }
-    
 </style>
 
-<div class="iqc-container">
+<div class="container my-4">
+    <div class="card">
     <!-- Header -->
-    <div class="iqc-header">
-        <h1 class="iqc-title">IQC - Nhập phiếu kiểm nguyên vật liệu đầu vào</h1>
-        <p class="iqc-subtitle">Giao diện nhập liệu cho người kiểm (IQC) — kiểm tra chất lượng NVL đầu vào để sản xuất dù lượn</p>
+        <div class="card-header border-bottom-0 bg-white pb-3">
+            <h1 class="h3 text-center mb-2">IQC - Nhập phiếu kiểm nguyên vật liệu đầu vào</h1>
+            <p class="text-muted text-center mb-0 small">Giao diện nhập liệu cho người kiểm (IQC) — kiểm tra chất lượng NVL đầu vào để sản xuất dù lượn</p>
     </div>
 
+        <div class="card-body">
     <!-- Basic Information -->
-    <div class="iqc-section">
-        <h2 class="section-header">Thông tin cơ bản</h2>
-        <div class="section-content">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Ngày kiểm:</label>
-                    <input type="date" id="checkDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Thông tin cơ bản</h5>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Ngày nhận hàng:</label>
-                    <input type="date" id="iqcDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Nhà cung cấp:</label>
-                    <div class="radio-group">
-                        <div class="radio-item">
-                            <input type="radio" name="supplier" id="supplier_dominico" value="Dominico">
-                            <label for="supplier_dominico">Dominico</label>
+                <div class="card-body">
+                    <div class="row g-3 mb-0">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ngày kiểm:</label>
+                            <input type="date" id="checkDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="supplier" id="supplier_porcher" value="Porcher">
-                            <label for="supplier_porcher">Porcher</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Ngày nhận hàng:</label>
+                            <input type="date" id="iqcDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Nhà cung cấp:</label>
+                            <div class="d-flex gap-3 mt-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="supplier" id="supplier_dominico" value="Dominico">
+                                    <label class="form-check-label" for="supplier_dominico">Dominico</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="supplier" id="supplier_porcher" value="Porcher">
+                                    <label class="form-check-label" for="supplier_porcher">Porcher</label>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Số PO / số Lô:</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số PO / số Lô:</label>
                     <input type="text" id="poNo" class="form-control" placeholder="Nhập số PO/Lô">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Mã số SAP (code):</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Mã số SAP (code):</label>
                     <input type="text" id="materialCode" class="form-control" placeholder="Nhập mã SAP">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Tên vải:</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tên vải:</label>
                     <input type="text" id="materialName" class="form-control" placeholder="Nhập tên vải">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Màu sắc:</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Màu sắc:</label>
                     <input type="text" id="color" class="form-control" placeholder="Nhập màu sắc">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Mã số cuộn vải:</label>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Mã số cuộn vải:</label>
                     <input type="text" id="rollCode" class="form-control" placeholder="Nhập mã cuộn vải">
                 </div>
             </div>
@@ -518,130 +80,139 @@
     </div>
 
     <!-- Quality Inspection Checklist -->
-    <div class="iqc-section">
-        <h2 class="section-header">Danh sách kiểm tra chất lượng</h2>
-        <div class="section-content">
-            <div class="checklist-container">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Danh sách kiểm tra chất lượng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3">
                 <!-- Item 1 -->
-                <div class="checklist-item">
-                    <div class="checklist-label">1. Qui cách đóng gói (tem nhãn, cách cuộn vải, tình trạng đóng gói)</div>
-                    <div class="radio-group">
-                        <div class="radio-item">
-                            <input type="radio" name="item1" id="item1_pass" value="pass">
-                            <label for="item1_pass">Đạt</label>
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="fw-semibold mb-3">1. Qui cách đóng gói (tem nhãn, cách cuộn vải, tình trạng đóng gói)</div>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="item1" id="item1_pass" value="pass">
+                                        <label class="form-check-label" for="item1_pass">Đạt</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="item1" id="item1_fail" value="fail">
+                                        <label class="form-check-label" for="item1_fail">Không đạt</label>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="item1" id="item1_fail" value="fail">
-                            <label for="item1_fail">Không đạt</label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Item 2 -->
-                <div class="checklist-item">
-                    <div class="checklist-label">2. Chiều dài thực tế/ chiều dài ghi trên cuộn vải:</div>
-                    <div class="radio-group">
-                        <div class="radio-item">
-                            <input type="radio" name="item2" id="item2_pass" value="pass">
-                            <label for="item2_pass">Đạt</label>
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="fw-semibold mb-3">2. Chiều dài thực tế/ chiều dài ghi trên cuộn vải:</div>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="item2" id="item2_pass" value="pass">
+                                        <label class="form-check-label" for="item2_pass">Đạt</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="item2" id="item2_fail" value="fail">
+                                        <label class="form-check-label" for="item2_fail">Không đạt</label>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="item2" id="item2_fail" value="fail">
-                            <label for="item2_fail">Không đạt</label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Item 3 -->
-                <div class="checklist-item">
-                    <div class="checklist-label">3. Kiểm tra ngoại quan</div>
-                    <div class="sub-items">
-                        <div class="sub-item">
-                            <div class="sub-item-label">3.1/ Màu sắc</div>
-                            <div class="sub-item-input">
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_1" id="item3_1_pass" value="pass">
-                                    <label for="item3_1_pass">Đạt</label>
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="fw-semibold mb-3">3. Kiểm tra ngoại quan</div>
+                                <div class="ms-3 d-flex flex-column gap-2">
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2" style="border-left: 4px solid #3498db;">
+                                        <div class="fw-semibold">3.1/ Màu sắc</div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_1" id="item3_1_pass" value="pass">
+                                                <label class="form-check-label" for="item3_1_pass">Đạt</label>
                                 </div>
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_1" id="item3_1_fail" value="fail">
-                                    <label for="item3_1_fail">Không đạt</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sub-item">
-                            <div class="sub-item-label">3.2/ Khổ vải</div>
-                            <div class="sub-item-input">
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_2" id="item3_2_pass" value="pass">
-                                    <label for="item3_2_pass">Đạt</label>
-                                </div>
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_2" id="item3_2_fail" value="fail">
-                                    <label for="item3_2_fail">Không đạt</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_1" id="item3_1_fail" value="fail">
+                                                <label class="form-check-label" for="item3_1_fail">Không đạt</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="sub-item">
-                            <div class="sub-item-label">3.3/ Độ mềm/cứng</div>
-                            <div class="sub-item-input">
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_3" id="item3_3_pass" value="pass">
-                                    <label for="item3_3_pass">Đạt</label>
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2" style="border-left: 4px solid #3498db;">
+                                        <div class="fw-semibold">3.2/ Khổ vải</div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_2" id="item3_2_pass" value="pass">
+                                                <label class="form-check-label" for="item3_2_pass">Đạt</label>
                                 </div>
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_3" id="item3_3_fail" value="fail">
-                                    <label for="item3_3_fail">Không đạt</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sub-item">
-                            <div class="sub-item-label">3.4/ Độ dày</div>
-                            <div class="sub-item-input">
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_4" id="item3_4_pass" value="pass">
-                                    <label for="item3_4_pass">Đạt</label>
-                                </div>
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_4" id="item3_4_fail" value="fail">
-                                    <label for="item3_4_fail">Không đạt</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_2" id="item3_2_fail" value="fail">
+                                                <label class="form-check-label" for="item3_2_fail">Không đạt</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="sub-item">
-                            <div class="sub-item-label">3.5/ Độ thông gió/ porosity (tối thiểu 300s):</div>
-                            <div class="sub-item-input">
-                                <input type="text" class="inline-input" placeholder="Nhập kết quả đo">
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_5" id="item3_5_pass" value="pass">
-                                    <label for="item3_5_pass">Đạt</label>
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2" style="border-left: 4px solid #3498db;">
+                                        <div class="fw-semibold">3.3/ Độ mềm/cứng</div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_3" id="item3_3_pass" value="pass">
+                                                <label class="form-check-label" for="item3_3_pass">Đạt</label>
                                 </div>
-                                <div class="radio-item">
-                                    <input type="radio" name="item3_5" id="item3_5_fail" value="fail">
-                                    <label for="item3_5_fail">Không đạt</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_3" id="item3_3_fail" value="fail">
+                                                <label class="form-check-label" for="item3_3_fail">Không đạt</label>
                                 </div>
+                            </div>
+                        </div>
+
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2" style="border-left: 4px solid #3498db;">
+                                        <div class="fw-semibold">3.4/ Độ dày</div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_4" id="item3_4_pass" value="pass">
+                                                <label class="form-check-label" for="item3_4_pass">Đạt</label>
+                                </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_4" id="item3_4_fail" value="fail">
+                                                <label class="form-check-label" for="item3_4_fail">Không đạt</label>
+                                </div>
+                            </div>
+                        </div>
+
+                                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2" style="border-left: 4px solid #3498db;">
+                                        <div class="fw-semibold">3.5/ Độ thông gió/ porosity (tối thiểu 300s):</div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="text" class="form-control" style="width: 200px;" placeholder="Nhập kết quả đo">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_5" id="item3_5_pass" value="pass">
+                                                <label class="form-check-label" for="item3_5_pass">Đạt</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="item3_5" id="item3_5_fail" value="fail">
+                                                <label class="form-check-label" for="item3_5_fail">Không đạt</label>
+                                            </div>
+                                        </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Item 4 -->
-                <div class="checklist-item">
-                    <div class="checklist-label">4. Kiểm tra điểm lỗi: Tiêu chuẩn tối đa 7 lỗi /100m. Ví dụ cuộn vải dài 150m thì tối đa 10 lỗi</div>
+                        <div class="card border">
+                            <div class="card-body">
+                                <div class="fw-semibold mb-3">4. Kiểm tra điểm lỗi: Tiêu chuẩn tối đa 7 lỗi /100m. Ví dụ cuộn vải dài 150m thì tối đa 10 lỗi</div>
                     
                     <!-- Defect List Table -->
-                    <div class="defect-list-container">
-                        <div class="defect-table-header">
-                            <h4>Danh sách lỗi phát hiện</h4>
+                                <div class="card mt-3">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">Danh sách lỗi phát hiện</h6>
                         </div>
-                        
-                        <div class="defect-table">
-                            <table class="table table-striped">
-                                <thead>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0">
+                                                <thead class="table-light">
                                     <tr>
                                         <th style="width: 80px;">STT</th>
                                         <th>Nội dung lỗi</th>
@@ -653,9 +224,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <div class="defect-table-footer">
+                                    </div>
+                                    <div class="card-footer bg-light text-end">
                             <button id="addDefect" class="btn btn-primary btn-sm">+ Thêm</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -664,27 +238,29 @@
     </div>
 
     <!-- Conclusion -->
-    <div class="action-section">
-        <h3 class="action-title">Kết luận</h3>
-        <div class="action-form">
-            <div class="form-group">
-                <label class="form-label">Người kiểm:</label>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title text-center">Kết luận</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Người kiểm:</label>
                 <input type="text" id="inspector" class="form-control" placeholder="Họ tên người kiểm" required>
             </div>
-            <div class="form-group">
-                <label class="form-label">Ngày hoàn thành:</label>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Ngày hoàn thành:</label>
                 <input type="date" id="completionDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")">
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-                <label class="form-label">Ghi chú:</label>
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Ghi chú:</label>
                 <textarea id="finalNote" rows="3" class="form-control" placeholder="Nhận xét về kết quả kiểm tra..."></textarea>
             </div>
         </div>
 
-        <div class="action-buttons">
+            <div class="action-buttons d-flex justify-content-center gap-2 flex-wrap">
             <button id="saveDraft" class="btn btn-warning">💾 Lưu nháp</button>
             <button id="submitIQC" class="btn btn-primary">📤 Gửi duyệt</button>
-            <button id="printReport" class="btn btn-outline">🖨️ In báo cáo</button>
+                <button id="printReport" class="btn btn-outline-secondary">🖨️ In báo cáo</button>
+            </div>
         </div>
     </div>
 </div>
@@ -736,7 +312,7 @@ function renderDefects() {
     if (!tbody) return;
     
     if (state.defects.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Chưa có lỗi nào được ghi nhận</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-3">Chưa có lỗi nào được ghi nhận</td></tr>';
         return;
     }
     
@@ -745,13 +321,13 @@ function renderDefects() {
             <td>${index + 1}</td>
             <td>
                 <input type="text" 
-                       class="defect-input" 
+                       class="form-control" 
                        value="${defect.content}" 
                        placeholder="Nhập nội dung lỗi..."
                        onchange="updateDefectContent(${defect.id}, this.value)">
             </td>
             <td>
-                <button class="btn-delete" onclick="removeDefect(${defect.id})">
+                <button class="btn btn-danger btn-sm" onclick="removeDefect(${defect.id})">
                     🗑️ Xóa
                 </button>
             </td>
