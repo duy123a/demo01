@@ -1089,4 +1089,190 @@
   <data name="Traceability_No_Results_Message" xml:space="preserve">
     <value>Vui lòng chọn loại truy xuất và nhập mã để tra cứu</value>
   </data>
+  <data name="IQC_Title" xml:space="preserve">
+    <value>IQC - Nhập phiếu kiểm</value>
+  </data>
+  <data name="IQC_Subtitle" xml:space="preserve">
+    <value>Giao diện nhập liệu cho người kiểm (IQC) — kiểm tra chất lượng NVL đầu vào để sản xuất dù lượn</value>
+  </data>
+  <data name="IQC_Save_Draft" xml:space="preserve">
+    <value>Lưu nháp</value>
+  </data>
+  <data name="IQC_Submit" xml:space="preserve">
+    <value>Gửi duyệt</value>
+  </data>
+  <data name="IQC_Basic_Info" xml:space="preserve">
+    <value>Thông tin phiếu kiểm IQC</value>
+  </data>
+  <data name="IQC_Form_Number" xml:space="preserve">
+    <value>Số phiếu IQC</value>
+  </data>
+  <data name="IQC_Receive_Date" xml:space="preserve">
+    <value>Ngày nhận hàng</value>
+  </data>
+  <data name="IQC_Check_Date" xml:space="preserve">
+    <value>Ngày kiểm</value>
+  </data>
+  <data name="IQC_Inspector" xml:space="preserve">
+    <value>Người kiểm</value>
+  </data>
+  <data name="IQC_Location" xml:space="preserve">
+    <value>Khu vực kiểm</value>
+  </data>
+  <data name="IQC_Check_Type" xml:space="preserve">
+    <value>Loại kiểm tra</value>
+  </data>
+  <data name="IQC_Notes" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="IQC_Material_Supplier" xml:space="preserve">
+    <value>Thông tin nguyên vật liệu &amp; Nhà cung cấp</value>
+  </data>
+  <data name="IQC_PO_Number" xml:space="preserve">
+    <value>Số PO/Đơn hàng</value>
+  </data>
+  <data name="IQC_Supplier" xml:space="preserve">
+    <value>Nhà cung cấp</value>
+  </data>
+  <data name="IQC_Supplier_Code" xml:space="preserve">
+    <value>Mã nhà cung cấp</value>
+  </data>
+  <data name="IQC_Material_Type" xml:space="preserve">
+    <value>Loại nguyên vật liệu</value>
+  </data>
+  <data name="IQC_Material_Code" xml:space="preserve">
+    <value>Mã vật liệu</value>
+  </data>
+  <data name="IQC_Material_Name" xml:space="preserve">
+    <value>Tên vật liệu</value>
+  </data>
+  <data name="IQC_Quantity" xml:space="preserve">
+    <value>Số lượng nhận</value>
+  </data>
+  <data name="IQC_Unit" xml:space="preserve">
+    <value>Đơn vị tính</value>
+  </data>
+  <data name="IQC_Lot_Number" xml:space="preserve">
+    <value>Số lô NCC</value>
+  </data>
+  <data name="IQC_Manufacture_Date" xml:space="preserve">
+    <value>Ngày sản xuất</value>
+  </data>
+  <data name="IQC_Expiry_Date" xml:space="preserve">
+    <value>Hạn sử dụng</value>
+  </data>
+  <data name="IQC_CO_CQ_File" xml:space="preserve">
+    <value>CO/CQ/Test Report</value>
+  </data>
+  <data name="IQC_Batch_Management" xml:space="preserve">
+    <value>Quản lý Batch &amp; Lô sản phẩm</value>
+  </data>
+  <data name="IQC_Batch_Number" xml:space="preserve">
+    <value>Batch Number</value>
+  </data>
+  <data name="IQC_Lot_Number_Internal" xml:space="preserve">
+    <value>Lot Number</value>
+  </data>
+  <data name="IQC_Serial_Number" xml:space="preserve">
+    <value>Serial Number</value>
+  </data>
+  <data name="IQC_Production_Date" xml:space="preserve">
+    <value>Ngày sản xuất</value>
+  </data>
+  <data name="IQC_Batch_Quantity" xml:space="preserve">
+    <value>Số lượng trong batch</value>
+  </data>
+  <data name="IQC_Batch_Status" xml:space="preserve">
+    <value>Trạng thái batch</value>
+  </data>
+  <data name="IQC_Generate_Batch" xml:space="preserve">
+    <value>Tạo Batch tự động</value>
+  </data>
+  <data name="IQC_Copy_Batch" xml:space="preserve">
+    <value>Copy từ batch trước</value>
+  </data>
+  <data name="IQC_Sampling_Info" xml:space="preserve">
+    <value>Thông tin lấy mẫu kiểm tra</value>
+  </data>
+  <data name="IQC_Sampling_Method" xml:space="preserve">
+    <value>Phương pháp lấy mẫu</value>
+  </data>
+  <data name="IQC_Sample_Quantity" xml:space="preserve">
+    <value>Số lượng mẫu (n)</value>
+  </data>
+  <data name="IQC_Sampler" xml:space="preserve">
+    <value>Người lấy mẫu</value>
+  </data>
+  <data name="IQC_Test_Results" xml:space="preserve">
+    <value>Kết quả kiểm tra chi tiết</value>
+  </data>
+  <data name="IQC_Add_Row" xml:space="preserve">
+    <value>Thêm dòng</value>
+  </data>
+  <data name="IQC_Add_Sample" xml:space="preserve">
+    <value>Thêm mẫu ngẫu nhiên</value>
+  </data>
+  <data name="IQC_Auto_Fill" xml:space="preserve">
+    <value>Điền tự động</value>
+  </data>
+  <data name="IQC_Calculate_Rate" xml:space="preserve">
+    <value>Tính tỷ lệ</value>
+  </data>
+  <data name="IQC_Photos_Attachments" xml:space="preserve">
+    <value>Hình ảnh &amp; Tài liệu đính kèm</value>
+  </data>
+  <data name="IQC_Sample_Photos" xml:space="preserve">
+    <value>Hình ảnh mẫu kiểm tra</value>
+  </data>
+  <data name="IQC_Documents" xml:space="preserve">
+    <value>Tài liệu CO/CQ</value>
+  </data>
+  <data name="IQC_Conclusion" xml:space="preserve">
+    <value>Kết luận &amp; Quyết định</value>
+  </data>
+  <data name="IQC_Final_Decision" xml:space="preserve">
+    <value>Quyết định cuối</value>
+  </data>
+  <data name="IQC_Action" xml:space="preserve">
+    <value>Hành động</value>
+  </data>
+  <data name="IQC_Completion_Date" xml:space="preserve">
+    <value>Ngày hoàn thành</value>
+  </data>
+  <data name="IQC_Approver" xml:space="preserve">
+    <value>Người duyệt</value>
+  </data>
+  <data name="IQC_Final_Notes" xml:space="preserve">
+    <value>Ghi chú cuối</value>
+  </data>
+  <data name="IQC_Digital_Signature" xml:space="preserve">
+    <value>Chữ ký điện tử</value>
+  </data>
+  <data name="IQC_Inspector_Signature" xml:space="preserve">
+    <value>Chữ ký người kiểm</value>
+  </data>
+  <data name="IQC_Save_Signature" xml:space="preserve">
+    <value>Lưu chữ ký</value>
+  </data>
+  <data name="IQC_Clear_Signature" xml:space="preserve">
+    <value>Xóa chữ ký</value>
+  </data>
+  <data name="IQC_Approve_Sign" xml:space="preserve">
+    <value>Duyệt &amp; Ký</value>
+  </data>
+  <data name="IQC_Current_Batch" xml:space="preserve">
+    <value>Thông tin Batch hiện tại</value>
+  </data>
+  <data name="IQC_Summary_Results" xml:space="preserve">
+    <value>Tóm tắt kết quả</value>
+  </data>
+  <data name="IQC_Export_Options" xml:space="preserve">
+    <value>Xuất dữ liệu</value>
+  </data>
+  <data name="IQC_Export_JSON" xml:space="preserve">
+    <value>Xuất JSON</value>
+  </data>
+  <data name="IQC_Load_Draft" xml:space="preserve">
+    <value>Tải nháp</value>
+  </data>
 </root>

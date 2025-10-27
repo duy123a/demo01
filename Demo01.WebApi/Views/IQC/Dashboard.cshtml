@@ -1,0 +1,1800 @@
+@using Demo01.Shared.Resources
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Demo01.Shared.Resources.SharedResources> Localizer
+@{
+    ViewData["Title"] = "IQC Dashboard - Tổng quan chất lượng";
+    ViewData["Page"] = "iqc-dashboard";
+}
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    /* Modern Dashboard Styles */
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    /* Header */
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .dashboard-title {
+        font-size: 32px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.025em;
+    }
+    
+    .dashboard-subtitle {
+        font-size: 16px;
+        color: #6b7280;
+        margin: 0;
+        font-weight: 400;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+        transition: all 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-icon {
+        font-size: 28px;
+        margin-bottom: 12px;
+        opacity: 0.8;
+    }
+    
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 4px;
+        letter-spacing: -0.025em;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+        color: #6b7280;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    
+    .stat-change {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+    
+    .stat-change.positive {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .stat-change.negative {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    
+    /* Charts */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+    
+    .chart-container {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .chart-icon {
+        font-size: 18px;
+        opacity: 0.7;
+    }
+    
+    /* Tables */
+    .table-container {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 32px;
+    }
+    
+    .table-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        background: #f9fafb;
+        border-top: none;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+        border-top: 1px solid #f3f4f6;
+        font-size: 14px;
+    }
+    
+    .table tbody tr:hover {
+        background: #f9fafb;
+    }
+    
+    /* Filters */
+    .filters-container {
+        background: #f9fafb;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 32px;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .filters-row {
+        display: flex;
+        gap: 24px;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 160px;
+    }
+    
+    .filter-label {
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    .filter-control {
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        color: #374151;
+        transition: border-color 0.2s ease;
+    }
+    
+    .filter-control:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Progress Section */
+    .progress-container {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 32px;
+    }
+    
+    .progress-item {
+        margin-bottom: 20px;
+    }
+    
+    .progress-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .progress-label-text {
+        font-weight: 500;
+        color: #374151;
+        font-size: 14px;
+    }
+    
+    .progress-label-value {
+        font-weight: 600;
+        color: #111827;
+        font-size: 14px;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: #f3f4f6;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: #3b82f6;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+    
+    /* Status Badges */
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    .status-badge.passed {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .status-badge.failed {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .status-badge.hold {
+        background: #f3f4f6;
+        color: #374151;
+    }
+    
+    .status-badge.critical {
+        background: #fef2f2;
+        color: #991b1b;
+    }
+    
+    .status-badge.investigating {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    /* Buttons */
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 8px 16px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .btn-outline-primary {
+        border-color: #d1d5db;
+        color: #374151;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+    }
+    
+    /* Animations */
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 16px;
+            margin-top: 10px;
+        }
+        
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .filter-group {
+            min-width: auto;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        
+        .table-title {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+        }
+    }
+    
+    .table {
+        margin: 0;
+    }
+    
+    .table th {
+        background: #f8f9fa;
+        border: none;
+        font-weight: 600;
+        color: #495057;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 15px;
+    }
+    
+    .table td {
+        border: none;
+        padding: 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-badge.passed {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-badge.failed {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-badge.pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-badge.hold {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .status-badge.critical {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-badge.major {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-badge.minor {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .status-badge.investigating {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+    
+    .status-badge.resolved {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    /* Progress Bars */
+    .progress-container {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+    }
+    
+    .progress-item {
+        margin-bottom: 20px;
+    }
+    
+    .progress-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    
+    .progress-label-text {
+        font-weight: 500;
+        color: #333;
+        font-size: 14px;
+    }
+    
+    .progress-label-value {
+        font-weight: 600;
+        color: #007bff;
+        font-size: 14px;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #007bff, #0056b3);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+    
+    /* Filters */
+    .filters-container {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+    }
+    
+    .filters-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        align-items: end;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .filter-control {
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        transition: border-color 0.2s ease;
+    }
+    
+    .filter-control:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+    }
+    
+    .btn-filter {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    
+    .btn-filter:hover {
+        background: #0056b3;
+    }
+    
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 10px;
+        }
+        
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filters-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .dashboard-header {
+            padding: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+        }
+    }
+    
+    /* Animation */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    /* Chart placeholder */
+    .chart-placeholder {
+        height: 300px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 14px;
+        border: 2px dashed #dee2e6;
+    }
+    
+    .chart-placeholder.large {
+        height: 400px;
+    }
+    
+    /* Modal styles */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .modal-title {
+        font-weight: 600;
+    }
+    
+    .btn-close {
+        filter: invert(1);
+    }
+    
+    /* Toast styles */
+    .toast-container {
+        z-index: 1055;
+    }
+    
+    .toast {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header fade-in-up">
+        <h1 class="dashboard-title">📊 IQC Đầu vào Tổng quan - Kiểm soát chất lượng vải đầu vào</h1>
+        <p class="dashboard-subtitle">Tổng quan chất lượng vải đầu vào cho sản xuất dù lượn - Cập nhật lần cuối: <span id="lastUpdate">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span></p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-container fade-in-up">
+        <div class="filters-row">
+            <div class="filter-group">
+                <label class="filter-label">Khoảng thời gian</label>
+                <select class="filter-control" id="timeRange">
+                    <option value="today">Hôm nay</option>
+                    <option value="week" selected>Tuần này</option>
+                    <option value="month">Tháng này</option>
+                    <option value="quarter">Quý này</option>
+                    <option value="year">Năm nay</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Nhà cung cấp</label>
+                <select class="filter-control" id="supplierFilter">
+                    <option value="">Tất cả</option>
+                    <option value="Dominico">Dominico</option>
+                    <option value="Porcher">Porcher</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Loại vải</label>
+                <select class="filter-control" id="materialFilter">
+                    <option value="">Tất cả</option>
+                    <option value="polyester">Vải Polyester</option>
+                    <option value="nylon">Vải Nylon</option>
+                    <option value="ripstop">Vải Ripstop</option>
+                    <option value="canvas">Vải Canvas</option>
+                    <option value="oxford">Vải Oxford</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Trạng thái</label>
+                <select class="filter-control" id="statusFilter">
+                    <option value="">Tất cả</option>
+                    <option value="passed">Đạt</option>
+                    <option value="failed">Không đạt</option>
+                    <option value="pending">Chờ kiểm</option>
+                    <option value="hold">Tạm giữ</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <button class="btn-filter" onclick="applyFilters()">🔍 Áp dụng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid fade-in-up">
+        <div class="stat-card success">
+            <div class="stat-icon">✅</div>
+            <h3 class="stat-value" id="totalPassed">0</h3>
+            <p class="stat-label">Phiếu đạt chuẩn</p>
+            <span class="stat-change positive" id="passedChange">+0%</span>
+        </div>
+        
+        <div class="stat-card danger">
+            <div class="stat-icon">❌</div>
+            <h3 class="stat-value" id="totalFailed">0</h3>
+            <p class="stat-label">Phiếu không đạt</p>
+            <span class="stat-change negative" id="failedChange">+0%</span>
+        </div>
+        
+        <div class="stat-card warning">
+            <div class="stat-icon">⏳</div>
+            <h3 class="stat-value" id="totalPending">0</h3>
+            <p class="stat-label">Đang chờ kiểm</p>
+            <span class="stat-change" id="pendingChange">+0%</span>
+        </div>
+        
+        <div class="stat-card info">
+            <div class="stat-icon">📈</div>
+            <h3 class="stat-value" id="passRate">0%</h3>
+            <p class="stat-label">Tỷ lệ đạt chuẩn</p>
+            <span class="stat-change positive" id="rateChange">+0%</span>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-grid fade-in-up">
+        <!-- Main Chart -->
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <span class="chart-icon">📊</span>
+                Xu hướng chất lượng theo thời gian
+            </h3>
+            <canvas id="trendChart" width="400" height="200"></canvas>
+        </div>
+        
+        <!-- Side Chart -->
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <span class="chart-icon">🥧</span>
+                Phân bố theo nhà cung cấp (Dominico vs Porcher)
+            </h3>
+            <canvas id="supplierChart" width="300" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Batch Status Table -->
+    <div class="table-container fade-in-up">
+        <h3 class="table-title">
+            <span>📦 Tình trạng các lô đang kiểm tra</span>
+            <button class="btn btn-outline-primary btn-sm" onclick="refreshData()">🔄 Làm mới</button>
+        </h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã lô</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Số cuộn</th>
+                        <th>Loại vải</th>
+                        <th>Ngày nhận</th>
+                        <th>Trạng thái</th>
+                        <th>Tiến độ</th>
+                        <th>Ưu tiên</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="batchStatusTable">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Inspections Table -->
+    <div class="table-container fade-in-up">
+        <h3 class="table-title">
+            <span>📋 Phiếu kiểm gần đây</span>
+            <button class="btn btn-outline-primary btn-sm" onclick="refreshData()">🔄 Làm mới</button>
+        </h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã phiếu</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Loại vải</th>
+                        <th>Ngày kiểm</th>
+                        <th>Người kiểm</th>
+                        <th>Trạng thái</th>
+                        <th>Tỷ lệ đạt</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="recentInspectionsTable">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Top Defects Section -->
+    <div class="charts-grid fade-in-up">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <span class="chart-icon">🔍</span>
+                Các lỗi hay xuất hiện nhất
+            </h3>
+            <canvas id="topDefectsChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <span class="chart-icon">📈</span>
+                Loại vải được IQC nhiều nhất
+            </h3>
+            <canvas id="fabricTypeChart" width="300" height="200"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Mock data for dashboard - All data embedded in CSHTML
+const mockData = {
+    stats: {
+        totalPassed: 156,
+        totalFailed: 23,
+        totalPending: 8,
+        passRate: 87.2,
+        passedChange: 5.2,
+        failedChange: -2.1,
+        pendingChange: 1.3,
+        rateChange: 3.1
+    },
+    
+    recentInspections: [
+        {
+            id: 'IQC-2024-001',
+            supplier: 'Dominico',
+            material: 'Vải Polyester 210D',
+            checkDate: '2024-01-15',
+            inspector: 'Nguyễn Văn A',
+            status: 'passed',
+            passRate: 95,
+            action: 'Nhập kho',
+            materialType: 'polyester',
+            batchNumber: 'BATCH-20240115-001',
+            lotNumber: 'LOT-20240115-001'
+        },
+        {
+            id: 'IQC-2024-002',
+            supplier: 'Porcher',
+            material: 'Vải Nylon 70D',
+            checkDate: '2024-01-15',
+            inspector: 'Trần Thị B',
+            status: 'failed',
+            passRate: 65,
+            action: 'Trả về NCC',
+            materialType: 'nylon',
+            batchNumber: 'BATCH-20240115-002',
+            lotNumber: 'LOT-20240115-002'
+        },
+        {
+            id: 'IQC-2024-003',
+            supplier: 'Dominico',
+            material: 'Vải Ripstop 210D',
+            checkDate: '2024-01-14',
+            inspector: 'Lê Văn C',
+            status: 'passed',
+            passRate: 92,
+            action: 'Nhập kho',
+            materialType: 'ripstop',
+            batchNumber: 'BATCH-20240114-001',
+            lotNumber: 'LOT-20240114-001'
+        },
+        {
+            id: 'IQC-2024-004',
+            supplier: 'Porcher',
+            material: 'Vải Canvas 300D',
+            checkDate: '2024-01-14',
+            inspector: 'Phạm Thị D',
+            status: 'pending',
+            passRate: 0,
+            action: 'Đang kiểm',
+            materialType: 'canvas',
+            batchNumber: 'BATCH-20240114-002',
+            lotNumber: 'LOT-20240114-002'
+        },
+        {
+            id: 'IQC-2024-005',
+            supplier: 'Porcher',
+            material: 'Vải Ripstop 190T',
+            checkDate: '2024-01-13',
+            inspector: 'Hoàng Văn E',
+            status: 'hold',
+            passRate: 78,
+            action: 'Tạm giữ',
+            materialType: 'ripstop',
+            batchNumber: 'BATCH-20240113-001',
+            lotNumber: 'LOT-20240113-001'
+        },
+        {
+            id: 'IQC-2024-006',
+            supplier: 'Dominico',
+            material: 'Vải Polyester 150D',
+            checkDate: '2024-01-13',
+            inspector: 'Vũ Thị F',
+            status: 'passed',
+            passRate: 88,
+            action: 'Nhập kho',
+            materialType: 'polyester',
+            batchNumber: 'BATCH-20240113-002',
+            lotNumber: 'LOT-20240113-002'
+        },
+        {
+            id: 'IQC-2024-007',
+            supplier: 'Dominico',
+            material: 'Vải Oxford 600D',
+            checkDate: '2024-01-12',
+            inspector: 'Đặng Văn G',
+            status: 'failed',
+            passRate: 45,
+            action: 'Trả về NCC',
+            materialType: 'oxford',
+            batchNumber: 'BATCH-20240112-001',
+            lotNumber: 'LOT-20240112-001'
+        },
+        {
+            id: 'IQC-2024-008',
+            supplier: 'Porcher',
+            material: 'Vải Canvas 500D',
+            checkDate: '2024-01-12',
+            inspector: 'Bùi Thị H',
+            status: 'passed',
+            passRate: 91,
+            action: 'Nhập kho',
+            materialType: 'canvas',
+            batchNumber: 'BATCH-20240112-002',
+            lotNumber: 'LOT-20240112-002'
+        }
+    ],
+    
+    qualityIssues: [
+        {
+            id: 'IQC-2024-002',
+            issue: 'Độ bền kéo vải Nylon không đạt tiêu chuẩn',
+            severity: 'Critical',
+            detectedDate: '2024-01-15',
+            status: 'Investigating',
+            assignee: 'Nguyễn Văn A',
+            action: 'Xem chi tiết',
+            description: 'Kết quả kiểm tra độ bền kéo dọc vải Nylon chỉ đạt 85N, thấp hơn tiêu chuẩn tối thiểu 120N',
+            impact: 'Có thể gây rách vải trong quá trình sử dụng dù lượn',
+            recommendation: 'Trả về nhà cung cấp để kiểm tra lại chất lượng vải'
+        },
+        {
+            id: 'IQC-2024-005',
+            issue: 'Màu sắc vải Ripstop không đồng nhất',
+            severity: 'Major',
+            detectedDate: '2024-01-13',
+            status: 'Pending',
+            assignee: 'Trần Thị B',
+            action: 'Xem chi tiết',
+            description: 'Màu sắc vải Ripstop có sự chênh lệch giữa các phần khác nhau của cuộn',
+            impact: 'Ảnh hưởng đến tính thẩm mỹ của dù lượn thành phẩm',
+            recommendation: 'Kiểm tra lại quy trình nhuộm của nhà cung cấp'
+        },
+        {
+            id: 'IQC-2024-006',
+            issue: 'Độ ẩm vải Canvas vượt quá giới hạn',
+            severity: 'Critical',
+            detectedDate: '2024-01-12',
+            status: 'Resolved',
+            assignee: 'Lê Văn C',
+            action: 'Xem chi tiết',
+            description: 'Độ ẩm của vải Canvas đo được 9.5%, vượt quá tiêu chuẩn cho phép 8%',
+            impact: 'Có thể gây mốc, hỏng vải trong quá trình bảo quản',
+            recommendation: 'Sấy khô vải trước khi nhập kho'
+        },
+        {
+            id: 'IQC-2024-007',
+            issue: 'Khổ vải Oxford không đúng spec',
+            severity: 'Major',
+            detectedDate: '2024-01-11',
+            status: 'Investigating',
+            assignee: 'Phạm Thị D',
+            action: 'Xem chi tiết',
+            description: 'Khổ vải Oxford đo được 1.45m, sai lệch so với spec 1.50m ±0.02m',
+            impact: 'Ảnh hưởng đến quy trình cắt may dù lượn',
+            recommendation: 'Điều chỉnh máy cắt để phù hợp với khổ vải thực tế'
+        },
+        {
+            id: 'IQC-2024-008',
+            issue: 'Vết bẩn trên bề mặt vải Polyester',
+            severity: 'Minor',
+            detectedDate: '2024-01-10',
+            status: 'Resolved',
+            assignee: 'Hoàng Văn E',
+            action: 'Xem chi tiết',
+            description: 'Phát hiện một số vết bẩn nhỏ trên bề mặt vải Polyester',
+            impact: 'Ảnh hưởng đến tính thẩm mỹ của dù lượn',
+            recommendation: 'Làm sạch vải trước khi sử dụng'
+        }
+    ],
+    
+    progress: {
+        currentBatch: 75,
+        completedBatch: 85
+    },
+    
+    batchProgress: [
+        { supplier: 'Dominico', totalBatches: 15, completedBatches: 13, pendingBatches: 2, progressRate: 86.7 },
+        { supplier: 'Porcher', totalBatches: 12, completedBatches: 9, pendingBatches: 3, progressRate: 75.0 }
+    ],
+    
+    currentBatches: [
+        {
+            batchId: 'BATCH-20240115-001',
+            supplier: 'Dominico',
+            totalRolls: 25,
+            checkedRolls: 20,
+            fabricTypes: ['Polyester 210D', 'Nylon 70D'],
+            receiveDate: '2024-01-15',
+            status: 'in_progress',
+            progress: 80,
+            inspector: 'Nguyễn Văn A',
+            priority: 'High',
+            estimatedCompletion: '2024-01-16'
+        },
+        {
+            batchId: 'BATCH-20240115-002',
+            supplier: 'Porcher',
+            totalRolls: 18,
+            checkedRolls: 0,
+            fabricTypes: ['Ripstop 190T'],
+            receiveDate: '2024-01-15',
+            status: 'pending',
+            progress: 0,
+            inspector: 'Trần Thị B',
+            priority: 'Medium',
+            estimatedCompletion: '2024-01-17'
+        },
+        {
+            batchId: 'BATCH-20240114-001',
+            supplier: 'Dominico',
+            totalRolls: 30,
+            checkedRolls: 30,
+            fabricTypes: ['Canvas 300D', 'Oxford 600D'],
+            receiveDate: '2024-01-14',
+            status: 'completed',
+            progress: 100,
+            inspector: 'Lê Văn C',
+            priority: 'High',
+            completedDate: '2024-01-15',
+            passRate: 92
+        },
+        {
+            batchId: 'BATCH-20240114-002',
+            supplier: 'Porcher',
+            totalRolls: 22,
+            checkedRolls: 15,
+            fabricTypes: ['Polyester 150D'],
+            receiveDate: '2024-01-14',
+            status: 'in_progress',
+            progress: 68,
+            inspector: 'Phạm Thị D',
+            priority: 'Low',
+            estimatedCompletion: '2024-01-16'
+        },
+        {
+            batchId: 'BATCH-20240113-001',
+            supplier: 'Dominico',
+            totalRolls: 20,
+            checkedRolls: 0,
+            fabricTypes: ['Ripstop 210D'],
+            receiveDate: '2024-01-13',
+            status: 'hold',
+            progress: 0,
+            inspector: 'Hoàng Văn E',
+            priority: 'High',
+            holdReason: 'Chờ xác nhận từ QC Manager',
+            estimatedCompletion: '2024-01-18'
+        },
+        {
+            batchId: 'BATCH-20240112-003',
+            supplier: 'Porcher',
+            totalRolls: 28,
+            checkedRolls: 28,
+            fabricTypes: ['Nylon 70D', 'Canvas 300D'],
+            receiveDate: '2024-01-12',
+            status: 'completed',
+            progress: 100,
+            inspector: 'Vũ Thị F',
+            priority: 'Medium',
+            completedDate: '2024-01-13',
+            passRate: 88
+        },
+        {
+            batchId: 'BATCH-20240111-001',
+            supplier: 'Dominico',
+            totalRolls: 35,
+            checkedRolls: 12,
+            fabricTypes: ['Polyester 210D'],
+            receiveDate: '2024-01-11',
+            status: 'in_progress',
+            progress: 34,
+            inspector: 'Đặng Văn G',
+            priority: 'High',
+            estimatedCompletion: '2024-01-17'
+        }
+    ],
+    
+    trendData: [
+        { date: '2024-01-08', passed: 12, failed: 2, pending: 1, total: 15 },
+        { date: '2024-01-09', passed: 15, failed: 1, pending: 2, total: 18 },
+        { date: '2024-01-10', passed: 18, failed: 3, pending: 1, total: 22 },
+        { date: '2024-01-11', passed: 14, failed: 2, pending: 3, total: 19 },
+        { date: '2024-01-12', passed: 16, failed: 1, pending: 2, total: 19 },
+        { date: '2024-01-13', passed: 19, failed: 2, pending: 1, total: 22 },
+        { date: '2024-01-14', passed: 17, failed: 1, pending: 2, total: 20 },
+        { date: '2024-01-15', passed: 20, failed: 3, pending: 1, total: 24 }
+    ],
+    
+    supplierData: [
+        { supplier: 'Dominico', passed: 89, failed: 8, total: 97, passRate: 91.8 },
+        { supplier: 'Porcher', passed: 45, failed: 12, total: 57, passRate: 78.9 }
+    ],
+    
+    fabricTypeData: [
+        { type: 'polyester', name: 'Vải Polyester', passed: 78, failed: 8, total: 86, passRate: 90.7 },
+        { type: 'nylon', name: 'Vải Nylon', passed: 45, failed: 7, total: 52, passRate: 86.5 },
+        { type: 'ripstop', name: 'Vải Ripstop', passed: 23, failed: 2, total: 25, passRate: 92.0 },
+        { type: 'canvas', name: 'Vải Canvas', passed: 10, failed: 6, total: 16, passRate: 62.5 }
+    ],
+    
+    topDefects: [
+        { defect: 'Độ bền kéo không đạt', count: 15, percentage: 25.8, supplier: 'Porcher' },
+        { defect: 'Màu sắc không đồng nhất', count: 12, percentage: 20.7, supplier: 'Dominico' },
+        { defect: 'Độ ẩm vượt quá giới hạn', count: 8, percentage: 13.8, supplier: 'Porcher' },
+        { defect: 'Khổ vải không đúng spec', count: 6, percentage: 10.3, supplier: 'Dominico' },
+        { defect: 'Vết bẩn trên bề mặt', count: 5, percentage: 8.6, supplier: 'Porcher' },
+        { defect: 'Độ co rút quá mức', count: 4, percentage: 6.9, supplier: 'Dominico' },
+        { defect: 'Độ dày không đều', count: 3, percentage: 5.2, supplier: 'Porcher' },
+        { defect: 'Khác', count: 5, percentage: 8.6, supplier: 'Mixed' }
+    ],
+    
+    iqcFrequency: [
+        { fabricType: 'polyester', name: 'Vải Polyester', inspections: 86, percentage: 35.2 },
+        { fabricType: 'nylon', name: 'Vải Nylon', inspections: 52, percentage: 21.3 },
+        { fabricType: 'ripstop', name: 'Vải Ripstop', inspections: 45, percentage: 18.4 },
+        { fabricType: 'canvas', name: 'Vải Canvas', inspections: 35, percentage: 14.3 },
+        { fabricType: 'oxford', name: 'Vải Oxford', inspections: 26, percentage: 10.6 }
+    ]
+};
+
+// Initialize dashboard
+function initializeDashboard() {
+    updateStats();
+    populateBatchStatus();
+    populateRecentInspections();
+    createCharts();
+    updateLastUpdateTime();
+}
+
+// Update statistics
+function updateStats() {
+    const stats = mockData.stats;
+    
+    document.getElementById('totalPassed').textContent = stats.totalPassed;
+    document.getElementById('totalFailed').textContent = stats.totalFailed;
+    document.getElementById('totalPending').textContent = stats.totalPending;
+    document.getElementById('passRate').textContent = stats.passRate + '%';
+    
+    document.getElementById('passedChange').textContent = '+' + stats.passedChange + '%';
+    document.getElementById('failedChange').textContent = stats.failedChange + '%';
+    document.getElementById('pendingChange').textContent = '+' + stats.pendingChange + '%';
+    document.getElementById('rateChange').textContent = '+' + stats.rateChange + '%';
+}
+
+// Populate batch status table
+function populateBatchStatus() {
+    const tbody = document.getElementById('batchStatusTable');
+    tbody.innerHTML = '';
+    
+    mockData.currentBatches.forEach(batch => {
+        const row = document.createElement('tr');
+        const statusBadge = getBatchStatusBadge(batch.status);
+        const priorityBadge = getPriorityBadge(batch.priority);
+        const progressBar = `
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar" role="progressbar" style="width: ${batch.progress}%" 
+                     aria-valuenow="${batch.progress}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+            <small class="text-muted">${batch.checkedRolls}/${batch.totalRolls} cuộn</small>
+        `;
+        
+        row.innerHTML = `
+            <td><strong>${batch.batchId}</strong></td>
+            <td>${batch.supplier}</td>
+            <td>${batch.totalRolls}</td>
+            <td>${batch.fabricTypes.join(', ')}</td>
+            <td>${formatDate(batch.receiveDate)}</td>
+            <td>${statusBadge}</td>
+            <td>${progressBar}</td>
+            <td>${priorityBadge}</td>
+            <td>
+                <button class="btn btn-outline-primary btn-sm" onclick="viewBatch('${batch.batchId}')">
+                    👁️ Xem
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Get priority badge
+function getPriorityBadge(priority) {
+    const priorityMap = {
+        'High': '<span class="status-badge critical">Cao</span>',
+        'Medium': '<span class="status-badge pending">Trung bình</span>',
+        'Low': '<span class="status-badge passed">Thấp</span>'
+    };
+    return priorityMap[priority] || priority;
+}
+
+// Get batch status badge
+function getBatchStatusBadge(status) {
+    const statusMap = {
+        'completed': '<span class="status-badge passed">Hoàn thành</span>',
+        'in_progress': '<span class="status-badge pending">Đang kiểm</span>',
+        'pending': '<span class="status-badge pending">Chờ kiểm</span>',
+        'hold': '<span class="status-badge hold">Tạm giữ</span>'
+    };
+    return statusMap[status] || status;
+}
+
+// Populate recent inspections table
+function populateRecentInspections() {
+    const tbody = document.getElementById('recentInspectionsTable');
+    tbody.innerHTML = '';
+    
+    mockData.recentInspections.forEach(inspection => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${inspection.id}</strong></td>
+            <td>${inspection.supplier}</td>
+            <td>${inspection.material}</td>
+            <td>${formatDate(inspection.checkDate)}</td>
+            <td>${inspection.inspector}</td>
+            <td><span class="status-badge ${inspection.status}">${getStatusText(inspection.status)}</span></td>
+            <td><strong>${inspection.passRate}%</strong></td>
+            <td>
+                <button class="btn btn-outline-primary btn-sm" onclick="viewInspection('${inspection.id}')">
+                    👁️ Xem
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Populate quality issues table
+
+// Create charts with Chart.js
+function createCharts() {
+    createTrendChart();
+    createSupplierChart();
+    createTopDefectsChart();
+    createFabricTypeChart();
+}
+
+// Create trend chart
+function createTrendChart() {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const trendData = mockData.trendData;
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: trendData.map(d => formatDate(d.date)),
+            datasets: [
+                {
+                    label: 'Đạt',
+                    data: trendData.map(d => d.passed),
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Không đạt',
+                    data: trendData.map(d => d.failed),
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Chờ kiểm',
+                    data: trendData.map(d => d.pending),
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Create supplier pie chart
+function createSupplierChart() {
+    const ctx = document.getElementById('supplierChart').getContext('2d');
+    const supplierData = mockData.supplierData;
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: supplierData.map(s => s.supplier),
+            datasets: [{
+                data: supplierData.map(s => s.total),
+                backgroundColor: [
+                    '#007bff',
+                    '#28a745'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const supplier = supplierData[context.dataIndex];
+                            return `${supplier.supplier}: ${supplier.total} phiếu (${supplier.passRate}% đạt)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Create top defects bar chart
+function createTopDefectsChart() {
+    const ctx = document.getElementById('topDefectsChart').getContext('2d');
+    const topDefects = mockData.topDefects.slice(0, 5);
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topDefects.map(d => d.defect),
+            datasets: [{
+                label: 'Số lần xuất hiện',
+                data: topDefects.map(d => d.count),
+                backgroundColor: [
+                    '#dc3545',
+                    '#fd7e14',
+                    '#ffc107',
+                    '#20c997',
+                    '#6f42c1'
+                ],
+                borderWidth: 1,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Create fabric type chart
+function createFabricTypeChart() {
+    const ctx = document.getElementById('fabricTypeChart').getContext('2d');
+    const fabricData = mockData.iqcFrequency;
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: fabricData.map(f => f.name),
+            datasets: [{
+                label: 'Số lần kiểm',
+                data: fabricData.map(f => f.inspections),
+                backgroundColor: [
+                    '#007bff',
+                    '#28a745',
+                    '#ffc107',
+                    '#dc3545',
+                    '#6f42c1'
+                ],
+                borderWidth: 1,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Helper functions
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        'passed': 'Đạt',
+        'failed': 'Không đạt',
+        'pending': 'Chờ kiểm',
+        'hold': 'Tạm giữ'
+    };
+    return statusMap[status] || status;
+}
+
+function updateLastUpdateTime() {
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent = now.toLocaleString('vi-VN');
+}
+
+// Action functions
+function applyFilters() {
+    const timeRange = document.getElementById('timeRange').value;
+    const supplier = document.getElementById('supplierFilter').value;
+    const material = document.getElementById('materialFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    
+    console.log('Applying filters:', { timeRange, supplier, material, status });
+    
+    // Simulate loading
+    setTimeout(() => {
+        showToast('Đã áp dụng bộ lọc!', 'success');
+        // In real implementation, this would filter the data and refresh the dashboard
+    }, 500);
+}
+
+function refreshData() {
+    console.log('Refreshing dashboard data...');
+    
+    // Simulate loading
+    setTimeout(() => {
+        updateLastUpdateTime();
+        showToast('Đã làm mới dữ liệu!', 'success');
+    }, 1000);
+}
+
+function viewBatch(batchId) {
+    console.log('Viewing batch:', batchId);
+    const batch = mockData.currentBatches.find(b => b.batchId === batchId);
+    if (batch) {
+        showBatchModal(batch);
+    }
+}
+
+function viewInspection(id) {
+    console.log('Viewing inspection:', id);
+    const inspection = mockData.recentInspections.find(i => i.id === id);
+    if (inspection) {
+        showInspectionModal(inspection);
+    }
+}
+
+function viewIssue(id) {
+    console.log('Viewing quality issue:', id);
+    const issue = mockData.qualityIssues.find(i => i.id === id);
+    if (issue) {
+        showIssueModal(issue);
+    }
+}
+
+function viewAllIssues() {
+    console.log('Viewing all quality issues');
+    showToast('Xem tất cả vấn đề chất lượng', 'info');
+}
+
+// Modal functions
+function showBatchModal(batch) {
+    const modalHtml = `
+        <div class="modal fade" id="batchModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chi tiết lô: ${batch.batchId}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Thông tin lô</h6>
+                                <p><strong>Nhà cung cấp:</strong> ${batch.supplier}</p>
+                                <p><strong>Tổng cuộn:</strong> ${batch.totalRolls}</p>
+                                <p><strong>Đã kiểm:</strong> ${batch.checkedRolls}</p>
+                                <p><strong>Ngày nhận:</strong> ${formatDate(batch.receiveDate)}</p>
+                                <p><strong>Người kiểm:</strong> ${batch.inspector}</p>
+                                <p><strong>Ưu tiên:</strong> ${getPriorityBadge(batch.priority)}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Loại vải trong lô</h6>
+                                <ul>
+                                    ${batch.fabricTypes.map(fabric => `<li>${fabric}</li>`).join('')}
+                                </ul>
+                                <h6>Tiến độ</h6>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar" role="progressbar" style="width: ${batch.progress}%" 
+                                         aria-valuenow="${batch.progress}" aria-valuemin="0" aria-valuemax="100">
+                                        ${batch.progress}%
+                                    </div>
+                                </div>
+                                <p><strong>Trạng thái:</strong> ${getBatchStatusBadge(batch.status)}</p>
+                                ${batch.estimatedCompletion ? `<p><strong>Dự kiến hoàn thành:</strong> ${formatDate(batch.estimatedCompletion)}</p>` : ''}
+                                ${batch.completedDate ? `<p><strong>Ngày hoàn thành:</strong> ${formatDate(batch.completedDate)}</p>` : ''}
+                                ${batch.passRate ? `<p><strong>Tỷ lệ đạt:</strong> ${batch.passRate}%</p>` : ''}
+                                ${batch.holdReason ? `<p><strong>Lý do tạm giữ:</strong> ${batch.holdReason}</p>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" onclick="continueBatch('${batch.batchId}')">Tiếp tục kiểm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('batchModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add new modal
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('batchModal'));
+    modal.show();
+}
+
+function continueBatch(batchId) {
+    console.log('Continuing batch:', batchId);
+    showToast(`Tiếp tục kiểm lô ${batchId}`, 'info');
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('batchModal'));
+    modal.hide();
+}
+
+function showInspectionModal(inspection) {
+    const modalHtml = `
+        <div class="modal fade" id="inspectionModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chi tiết phiếu kiểm: ${inspection.id}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Thông tin cơ bản</h6>
+                                <p><strong>Nhà cung cấp:</strong> ${inspection.supplier}</p>
+                                <p><strong>Loại vải:</strong> ${inspection.material}</p>
+                                <p><strong>Ngày kiểm:</strong> ${formatDate(inspection.checkDate)}</p>
+                                <p><strong>Người kiểm:</strong> ${inspection.inspector}</p>
+                                <p><strong>Batch:</strong> ${inspection.batchNumber}</p>
+                                <p><strong>Lot:</strong> ${inspection.lotNumber}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Kết quả</h6>
+                                <p><strong>Trạng thái:</strong> <span class="status-badge ${inspection.status}">${getStatusText(inspection.status)}</span></p>
+                                <p><strong>Tỷ lệ đạt:</strong> ${inspection.passRate}%</p>
+                                <p><strong>Hành động:</strong> ${inspection.action}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" onclick="exportReport('${inspection.id}')">Xuất báo cáo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('inspectionModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add new modal
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('inspectionModal'));
+    modal.show();
+}
+
+function showIssueModal(issue) {
+    const modalHtml = `
+        <div class="modal fade" id="issueModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Chi tiết vấn đề chất lượng: ${issue.id}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Mô tả vấn đề</h6>
+                        <p>${issue.description}</p>
+                        
+                        <h6>Thông tin</h6>
+                        <p><strong>Mức độ:</strong> <span class="status-badge ${issue.severity.toLowerCase()}">${issue.severity}</span></p>
+                        <p><strong>Ngày phát hiện:</strong> ${formatDate(issue.detectedDate)}</p>
+                        <p><strong>Trạng thái:</strong> <span class="status-badge ${issue.status.toLowerCase()}">${issue.status}</span></p>
+                        <p><strong>Người phụ trách:</strong> ${issue.assignee}</p>
+                        
+                        <h6>Tác động</h6>
+                        <p>${issue.impact}</p>
+                        
+                        <h6>Khuyến nghị</h6>
+                        <p>${issue.recommendation}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-warning" onclick="assignIssue('${issue.id}')">Phân công xử lý</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('issueModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('issueModal'));
+    modal.show();
+}
+
+function exportReport(id) {
+    showToast(`Đã xuất báo cáo: IQC_Report_${id}.pdf`, 'success');
+}
+
+function assignIssue(id) {
+    showToast(`Đã phân công xử lý vấn đề: ${id}`, 'success');
+}
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    const toastHtml = `
+        <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    // Add toast container if not exists
+    if (!document.getElementById('toastContainer')) {
+        document.body.insertAdjacentHTML('beforeend', '<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3"></div>');
+    }
+
+    const container = document.getElementById('toastContainer');
+    container.insertAdjacentHTML('beforeend', toastHtml);
+
+    // Show toast
+    const toastElement = container.lastElementChild;
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+
+    // Remove toast element after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
+}
+
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    
+    // Auto-refresh every 5 minutes
+    setInterval(() => {
+        updateLastUpdateTime();
+    }, 5 * 60 * 1000);
+    
+    // Add animation delays
+    document.querySelectorAll('.stat-card').forEach((card, index) => {
+        card.style.animationDelay = (index * 0.1) + 's';
+    });
+
+    document.querySelectorAll('.fade-in-up').forEach((element, index) => {
+        element.style.animationDelay = (index * 0.2) + 's';
+    });
+});
+</script>
