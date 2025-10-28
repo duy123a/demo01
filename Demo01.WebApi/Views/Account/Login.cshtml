@@ -19,7 +19,7 @@
     <div class="login-bg-content">
         <!-- Logo -->
         <div class="my-4 text-center">
-            <img src="/images/logo.png" alt="Logo" class="bg-logo" />
+            <img src="/images/logo.svg" alt="Logo" class="login-logo" />
         </div>
     </div>
 
@@ -41,7 +41,7 @@
                 <div class="form-group">
                     <label asp-for="Password" class="control-label login-text"></label>
                     <div class="input-group">
-                        <input asp-for="Password" id="PasswordInput" class="form-control" />
+                        <input asp-for="Password" id="PasswordInput" class="form-control" autocomplete="off" />
                         <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility('PasswordInput', this)">
                             <i class="bi bi-eye"></i>
                         </button>

@@ -11,17 +11,25 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ASAKA01.Web.Admin</title>
+    <title>@ViewData["Title"] - Demo01</title>
     <script type="importmap"></script>
     <link rel="stylesheet" vite-href="~/js/main.js" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="w-100" data-page="@ViewData["Page"]">
     <div class="main-container">
         @if (isAuthenticated)
         {
-            <aside class="d-flex flex-column justify-content-between bg-white border-end">
+            <aside class="sidebar d-flex flex-column justify-content-between bg-white border-end">
                 <!-- Top -->
-                <div>
+                <div class="sidebar-top position-relative">
+                    <!-- Logo (only shown on mobile) -->
+                    <div class="sidebar-logo-mobile d-xl-none position-absolute top-0 end-0 p-2">
+                        <a asp-controller="Home" asp-action="Index">
+                            <img src="/images/logo.svg" alt="Logo" class="img-fluid" style="width: 128px; height: auto;">
+                        </a>
+                    </div>
+
                     <!-- Avatar dropdown -->
                     <div class="p-3">
                         <div class="dropdown">
@@ -45,20 +53,52 @@
                         </div>
                     </div>
 
-                    <!-- Navigation list -->
-                    <nav class="nav flex-column nav-pills p-2" aria-label="Sidebar navigation">
-                        <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
-                            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
-                            @Localizer["Button_Home"]
-                        </a>
-                        <a href="/Home/Privacy" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "sidebar-link active" : "sidebar-link")">@Localizer["Button_Privacy"]</a>
-                    </nav>
+                    <!-- Menu button only shown (< xl) -->
+                    <button class="btn btn-outline-secondary d-xl-none m-2" type="button"
+                            data-bs-toggle="offcanvas" data-bs-target="#sidebarNav"
+                            aria-controls="sidebarNav">
+                        <i class="bi bi-list"></i> Menu
+                    </button>
+
+                    <!-- Sidebar desktop only shown (> xl) -->
+                    <div class="d-none d-xl-block" id="sidebarNavDesktop">
+                        <nav class="nav flex-column nav-pills p-2">
+                            <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                @Localizer["Button_Home"]
+                            </a>
+                            <a href="/Home/Privacy" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "sidebar-link active" : "sidebar-link")">
+                                @Localizer["Button_Privacy"]
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Offcanvas for mobile (< xl) -->
+                    <div class="offcanvas offcanvas-start d-xl-none" tabindex="-1" id="sidebarNav" aria-labelledby="sidebarNavLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="sidebarNavLabel">Menu</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+                        </div>
+                        <div class="offcanvas-body p-0">
+                            <nav class="nav flex-column nav-pills p-2">
+                                <a href="/" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "sidebar-link active" : "sidebar-link")">
+                                    @Localizer["Button_Home"]
+                                </a>
+                                <a href="/Home/Privacy" class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Home"
+            && ViewContext.RouteData.Values["action"]?.ToString() == "Privacy" ? "sidebar-link active" : "sidebar-link")">
+                                    @Localizer["Button_Privacy"]
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Bottom: Logo -->
-                <div class="p-3 fixed-bottom" style="width: 240px;">
+                <!-- Bottom logo desktop -->
+                <div class="sidebar-logo-desktop p-3 d-none d-xl-block">
                     <a asp-controller="Home" asp-action="Index">
-                        <img src="/images/logo.png" alt="Logo" class="img-fluid">
+                        <img src="/images/logo.svg" alt="Logo" class="img-fluid">
                     </a>
                 </div>
             </aside>
@@ -81,7 +121,13 @@
                             }
                         </div>
                         <div class="container-fluid d-flex justify-content-end me-2">
+                            <!-- QR Scan Button -->
+                            <div class="me-2">
+                                <button id="btnQrScan" class="btn btn-demo-primary">
+                                    <i class="bi bi-qr-code-scan"></i>
+                                </button>
 
+                            </div>
                             <!-- Language Switch -->
                             <div class="me-2">
                                 <form method="post" asp-controller="Culture" asp-action="SetLanguage" class="form-check form-switch" onsubmit="showLoading()">
@@ -162,6 +208,18 @@
     <div id="layout-config" class="d-none"
          data-is-authenticated="@(User.Identity?.IsAuthenticated.ToString().ToLower())"
          data-culture="@Thread.CurrentThread.CurrentCulture.Name">
+    </div>
+
+    <!-- QR Scan Modal -->
+    <div class="modal fade" id="qrScanModal" tabindex="-1" aria-labelledby="qrScanLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center p-3">
+                <h5 id="qrScanLabel" class="mb-2">Quét mã QR</h5>
+                <div id="qr-reader" style="width: 300px; margin: auto;"></div>
+                <p id="qr-result" class="mt-2 fw-bold text-primary"></p>
+                <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
     </div>
 
     <script type="module" vite-src="~/js/main.js"></script>
