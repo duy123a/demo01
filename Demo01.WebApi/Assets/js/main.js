@@ -4,6 +4,7 @@ import '../css/main.css';
 
 import * as bootstrap from 'bootstrap';
 import $ from 'jquery';
+import QrScanner from "qr-scanner";
 
 window.togglePasswordVisibility = function (inputId, btn) {
     const input = document.getElementById(inputId);
@@ -78,8 +79,8 @@ window.showErrorToast = function (message) {
     window.showToast('error', message);
 };
 
+// Handle logout confirmation
 document.addEventListener('DOMContentLoaded', function () {
-    // Handle logout confirmation
     const logoutBtn = document.getElementById('confirmLogoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function () {
@@ -87,3 +88,113 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// QR Code Scanning Logic
+document.addEventListener("DOMContentLoaded", () => {
+    let qrScanner;
+    let isStarting = false;
+
+    const qrModalEl = document.getElementById("qrScanModal");
+    const qrModal = new bootstrap.Modal(qrModalEl);
+    const qrReader = document.getElementById("qr-reader");
+    const qrVideo = document.getElementById("qr-video");
+    const qrResult = document.getElementById("qr-result");
+    const qrLoading = document.getElementById("qr-loading");
+
+    if (!qrReader || !qrVideo) {
+        console.error("Missing video element for QR scanner");
+        return;
+    }
+
+    async function stopAndReleaseCamera() {
+        try {
+            if (qrScanner) {
+                await qrScanner.stop();
+                qrScanner.destroy();
+                qrScanner = null;
+            }
+            if (qrVideo.srcObject) {
+                qrVideo.srcObject.getTracks().forEach(t => t.stop());
+                qrVideo.srcObject = null;
+            }
+        } catch (err) {
+            console.warn("Failed to stop camera:", err);
+        }
+    }
+
+    async function startScanner() {
+        if (isStarting) return;
+        isStarting = true;
+        qrLoading.classList.remove("d-none");
+
+        await stopAndReleaseCamera();
+
+        try {
+            // Safari delay to ensure DOM is stable
+            await new Promise(r => setTimeout(r, 200));
+
+            qrScanner = new QrScanner(
+                qrVideo, // ✅ pass the real <video> element
+                result => {
+                    qrResult.textContent = "✅ " + result.data;
+                    qrModal.hide();
+                    stopAndReleaseCamera();
+
+                    try {
+                        // try to build full URL (supports relative URLs)
+                        const parsed = new URL(result.data, location.href);
+
+                        // allow only http/https
+                        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+                            showErrorToast("Refused to redirect: unsupported URL protocol.");
+                            return;
+                        }
+
+                        // allow only same origin (protocol + host + port)
+                        if (parsed.origin === location.origin) {
+                            // safe to redirect to same-origin URL
+                            window.location.href = parsed.href;
+                        } else {
+                            // not same origin — don't redirect automatically
+                            showErrorToast("Refused to redirect to external domain.");
+                            // optional: show a safe link user can click if you want:
+                            // qrResult.innerHTML = `Detected external URL: <a href="${escapeHtml(parsed.href)}" target="_blank" rel="noopener noreferrer">${parsed.href}</a>`;
+                        }
+                    } catch (err) {
+                        // not a valid url (could be plain text) — treat as text
+                        console.log("Decoded QR is not a valid URL:", result.data);
+                        showSuccessToast("QR Result: " + result.data);
+                    }
+                },
+                {
+                    preferredCamera: "environment",
+                    highlightScanRegion: true,
+                    highlightCodeOutline: true,
+                }
+            );
+
+            await qrScanner.start();
+
+            // Ensure Safari can autoplay inline video
+            qrVideo.setAttribute("playsinline", true);
+            qrVideo.muted = true;
+            await qrVideo.play().catch(() => { });
+
+        } catch (err) {
+            console.error("❌ Failed to start camera:", err);
+            showErrorToast("Failed to start camera: " + err.message);
+        } finally {
+            qrLoading.classList.add("d-none");
+            isStarting = false;
+        }
+    }
+
+    document.getElementById("btnQrScan")?.addEventListener("click", () => {
+        qrResult.textContent = "";
+        qrModal.show();
+    });
+
+    qrModalEl.addEventListener("shown.bs.modal", startScanner);
+    qrModalEl.addEventListener("hidden.bs.modal", stopAndReleaseCamera);
+});
+

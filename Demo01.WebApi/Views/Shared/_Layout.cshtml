@@ -126,8 +126,8 @@
                                 <button id="btnQrScan" class="btn btn-demo-primary">
                                     <i class="bi bi-qr-code-scan"></i>
                                 </button>
-
                             </div>
+
                             <!-- Language Switch -->
                             <div class="me-2">
                                 <form method="post" asp-controller="Culture" asp-action="SetLanguage" class="form-check form-switch" onsubmit="showLoading()">
@@ -211,13 +211,20 @@
     </div>
 
     <!-- QR Scan Modal -->
-    <div class="modal fade" id="qrScanModal" tabindex="-1" aria-labelledby="qrScanLabel" aria-hidden="true">
+    <div class="modal fade" id="qrScanModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-3">
-                <h5 id="qrScanLabel" class="mb-2">Quét mã QR</h5>
-                <div id="qr-reader" style="width: 300px; margin: auto;"></div>
-                <p id="qr-result" class="mt-2 fw-bold text-primary"></p>
-                <button type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">Đóng</button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Scan QR Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="qr-reader">
+                        <video id="qr-video" playsinline muted style="width:100%;border-radius:1rem;"></video>
+                    </div>
+                    <div id="qr-loading" class="text-center d-none">📷 Initializing camera...</div>
+                    <div id="qr-result" class="mt-3 text-success fw-bold"></div>
+                </div>
             </div>
         </div>
     </div>
