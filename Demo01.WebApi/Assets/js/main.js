@@ -6,6 +6,22 @@ import * as bootstrap from 'bootstrap';
 import $ from 'jquery';
 import QrScanner from "qr-scanner";
 
+$(async function () {
+    await loadTranslations();
+
+    const langSwitch = document.getElementById("langSwitch");
+    if (langSwitch) {
+        langSwitch.addEventListener("change", function () {
+            langSwitch.classList.remove("no-animate");
+        });
+    }
+
+    const configDiv = document.getElementById("layout-config");
+    window.isAuthenticated = configDiv.getAttribute("data-is-authenticated") === "true";
+    window.currentCulture = configDiv.getAttribute("data-culture") || "en";
+    document.dispatchEvent(new Event("noticeReady"));
+});
+
 window.togglePasswordVisibility = function (inputId, btn) {
     const input = document.getElementById(inputId);
     if (input) {
@@ -197,4 +213,65 @@ document.addEventListener("DOMContentLoaded", () => {
     qrModalEl.addEventListener("shown.bs.modal", startScanner);
     qrModalEl.addEventListener("hidden.bs.modal", stopAndReleaseCamera);
 });
+
+async function loadTranslations() {
+    const configDiv = document.getElementById("layout-config");
+    const culture = configDiv?.dataset.culture || "en";
+
+    const cacheKey = `translations_${culture}`;
+    const cacheTTL = 60 * 60 * 1000; // 1 hour (ms)
+
+    // try to load from localStorage
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() < parsed.expiry) {
+            // still valid
+            window.translations = parsed.data;
+            return;
+        } else {
+            // expired, remove from localStorage
+            localStorage.removeItem(cacheKey);
+        }
+    }
+
+    // fetch from server
+    const res = await fetch(`/api/notification/translations?culture=${culture}`);
+    if (!res.ok) return;
+
+    const data = await res.json();
+    window.translations = data.translations;
+
+    // save to localStorage with expiry
+    localStorage.setItem(cacheKey, JSON.stringify({
+        data: data.translations,
+        expiry: Date.now() + cacheTTL
+    }));
+}
+
+// Support multiple params via JSON array
+window.t = function (key, paramsJson) {
+    if (!window.translations) return key;
+    let template = window.translations[key] || key;
+
+    if (paramsJson) {
+        try {
+            const params = JSON.parse(paramsJson);
+            if (Array.isArray(params)) {
+                params.forEach((p, i) => {
+                    let value = p;
+                    // check if param is in @@ KEY @@ format
+                    if (typeof value === "string" && value.startsWith("@@") && value.endsWith("@@")) {
+                        const innerKey = value.slice(2, -2).trim();
+                        value = window.translations[innerKey] || value;
+                    }
+                    template = template.replace(`{${i}}`, value);
+                });
+            }
+        } catch (e) {
+        }
+    }
+
+    return template;
+};
 

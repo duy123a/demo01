@@ -16,6 +16,7 @@
 	<ItemGroup>
 		<Content Include="Assets\css\main.css" />
 		<Content Include="Assets\js\main.js" />
+		<Content Include="Assets\js\notification.js" />
 	</ItemGroup>
 
   <ItemGroup>

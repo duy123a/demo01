@@ -242,3 +242,57 @@ btn-demo-primary {
 .text-demo-indigo {
     color: var(--demo-indigo);
 }
+
+@media (max-width: 576px) {
+    #notificationList {
+        left: -100% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+    }
+}
+
+#notificationList .dropdown-item {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.3;
+}
+
+/* ensure dropdown notifications keep expected colors */
+.dropdown-menu .dropdown-item.notification-item {
+    color: inherit;
+    background-color: transparent;
+}
+
+    /* unread: subtle red bg, hover/focus stronger */
+    .dropdown-menu .dropdown-item.notification-item.notification-unread {
+        background-color: #ffe0e0;
+        color: inherit;
+    }
+
+        .dropdown-menu .dropdown-item.notification-item.notification-unread:hover,
+        .dropdown-menu .dropdown-item.notification-item.notification-unread:focus {
+            background-color: #ffc4c4 !important;
+            color: inherit !important;
+        }
+
+    /* read: light gray bg on hover */
+    .dropdown-menu .dropdown-item.notification-item.notification-read:hover,
+    .dropdown-menu .dropdown-item.notification-item.notification-read:focus {
+        background-color: #f8f9fa !important;
+        color: inherit !important;
+    }
+
+    /* prevent Bootstrap's :active from turning text white on click */
+    .dropdown-menu .dropdown-item.notification-item:active,
+    .dropdown-menu .dropdown-item.notification-item:focus {
+        color: inherit !important;
+        background-color: inherit !important;
+    }
+
+    /* optional: text wrap and spacing */
+    .dropdown-menu .dropdown-item.notification-item > div {
+        white-space: normal;
+        word-break: break-word;
+    }

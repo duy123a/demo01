@@ -1,7 +1,9 @@
+using Demo01.WebApi.Services.Interfaces;
 using Demo01.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Demo01.WebApi.Controllers
 {
@@ -9,10 +11,14 @@ namespace Demo01.WebApi.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly INotificationBackgroundService _notificationService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            INotificationBackgroundService notificationService)
         {
             _logger = logger;
+            _notificationService = notificationService;
         }
 
         public IActionResult Index()
@@ -23,6 +29,17 @@ namespace Demo01.WebApi.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> NotifyDemo()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized();
+
+            await _notificationService.NotifyDemoAsync(userId);
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

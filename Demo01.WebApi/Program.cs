@@ -1,7 +1,10 @@
 using Demo01.Infrastructure;
 using Demo01.Infrastructure.Utilities;
 using Demo01.Shared;
+using Demo01.Shared.Services;
 using Demo01.Shared.Utilities;
+using Demo01.WebApi.Services;
+using Demo01.WebApi.Services.Interfaces;
 using Vite.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,8 @@ var adminPassword = builder.Configuration["SeedUsers:AdminPassword"] ?? string.E
 builder.Services.AddAppLocalization();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddSharedService(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
 
 // config origin
 builder.Services.AddCors(options =>
@@ -35,6 +40,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowCredentials());
 });
+
+builder.Services.AddScoped<IAppNotificationService, AppNotificationService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationBackgroundService, NotificationBackgroundService>();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -84,5 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseWebSockets();
     app.UseViteDevelopmentServer(true);
 }
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

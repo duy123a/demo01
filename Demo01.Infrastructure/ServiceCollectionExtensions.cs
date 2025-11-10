@@ -2,6 +2,8 @@
 using Demo01.Infrastructure.Data.Context;
 using Demo01.Infrastructure.Data.Repositories;
 using Demo01.Infrastructure.Data.Repositories.Interfaces;
+using Demo01.Infrastructure.Data.UnitOfWork;
+using Demo01.Infrastructure.Data.UnitOfWork.Interfaces;
 using Demo01.Infrastructure.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -64,6 +66,8 @@ namespace Demo01.Infrastructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<INotificationUnitOfWork, NotificationUnitOfWork>();
             return services;
         }
 

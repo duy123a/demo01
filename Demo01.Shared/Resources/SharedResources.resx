@@ -142,26 +142,26 @@
     <value>Login</value>
   </data>
   <data name="Login_Success" xml:space="preserve">
-  <value>Login successful</value>
-</data>
-<data name="Login_Locked_Out" xml:space="preserve">
-  <value>Your account is locked out</value>
-</data>
-<data name="Login_Not_Allowed" xml:space="preserve">
-  <value>You need to confirm your email before logging in.</value>
-</data>
-<data name="Login_2FA_Required" xml:space="preserve">
-  <value>Two-factor authentication required</value>
-</data>
-<data name="Login_Failed" xml:space="preserve">
-  <value>The email address or password you entered is incorrect.</value>
-</data>
-<data name="Dont_Have_Account" xml:space="preserve">
-  <value>Don't have an account?</value>
-</data>
-<data name="Register_Here" xml:space="preserve">
-  <value>Register here</value>
-</data>
+    <value>Login successful</value>
+  </data>
+  <data name="Login_Locked_Out" xml:space="preserve">
+    <value>Your account is locked out</value>
+  </data>
+  <data name="Login_Not_Allowed" xml:space="preserve">
+    <value>You need to confirm your email before logging in.</value>
+  </data>
+  <data name="Login_2FA_Required" xml:space="preserve">
+    <value>Two-factor authentication required</value>
+  </data>
+  <data name="Login_Failed" xml:space="preserve">
+    <value>The email address or password you entered is incorrect.</value>
+  </data>
+  <data name="Dont_Have_Account" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="Register_Here" xml:space="preserve">
+    <value>Register here</value>
+  </data>
   <data name="Logout_Confirmation" xml:space="preserve">
     <value>Logout confirmation</value>
   </data>
@@ -227,5 +227,11 @@
   </data>
   <data name="ShowMore" xml:space="preserve">
     <value>Show more</value>
+  </data>
+  <data name="AppNotice_Demo_Notice_Title" xml:space="preserve">
+    <value>Demo notice title</value>
+  </data>
+  <data name="AppNotice_Demo_Notice_Message" xml:space="preserve">
+    <value>Demo notice message</value>
   </data>
 </root>

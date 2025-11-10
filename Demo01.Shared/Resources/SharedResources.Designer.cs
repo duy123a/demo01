@@ -97,6 +97,24 @@ namespace Demo01.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Demo notice message.
+        /// </summary>
+        public static string AppNotice_Demo_Notice_Message {
+            get {
+                return ResourceManager.GetString("AppNotice_Demo_Notice_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Demo notice title.
+        /// </summary>
+        public static string AppNotice_Demo_Notice_Title {
+            get {
+                return ResourceManager.GetString("AppNotice_Demo_Notice_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back to home.
         /// </summary>
         public static string Back_To_Home {
@@ -160,6 +178,15 @@ namespace Demo01.Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t have an account?.
+        /// </summary>
+        public static string Dont_Have_Account {
+            get {
+                return ResourceManager.GetString("Dont_Have_Account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The username is already taken..
         /// </summary>
         public static string Duplicate_User_Name {
@@ -210,6 +237,51 @@ namespace Demo01.Shared.Resources {
         public static string Login {
             get {
                 return ResourceManager.GetString("Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two-factor authentication required.
+        /// </summary>
+        public static string Login_2FA_Required {
+            get {
+                return ResourceManager.GetString("Login_2FA_Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email address or password you entered is incorrect..
+        /// </summary>
+        public static string Login_Failed {
+            get {
+                return ResourceManager.GetString("Login_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your account is locked out.
+        /// </summary>
+        public static string Login_Locked_Out {
+            get {
+                return ResourceManager.GetString("Login_Locked_Out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You need to confirm your email before logging in..
+        /// </summary>
+        public static string Login_Not_Allowed {
+            get {
+                return ResourceManager.GetString("Login_Not_Allowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login successful.
+        /// </summary>
+        public static string Login_Success {
+            get {
+                return ResourceManager.GetString("Login_Success", resourceCulture);
             }
         }
         
@@ -300,6 +372,15 @@ namespace Demo01.Shared.Resources {
         public static string Privacy_Title {
             get {
                 return ResourceManager.GetString("Privacy_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register here.
+        /// </summary>
+        public static string Register_Here {
+            get {
+                return ResourceManager.GetString("Register_Here", resourceCulture);
             }
         }
         
