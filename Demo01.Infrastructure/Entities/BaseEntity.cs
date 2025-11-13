@@ -1,18 +1,17 @@
 ﻿using Demo01.Infrastructure.Entities.Interfaces;
-using Microsoft.AspNetCore.Identity;
 
 namespace Demo01.Infrastructure.Entities
 {
-    public class AppUser : IdentityUser, IAuditable
+    public abstract class BaseEntity : IAuditable, ISoftDeletable
     {
-        public string DisplayName { get; set; } = string.Empty;
-        public string ProfileImg { get; set; } = string.Empty;
-        public bool IsFirstLogin { get; set; }
-
-        // Audit
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public string? CreatedBy { get; set; }
+
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
         public string? UpdatedBy { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTimeOffset? DeletedAt { get; set; }
+        public string? DeletedBy { get; set; }
     }
 }

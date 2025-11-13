@@ -15,7 +15,7 @@ namespace Demo01.Infrastructure.Data.Context
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
-            return new AppDbContext(optionsBuilder.Options);
+            return new AppDbContext(optionsBuilder.Options, null!);
         }
     }
 }

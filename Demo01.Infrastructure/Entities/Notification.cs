@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Demo01.Infrastructure.Entities
 {
     [Table("Notifications")]
-    public class Notification
+    public class Notification : BaseEntity
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -27,6 +27,5 @@ namespace Demo01.Infrastructure.Entities
         public string? Url { get; set; }
 
         public bool IsRead { get; set; } = false;
-        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     }
 }
